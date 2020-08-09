@@ -9,18 +9,27 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.preference.PreferenceManager;
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
  public class MainActivity extends AppCompatActivity {
 
     boolean isLoggedIn = false;
     String name = "";
+    private RecyclerView recyclerViewRemainders;
+    private RecyclerView.Adapter remainderAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +38,25 @@ import android.widget.TextView;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView welcomeTextView = (TextView)findViewById(R.id.welcomeTextView);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = findViewById(R.id.fab);
+        // Construct the data source
+        ArrayList<Remainder> listRemainders = RemaindersBase.get().getListRemainders();
+
+        recyclerViewRemainders = (RecyclerView) findViewById(R.id.recyclerViewRemainders);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerViewRemainders.setHasFixedSize(true);
+
+        // use a linear layout manager
+        layoutManager = new LinearLayoutManager(this);
+        recyclerViewRemainders.setLayoutManager(layoutManager);
+
+        // specify an adapter to convert the array to views
+        remainderAdapter = new RemainderAdapter(this, listRemainders);
+        recyclerViewRemainders.setAdapter(remainderAdapter);
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
