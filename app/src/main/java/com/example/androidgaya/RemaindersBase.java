@@ -11,13 +11,13 @@ public class RemaindersBase {
             listRemainders.add(new Remainder("test"+i, "test"+i, "test"+i,"test"+i,"test"+i));
         }
     }
-    private static RemaindersBase mRemaindersBase;
+    private static RemaindersBase INSTANCE;
 
     public static RemaindersBase get() {
-        if (mRemaindersBase == null) {
-            mRemaindersBase = new RemaindersBase();
+        if (INSTANCE == null) {
+            INSTANCE = new RemaindersBase();
         }
-        return mRemaindersBase;
+        return INSTANCE;
     }
 
     public ArrayList<Remainder> getListRemainders() {
