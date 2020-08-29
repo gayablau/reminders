@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 public class LoginActivity extends AppCompatActivity {
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,27 +36,22 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
         final ImageView imageView = findViewById(R.id.imageClock);
 
-
+        // Click Login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 loadingProgressBar.setVisibility(View.VISIBLE);
+                // Go to Main Activity and close Login Activity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                finishAffinity();
                 startActivity(intent);
+                // Save in shared preferences username and that the user is logged in
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 prefs.edit().putBoolean("isLoggedIn", true).commit();
                 prefs.edit().putString("name", usernameEditText.getText().toString()).commit();
-                /*
+                loadingProgressBar.setVisibility(View.INVISIBLE);
                 //אם השם שהוזן קיים, להתחבר ולהציג את ההתראות שלו. אם לא קיים ליצור משתמש עם אותו השם
-                if(usernameEditText.getText().toString().equals("admin")) {
-
-                }
-                else {
-                    Toast toast = Toast.makeText(LoginActivity.this, "wrong username or password", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-                */
 
             }
         });
@@ -71,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                // Set Login button enabled or not by input
                 if(s.toString().trim().length()==0){
                     loginButton.setEnabled(false);
                 } else {
@@ -84,15 +78,5 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void updateUiWithUser() {
-        //String welcome = getString(R.string.welcome);
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), "welcome", Toast.LENGTH_LONG).show();
-    }
-
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
     }
 }
