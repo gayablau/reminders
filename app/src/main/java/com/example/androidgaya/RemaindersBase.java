@@ -7,9 +7,6 @@ public class RemaindersBase {
     private ArrayList<Remainder> listRemainders;
     private RemaindersBase() {
         listRemainders = new ArrayList<Remainder>();
-        for (int i = 0; i < 100; i++) {
-            listRemainders.add(new Remainder("test"+i, "test"+i, "test"+i,"test"+i,"test"+i));
-        }
     }
     private static RemaindersBase INSTANCE;
 
@@ -22,5 +19,9 @@ public class RemaindersBase {
 
     public ArrayList<Remainder> getListRemainders() {
         return listRemainders;
+    }
+
+    public void addRemainder(Remainder remainder) {
+        listRemainders.add(remainder);
     }
 }

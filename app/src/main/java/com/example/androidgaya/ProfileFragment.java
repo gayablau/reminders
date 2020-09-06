@@ -15,9 +15,9 @@ import android.widget.EditText;
 
 public class ProfileFragment extends Fragment {
 
-    protected String username;
-    protected EditText usernameET;
-    protected Toolbar toolbar;
+    private String username;
+    private EditText usernameET;
+    private Toolbar toolbar;
 
     public ProfileFragment() {
         // Empty public constructor
