@@ -31,12 +31,12 @@
                 android:text="Date" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imageClock"
-            android:layout_width="378dp"
-            android:layout_height="350dp"
-            android:src="@drawable/alarm_clock"
-            android:layout_gravity="center" />
+
+
+        <TimePicker android:id="@+id/timePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="clock" />
 
         <LinearLayout
             android:layout_width="match_parent"
