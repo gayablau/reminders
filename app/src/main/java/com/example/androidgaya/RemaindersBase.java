@@ -21,7 +21,22 @@ public class RemaindersBase {
         return listRemainders;
     }
 
-    public void addRemainder(Remainder remainder) {
-        listRemainders.add(remainder);
+    public boolean addRemainder(Remainder remainder) {
+        try {
+            listRemainders.add(remainder);
+            return true;
+        }
+        catch (Exception ex) {}
+        return false;
+    }
+
+    public boolean editRemainder(int position, Remainder updatedRemainder) {
+        try {
+            listRemainders.remove(position);
+            listRemainders.add(position, updatedRemainder);
+            return true;
+        }
+        catch (Exception ex) {}
+        return false;
     }
 }

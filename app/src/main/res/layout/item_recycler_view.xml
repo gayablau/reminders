@@ -19,7 +19,7 @@
             android:id="@+id/remHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
             android:ellipsize="end"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/remHeader"
             android:layout_alignStart="@+id/remHeader"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="4dp"
             android:ellipsize="end"
@@ -51,38 +51,37 @@
             app:layout_constraintTop_toBottomOf="@+id/remHeader" />
 
         <TextView
-            android:id="@+id/remHour"
+            android:id="@+id/remTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center"
-            android:text="Hour"
+            android:text="Time"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/remHeader"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/remDate"
-
             />
 
         <TextView
             android:id="@+id/remDate"
-            android:layout_width="55dp"
+            android:layout_width="65dp"
             android:layout_height="15dp"
             android:layout_marginEnd="5dp"
             android:gravity="center"
             android:text="Date"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/remHour" />
+            app:layout_constraintTop_toBottomOf="@+id/remTime" />
 
         <TextView
             android:id="@+id/remDay"
             android:layout_width="32dp"
             android:layout_height="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center"
             android:text="Day"
             android:textSize="12sp"
