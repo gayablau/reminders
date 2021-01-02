@@ -33,24 +33,24 @@ import java.util.Date;
 
 public class DetailsFragment extends Fragment {
 
+    final int NO_EDIT_FLAG = -1;
     private TextView dateTV;
     private static EditText remainderHeaderET;
     private static EditText remainderDescriptionET;
     private Button dateButton;
     private Toolbar toolbar;
     private TimePicker timePicker;
-    private MenuItem saveMenu;
-    private static int position = -1;
-    private int chosenYear = 1970;
-    private int chosenMonth = 1;
-    private int chosenDay = 1;
-    private int chosenHour = 00;
-    private int chosenMinutes = 00;
-    private String chosenDayStr = "THURSDAY";
-    private String dateNum = "1/1/1970";
+    private static int position;
+    private static int chosenYear = 1970;
+    private static int chosenMonth = 1;
+    private static int chosenDay = 1;
+    private static int chosenHour = 00;
+    private static int chosenMinutes = 00;
+    private static String chosenDayStr = "THURSDAY";
+    private static String dateNum = "1/1/1970";
     private static String remainderHeader = "";
     private static String remainderDescription = "";
-    private String dateWords;
+    private static String dateWords;
     private boolean isEdit = false;
 
     public DetailsFragment() {
@@ -63,7 +63,7 @@ public class DetailsFragment extends Fragment {
     }
 
     public boolean isInputValid() {
-        // Returns true if input is valid, else false
+        // Returns true if input is valid (name is not empty), else false
         return remainderHeaderET.getText().toString().trim().length() != 0;
     }
 
@@ -78,10 +78,7 @@ public class DetailsFragment extends Fragment {
     public Remainder createRemainderFromInput() {
         setUpdatedDetails();
         // Returns a remainder based on current input
-        if (chosenMinutes < 10) {
-            return new Remainder(remainderHeader, remainderDescription, chosenHour + ":0" + chosenMinutes, dateNum, chosenDayStr);
-        }
-        return new Remainder(remainderHeader, remainderDescription,chosenHour + ":" + chosenMinutes, dateNum, chosenDayStr);
+        return new Remainder(remainderHeader, remainderDescription, chosenHour, chosenMinutes, chosenDayStr, chosenYear, chosenMonth, chosenDay);
     }
 
     public void clearInput() {
@@ -106,46 +103,14 @@ public class DetailsFragment extends Fragment {
         dateButton = (Button) detailsView.findViewById(R.id.buttonDate);
         timePicker = (TimePicker) detailsView.findViewById(R.id.timePicker);
         toolbar = (Toolbar) detailsView.findViewById(R.id.toolbar);
-        position = -1;
+        position = NO_EDIT_FLAG;
         setHasOptionsMenu(true);
-
-      /*  remainderHeaderET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                remainderHeader = remainderHeaderET.getText().toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        remainderDescriptionET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                remainderDescription = remainderDescriptionET.getText().toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
         return detailsView;
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        // Set menu save
         menu.clear();
         inflater.inflate(R.menu.save, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -154,26 +119,30 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        // if editing, get chosen remainder's details. else get current time.
         Bundle arguments = getArguments();
         if (arguments != null) {
-            // get and show chosen remainder's details
-            remainderHeader = arguments.getString("Header");
-            remainderDescription = arguments.getString("Description");
-            position = arguments.getInt("Position");
+            remainderHeader = arguments.getString("Header", "");
+            remainderDescription = arguments.getString("Description", "");
+            position = arguments.getInt("Position", -1);
             remainderHeaderET.setText(remainderHeader);
             remainderDescriptionET.setText(remainderDescription);
-            // add set time ********
+            chosenYear = arguments.getInt("Year", 1970);
+            chosenMonth = arguments.getInt("Month", 1);
+            chosenDay = arguments.getInt("Day", 1);
+            chosenHour = arguments.getInt("Hour", 00);
+            chosenMinutes = arguments.getInt("Minutes", 00);
         }
         else {
+            // Get and set current time
+            Calendar calendar = Calendar.getInstance();
+            chosenYear = calendar.get(Calendar.YEAR);
+            chosenMonth = calendar.get(Calendar.MONTH) + 1;
+            chosenDay = calendar.get(Calendar.DATE);
+            chosenHour = calendar.get(Calendar.HOUR_OF_DAY);
+            chosenMinutes = calendar.get(Calendar.MINUTE);
         }
 
-        // Get and set current time
-        Calendar calendar = Calendar.getInstance();
-        chosenYear = calendar.get(Calendar.YEAR);
-        chosenMonth = calendar.get(Calendar.MONTH) + 1;
-        chosenDay = calendar.get(Calendar.DATE);
-        chosenHour = calendar.get(Calendar.HOUR_OF_DAY) + 2;
-        chosenMinutes = calendar.get(Calendar.MINUTE);
         dateNum = chosenDay + "/" + chosenMonth + "/" + chosenYear;
         SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date dt1 = null;

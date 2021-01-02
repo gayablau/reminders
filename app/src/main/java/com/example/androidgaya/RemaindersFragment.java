@@ -29,8 +29,13 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     int menuToChoose = R.menu.menu_main;
     DetailsFragment detailsFragment = new DetailsFragment();
     //MainActivity mainActivity = new MainActivity();
-    String chosenRemHeader = "";
-    String chosenRemDescription = "";
+    private String chosenRemHeader = "";
+    private String chosenRemDescription = "";
+    private int chosenYear = 1970;
+    private int chosenMonth = 1;
+    private int chosenDay = 1;
+    private int chosenHour = 00;
+    private int chosenMinutes = 00;
 
     public RemaindersFragment() {
         // Empty public constructor
@@ -70,6 +75,11 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
                 // Get remainder info to pass to fragment
                 chosenRemHeader = remainderAdapter.getItem(position).getHeader();
                 chosenRemDescription = remainderAdapter.getItem(position).getDescription();
+                chosenYear = remainderAdapter.getItem(position).getYear();
+                chosenMonth = remainderAdapter.getItem(position).getMonth();
+                chosenDay = remainderAdapter.getItem(position).getDayOfMonth();
+                chosenHour = remainderAdapter.getItem(position).getHour();
+                chosenMinutes = remainderAdapter.getItem(position).getMinutes();
 
                 // Create a new transaction
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -78,6 +88,11 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
                 arguments.putInt("Position", position);
                 arguments.putString("Header", chosenRemHeader);
                 arguments.putString("Description", chosenRemDescription);
+                arguments.putInt("Year", chosenYear);
+                arguments.putInt("Month", chosenMonth);
+                arguments.putInt("Day", chosenDay);
+                arguments.putInt("Hour", chosenHour);
+                arguments.putInt("Minutes", chosenMinutes);
                 detailsFragment.setArguments(arguments);
 
                 // Replace whatever is in the fragment_container view with this fragment,
