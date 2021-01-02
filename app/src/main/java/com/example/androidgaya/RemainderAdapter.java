@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,7 +41,6 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         holder.hour.setText(remainder.getHour());
         holder.date.setText(remainder.getDate());
         holder.day.setText(remainder.getDay());
-
     }
 
     // total number of rows
@@ -48,7 +48,6 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     public int getItemCount() {
         return remainders.size();
     }
-
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

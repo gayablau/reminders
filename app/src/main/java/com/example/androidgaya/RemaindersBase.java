@@ -24,4 +24,9 @@ public class RemaindersBase {
     public void addRemainder(Remainder remainder) {
         listRemainders.add(remainder);
     }
+
+    public void editRemainder(int position, Remainder updatedRemainder) {
+        listRemainders.remove(position);
+        listRemainders.add(position, updatedRemainder);
+    }
 }

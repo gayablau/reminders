@@ -35,17 +35,19 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     boolean isLoggedIn = false;
     String name = "";
-    private int menuToChoose = R.menu.menu_main;
+    Toolbar toolbar;
+    int menuToChoose = R.menu.menu_main;
     RemaindersFragment remaindersFragment = new RemaindersFragment();
     ProfileFragment profileFragment = new ProfileFragment();
     DetailsFragment detailsFragment = new DetailsFragment();
-    FloatingActionButton addFab;
+    static FloatingActionButton addFab;
+    boolean isEdit = false;
 
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         addFab = findViewById(R.id.fab);
 
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View view) {
+                detailsFragment = new DetailsFragment();
+
                 // Create a new transaction
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 // Replace whatever is in the fragment_container view with this fragment,
@@ -63,10 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 // Commit the transaction
                 transaction.commit();
                 // Set toolbar properties
-                menuToChoose = R.menu.save;
                 getSupportActionBar().setTitle("Add Remainder");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                invalidateOptionsMenu();
                 // Set fab invisible
                 addFab.setVisibility(View.GONE);
             }
@@ -77,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View view) {
+                // Check what is the current fragment
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+                if (currentFragment instanceof DetailsFragment) {
+
+                }
                 // Managing fragments
                 // Create new transaction
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -118,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.fragment_container, remaindersFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-
     }
 
     @Override
@@ -206,14 +213,31 @@ public class MainActivity extends AppCompatActivity {
              addFab.setVisibility(View.VISIBLE);
          }
          else if (currentFragment instanceof DetailsFragment){
-             if (detailsFragment.isInputValid()) {
-                 // Add new remainder to singleton
-                 RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput());
+             if (true) {
+                 //detailsFragment.isInputValid()
+                 // if isEdit == true, edit the remainder. else create a new one
+                 if (detailsFragment.getPosition() == -1) {
+                     // Add new remainder to singleton
+                     RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput());
+
+                     // Show toast - remainder added successfully
+                     Toast.makeText(this, "remainder added successfully", Toast.LENGTH_LONG).show();
+                 }
+                 else {
+                     RemaindersBase.get().editRemainder(detailsFragment.getPosition(), detailsFragment.createRemainderFromInput());
+
+                     // Show toast - remainder added successfully
+                     Toast.makeText(this, "remainder updated successfully", Toast.LENGTH_LONG).show();
+                 }
+
                  // Set toolbar properties
                  menuToChoose = R.menu.menu_main;
                  getSupportActionBar().setTitle("Welcome " + name);
                  getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                  invalidateOptionsMenu();
+
+                 // Clear Input from fragment for the next time
+                 //detailsFragment.clearInput();
 
                  // Managing fragments
                  FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -224,11 +248,8 @@ public class MainActivity extends AppCompatActivity {
                  // Set fab visible
                  addFab.setVisibility(View.VISIBLE);
 
-                 // Clear Input from fragment for the next time
-                 detailsFragment.clearInput();
+                 // Finish fragment
 
-                 // Show toast - remainder added successfully
-                 Toast.makeText(this, "remainder added successfully", Toast.LENGTH_LONG).show();
              }
              else {
                  // Show toast - please enter a name for your remainder
@@ -236,4 +257,4 @@ public class MainActivity extends AppCompatActivity {
              }
          }
      }
- }
+}

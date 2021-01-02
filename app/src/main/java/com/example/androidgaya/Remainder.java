@@ -2,7 +2,8 @@ package com.example.androidgaya;
 
 public class Remainder {
 
-    protected String header, description, hour, date, day;
+    private String header, description, hour, date, day;
+    //private int position;
 
     public Remainder() {
     }
@@ -13,6 +14,7 @@ public class Remainder {
         this.hour = hour;
         this.date = date;
         this.day = day;
+       // this.position = position;
     }
 
     public String getHeader() {
@@ -54,4 +56,8 @@ public class Remainder {
     public void setDay(String day) {
         this.day = day;
     }
+
+    /*public int getPosition() { return position; }
+
+    public void setPosition(int position) { this.position = position; }*/
 }
