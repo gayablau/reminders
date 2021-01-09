@@ -2,13 +2,16 @@ package com.example.androidgaya;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,7 +69,14 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         // specify an adapter to convert the array to views
         remainderAdapter = new RemainderAdapter(RemaindersFragment.this.getContext(), listRemainders);
         recyclerViewRemainders.setAdapter(remainderAdapter);
+        recyclerViewRemainders.setLayoutManager(new LinearLayoutManager(RemaindersFragment.this.getContext()));
 
+        // Setting swipe to delete
+        ItemTouchHelper itemTouchHelper = new
+                ItemTouchHelper(new SwipeToDeleteCallback(remainderAdapter));
+        itemTouchHelper.attachToRecyclerView(recyclerViewRemainders);
+
+        // Click to edit remainder
         recyclerViewRemainders.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -109,14 +119,12 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
                 MainActivity.addFab.setVisibility(View.GONE);
             }
         }));
+
         // Inflate the layout for this fragment
         return remaindersView;
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-        // I do nothing
-    }
-
+    public void onItemClick(View view, int position) {}
 }
 
