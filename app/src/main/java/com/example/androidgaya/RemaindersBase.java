@@ -39,4 +39,13 @@ public class RemaindersBase {
         catch (Exception ex) {}
         return false;
     }
+
+    public boolean deleteRemainder(int position) {
+        try {
+            listRemainders.remove(position);
+            return true;
+        }
+        catch (Exception ex) {}
+        return false;
+    }
 }

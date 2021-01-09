@@ -18,6 +18,7 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     private List<Remainder> remainders;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private static Context context;
 
     // data is passed into the constructor
     RemainderAdapter(Context context, List<Remainder> remainders) {
@@ -29,6 +30,7 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_recycler_view, parent, false);
+        context = parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -87,5 +89,9 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
+    }
+
+    public static Context getContext() {
+        return context;
     }
 }
