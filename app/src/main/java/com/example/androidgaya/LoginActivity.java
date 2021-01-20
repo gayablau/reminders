@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Save in shared preferences username and that the user is logged in
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 prefs.edit().putBoolean("isLoggedIn", true).commit();
-                prefs.edit().putString("name", usernameEditText.getText().toString()).commit();
+                prefs.edit().putString("username", usernameEditText.getText().toString()).commit();
                 loadingProgressBar.setVisibility(View.INVISIBLE);
                 //אם השם שהוזן קיים, להתחבר ולהציג את ההתראות שלו. אם לא קיים ליצור משתמש עם אותו השם
 

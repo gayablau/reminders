@@ -20,10 +20,12 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     private RemainderAdapter remainderAdapter;
     private ColorDrawable background;
+    private String username;
 
-    public SwipeToDeleteCallback(RemainderAdapter adapter) {
+    public SwipeToDeleteCallback(RemainderAdapter adapter, String username) {
         super(0, ItemTouchHelper.LEFT);
         this.remainderAdapter = adapter;
+        this.username = username;
         // Set background color for swipe
         background = new ColorDrawable(Color.RED);
     }
@@ -37,7 +39,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
         // delete the chosen remainder
-        if (RemaindersBase.get().deleteRemainder(viewHolder.getAdapterPosition())) {
+        if (RemaindersBase.get().deleteRemainder(viewHolder.getAdapterPosition(), username)) {
             remainderAdapter.notifyItemRemoved(position);
             remainderAdapter.notifyItemChanged(position);
         }

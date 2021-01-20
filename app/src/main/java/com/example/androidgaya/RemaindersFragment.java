@@ -23,15 +23,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class RemaindersFragment extends Fragment implements RemainderAdapter.ItemClickListener {
 
     private RecyclerView recyclerViewRemainders;
     private RemainderAdapter remainderAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    int menuToChoose = R.menu.menu_main;
     DetailsFragment detailsFragment = new DetailsFragment();
-    //MainActivity mainActivity = new MainActivity();
     private String chosenRemHeader = "";
     private String chosenRemDescription = "";
     private int chosenYear = 1970;
@@ -39,6 +38,7 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     private int chosenDay = 1;
     private int chosenHour = 00;
     private int chosenMinutes = 00;
+    private String username = "";
 
     public RemaindersFragment() {
         // Empty public constructor
@@ -54,7 +54,7 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
                              Bundle savedInstanceState) {
         View remaindersView = inflater.inflate(R.layout.fragment_remainders, container, false);
 
-        ArrayList<Remainder> listRemainders = RemaindersBase.get().getListRemainders();
+        Map<String, ArrayList<Remainder>> remaindersMap = RemaindersBase.get().getRemaindersMap();
 
         recyclerViewRemainders = (RecyclerView) remaindersView.findViewById(R.id.recyclerViewRemainders);
 
@@ -66,14 +66,19 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
         recyclerViewRemainders.setLayoutManager(layoutManager);
 
+        // Get info from shared preferences - is user logged in and username
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RemaindersFragment.this.getContext());
+        username = prefs.getString("username", "");
+        RemaindersBase.get().addUsername(username);
+
         // specify an adapter to convert the array to views
-        remainderAdapter = new RemainderAdapter(RemaindersFragment.this.getContext(), listRemainders);
+        remainderAdapter = new RemainderAdapter(RemaindersFragment.this.getContext(), remaindersMap.get(username));
         recyclerViewRemainders.setAdapter(remainderAdapter);
         recyclerViewRemainders.setLayoutManager(new LinearLayoutManager(RemaindersFragment.this.getContext()));
 
         // Setting swipe to delete
         ItemTouchHelper itemTouchHelper = new
-                ItemTouchHelper(new SwipeToDeleteCallback(remainderAdapter));
+                ItemTouchHelper(new SwipeToDeleteCallback(remainderAdapter, username));
         itemTouchHelper.attachToRecyclerView(recyclerViewRemainders);
 
         // Click to edit remainder
