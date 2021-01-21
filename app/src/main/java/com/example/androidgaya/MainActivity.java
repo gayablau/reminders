@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     final int NO_EDIT_FLAG = -1;
     boolean isLoggedIn = false;
-    String name = "";
+    String username = "";
     Toolbar toolbar;
     int menuToChoose = R.menu.menu_main;
     RemaindersFragment remaindersFragment = new RemaindersFragment();
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Set toolbar properties
                 menuToChoose = R.menu.menu_main;
-                getSupportActionBar().setTitle("Welcome " + name);
+                getSupportActionBar().setTitle("Welcome " + username);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 invalidateOptionsMenu();
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         // Get info from shared preferences - is user logged in and username
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-        name = prefs.getString("name", "");
+        username = prefs.getString("username", "");
 
         // If user doesn't logged in, go to login activity
         if (!isLoggedIn) {
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         // Set toolbar title
-        getSupportActionBar().setTitle("Welcome " + name);
+        getSupportActionBar().setTitle("Welcome " + username);
 
         // Managing fragments
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         // Update in shared preferences that the user logged out and clear the name
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         prefs.edit().putBoolean("isLoggedIn", false).commit();
-        prefs.edit().putString("name", "").commit();
+        prefs.edit().putString("username", "").commit();
         // Go to Login Activity and close Main Activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         finishAffinity();
@@ -188,32 +188,39 @@ public class MainActivity extends AppCompatActivity {
          Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
          if (currentFragment instanceof ProfileFragment) {
-             // Save new username in shared preferences
-             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-             name = profileFragment.getUsernameETValue();
-             prefs.edit().putString("name", name).commit();
+             if (RemaindersBase.get().isUsernameExists(profileFragment.getUsernameETValue())) {
+                 Toast.makeText(this, "user exist", Toast.LENGTH_LONG).show();
+             }
+             else {
+                 // Edit name in singleton
+                 RemaindersBase.get().editUsername(username, profileFragment.getUsernameETValue());
+                 // Save new username in shared preferences
+                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                 username = profileFragment.getUsernameETValue();
+                 prefs.edit().putString("username", username).commit();
 
-             // Set toolbar properties
-             menuToChoose = R.menu.menu_main;
-             getSupportActionBar().setTitle("Welcome " + name);
-             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-             invalidateOptionsMenu();
+                 // Set toolbar properties
+                 menuToChoose = R.menu.menu_main;
+                 getSupportActionBar().setTitle("Welcome " + username);
+                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                 invalidateOptionsMenu();
 
-             // Managing fragments
-             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-             transaction.replace(R.id.fragment_container, remaindersFragment);
-             transaction.addToBackStack(null);
-             transaction.commit();
+                 // Managing fragments
+                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                 transaction.replace(R.id.fragment_container, remaindersFragment);
+                 transaction.addToBackStack(null);
+                 transaction.commit();
 
-             // Set fab visible
-             addFab.setVisibility(View.VISIBLE);
+                 // Set fab visible
+                 addFab.setVisibility(View.VISIBLE);
+             }
          }
          else if (currentFragment instanceof DetailsFragment){
              if (detailsFragment.isInputValid()) {
                  // if position, edit the remainder. else create a new one
                  if (detailsFragment.getPosition() == -1) {
                      // Add new remainder to singleton
-                     if (RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput())) {
+                     if (RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput(), username)) {
                          // Show toast - remainder added
                          Toast.makeText(this, "remainder added", Toast.LENGTH_SHORT).show();
                      }
@@ -224,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                  }
                  else {
                      // Edit the chosen remainder and save to singleton
-                     if (RemaindersBase.get().editRemainder(detailsFragment.getPosition(), detailsFragment.createRemainderFromInput())) {
+                     if (RemaindersBase.get().editRemainder(detailsFragment.getPosition(), detailsFragment.createRemainderFromInput(), username)) {
                          // Show toast - remainder updated
                          Toast.makeText(this, "remainder updated", Toast.LENGTH_SHORT).show();
                      }
@@ -236,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
 
                  // Set toolbar properties
                  menuToChoose = R.menu.menu_main;
-                 getSupportActionBar().setTitle("Welcome " + name);
+                 getSupportActionBar().setTitle("Welcome " + username);
                  getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                  invalidateOptionsMenu();
 

@@ -28,7 +28,7 @@ public class ProfileFragment extends Fragment {
         super.onResume();
         // Get current username from shared preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ProfileFragment.this.getContext());
-        username = prefs.getString("name", "");
+        username = prefs.getString("username", "");
         usernameET.setText(username);
     }
 
