@@ -79,28 +79,7 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View view) {
-                // Check what is the current fragment
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                // Managing fragments
-                // Create new transaction
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
-                transaction.replace(R.id.fragment_container, remaindersFragment);
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-                // Set toolbar properties
-                menuToChoose = R.menu.menu_main;
-                getSupportActionBar().setTitle("Welcome " + username);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                invalidateOptionsMenu();
-
-                // Set fab visible
-                addFab.setVisibility(View.VISIBLE);
+                onBackPressed();
             }
         });
 
@@ -122,6 +101,33 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.fragment_container, remaindersFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void onBackPressed() {
+        // Check what is the current fragment
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        // Managing fragments
+        // Create new transaction
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, remaindersFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        // Set toolbar properties
+        menuToChoose = R.menu.menu_main;
+        getSupportActionBar().setTitle("Welcome " + username);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        invalidateOptionsMenu();
+
+        // Set fab visible
+        addFab.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -188,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
          if (currentFragment instanceof ProfileFragment) {
              if (RemaindersBase.get().isUsernameExists(profileFragment.getUsernameETValue())) {
-                 Toast.makeText(this, "user exist", Toast.LENGTH_LONG).show();
+                 Toast.makeText(this, "user exists", Toast.LENGTH_LONG).show();
              }
              else {
                  // Edit name in singleton
