@@ -63,6 +63,7 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //addC
     }
 
     public boolean isTimeValid() {
