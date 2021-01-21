@@ -165,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
      public void profile() {
          // Create new transaction
          FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
          // Replace whatever is in the fragment_container view with this fragment,
          // and add the transaction to the back stack
          transaction.replace(R.id.fragment_container, profileFragment);
@@ -217,46 +216,45 @@ public class MainActivity extends AppCompatActivity {
          }
          else if (currentFragment instanceof DetailsFragment){
              if (detailsFragment.isInputValid()) {
-                 // if position, edit the remainder. else create a new one
-                 if (detailsFragment.getPosition() == -1) {
-                     // Add new remainder to singleton
-                     if (RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput(), username)) {
-                         // Show toast - remainder added
-                         Toast.makeText(this, "remainder added", Toast.LENGTH_SHORT).show();
+                 if (detailsFragment.isTimeValid()) {
+                     // if position, edit the remainder. else create a new one
+                     if (detailsFragment.getPosition() == -1) {
+                         // Add new remainder to singleton
+                         if (RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput(), username)) {
+                             Toast.makeText(this, "remainder added", Toast.LENGTH_SHORT).show();
+                         }
+                         else {
+                             Toast.makeText(this, "Error adding remainder", Toast.LENGTH_SHORT).show();
+                         }
                      }
                      else {
-                         // Show toast - Error adding remainder
-                         Toast.makeText(this, "Error adding remainder", Toast.LENGTH_SHORT).show();
+                         // Edit the chosen remainder and save to singleton
+                         if (RemaindersBase.get().editRemainder(detailsFragment.getPosition(), detailsFragment.createRemainderFromInput(), username)) {
+                             Toast.makeText(this, "remainder updated", Toast.LENGTH_SHORT).show();
+                         }
+                         else {
+                             Toast.makeText(this, "Error updating remainder", Toast.LENGTH_SHORT).show();
+                         }
                      }
+
+                     // Set toolbar properties
+                     menuToChoose = R.menu.menu_main;
+                     getSupportActionBar().setTitle("Welcome " + username);
+                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                     invalidateOptionsMenu();
+
+                     // Managing fragments
+                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                     transaction.replace(R.id.fragment_container, remaindersFragment);
+                     transaction.addToBackStack(null);
+                     transaction.commit();
+
+                     // Set fab visible
+                     addFab.setVisibility(View.VISIBLE);
+                 } else {
+                     Toast.makeText(this, "please select a valid time for your remainder", Toast.LENGTH_SHORT).show();
                  }
-                 else {
-                     // Edit the chosen remainder and save to singleton
-                     if (RemaindersBase.get().editRemainder(detailsFragment.getPosition(), detailsFragment.createRemainderFromInput(), username)) {
-                         // Show toast - remainder updated
-                         Toast.makeText(this, "remainder updated", Toast.LENGTH_SHORT).show();
-                     }
-                     else {
-                         // Show toast - Error updating remainder
-                         Toast.makeText(this, "Error updating remainder", Toast.LENGTH_SHORT).show();
-                     }
-                 }
-
-                 // Set toolbar properties
-                 menuToChoose = R.menu.menu_main;
-                 getSupportActionBar().setTitle("Welcome " + username);
-                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                 invalidateOptionsMenu();
-
-                 // Managing fragments
-                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                 transaction.replace(R.id.fragment_container, remaindersFragment);
-                 transaction.addToBackStack(null);
-                 transaction.commit();
-
-                 // Set fab visible
-                 addFab.setVisibility(View.VISIBLE);
-             }
-             else {
+             } else {
                  // Show toast - please enter a name for your remainder
                  Toast.makeText(this, "please enter a name for your remainder", Toast.LENGTH_SHORT).show();
              }
