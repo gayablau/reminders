@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -33,7 +34,6 @@ import java.util.Date;
 
 
 public class DetailsFragment extends Fragment {
-
     final int NO_EDIT_FLAG = -1;
     private TextView dateTV;
     private static EditText remainderHeaderET;

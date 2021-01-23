@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".DetailsFragment">
 
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,9 +57,9 @@
 
             <EditText
                 android:id="@+id/editTextRemainderName"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="textMultiLine"
                 android:layout_weight="1"
                 android:hint="Remainder Name"
                 />
@@ -74,14 +79,16 @@
 
             <EditText
                 android:id="@+id/editTextDescription"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="textMultiLine"
                 android:layout_weight="1"
                 android:hint="Description"
                 />
         </LinearLayout>
 
     </LinearLayout>
+
+    </ScrollView>
 
 </FrameLayout>
