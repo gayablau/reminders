@@ -12,7 +12,6 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".LoginActivity">
 
-
     <ImageView
         android:id="@+id/imageClock"
         android:layout_width="206dp"

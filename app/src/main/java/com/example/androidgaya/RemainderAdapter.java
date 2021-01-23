@@ -4,13 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
 public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.ViewHolder> {
@@ -20,7 +15,6 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     private ItemClickListener mClickListener;
     private static Context context;
 
-    // data is passed into the constructor
     RemainderAdapter(Context context, List<Remainder> remainders) {
         this.mInflater = LayoutInflater.from(context);
         this.remainders = remainders;

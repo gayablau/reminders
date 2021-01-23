@@ -1,22 +1,13 @@
 package com.example.androidgaya;
 
 import android.app.DatePickerDialog;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,23 +16,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
 public class DetailsFragment extends Fragment {
+
     final int NO_EDIT_FLAG = -1;
     private TextView dateTV;
-    private static EditText remainderHeaderET;
-    private static EditText remainderDescriptionET;
-    private static Calendar calendar;
     private Button dateButton;
     private Toolbar toolbar;
     private TimePicker timePicker;
+    private static EditText remainderHeaderET;
+    private static EditText remainderDescriptionET;
+    private static Calendar calendar;
     private static int position;
     private static int chosenYear = 1970;
     private static int chosenMonth = 1;
@@ -54,7 +44,6 @@ public class DetailsFragment extends Fragment {
     private static String remainderDescription = "";
     private static String dateWords;
     private static String todayDateNum = "1/1/1970";
-    private boolean isEdit = false;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -63,7 +52,6 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //addC
     }
 
     public boolean isTimeValid() {
@@ -85,10 +73,6 @@ public class DetailsFragment extends Fragment {
         return remainderHeaderET.getText().toString().trim().length() != 0;
     }
 
-    public boolean getIsEdit() {
-        return isEdit;
-    }
-
     public int getPosition() {
         return position;
     }
@@ -99,13 +83,8 @@ public class DetailsFragment extends Fragment {
         return new Remainder(remainderHeader, remainderDescription, chosenHour, chosenMinutes, chosenDayStr, chosenYear, chosenMonth, chosenDay);
     }
 
-    public void clearInput() {
-        // Clear Input
-        remainderHeaderET.setText("");
-        remainderDescriptionET.setText("");
-    }
-
     public void setUpdatedDetails() {
+        // Save current input to variables
         remainderHeader = remainderHeaderET.getText().toString();
         remainderDescription = remainderDescriptionET.getText().toString();
     }
@@ -137,7 +116,7 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // if editing, get chosen remainder's details. else get current time.
+        // If editing, get chosen remainder's details. else get current time.
         Bundle arguments = getArguments();
         calendar = Calendar.getInstance();
         todayDateNum = calendar.get(Calendar.DATE) + "/" + (calendar.get(Calendar.MONTH) + 1)
@@ -162,7 +141,6 @@ public class DetailsFragment extends Fragment {
             chosenHour = calendar.get(Calendar.HOUR_OF_DAY);
             chosenMinutes = calendar.get(Calendar.MINUTE);
         }
-
         dateNum = chosenDay + "/" + chosenMonth + "/" + chosenYear;
         SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;

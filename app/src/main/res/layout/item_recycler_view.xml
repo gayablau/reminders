@@ -14,7 +14,6 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent">
 
-
         <TextView
             android:id="@+id/remHeader"
             android:layout_width="0dp"
@@ -63,8 +62,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/remHeader"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/remDate"
-            />
+            app:layout_constraintBottom_toTopOf="@id/remDate" />
 
         <TextView
             android:id="@+id/remDate"
@@ -88,9 +86,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/remDate" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
