@@ -8,15 +8,8 @@ public class Remainder {
     public Remainder() {
     }
 
-    public Remainder(String header, String description, String time, String date, String day) {
-        this.header = header;
-        this.description = description;
-        this.time = time;
-        this.date = date;
-        this.day = day;
-    }
-
-    public Remainder(String header, String description, int hour, int minutes, String day, int year, int month, int dayOfMonth) {
+    public Remainder(String header, String description, int hour, int minutes, String day,
+                     int year, int month, int dayOfMonth) {
         this.header = header;
         this.description = description;
         this.hour = hour;

@@ -8,11 +8,14 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+
     private OnItemClickListener mListener;
+    GestureDetector mGestureDetector;
+
     public interface OnItemClickListener {
         public void onItemClick(View view, int position);
     }
-    GestureDetector mGestureDetector;
+
     public RecyclerItemClickListener(Context context, OnItemClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
@@ -22,6 +25,8 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
             }
         });
     }
+
+    // Clicking recycler view item
     @Override
     public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
