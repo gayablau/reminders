@@ -23,7 +23,9 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
-    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+    public boolean onMove(@NonNull RecyclerView recyclerView,
+                          @NonNull RecyclerView.ViewHolder viewHolder,
+                          @NonNull RecyclerView.ViewHolder target) {
         return false;
     }
 
@@ -33,12 +35,12 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
         // delete the chosen remainder
         if (RemaindersBase.get().deleteRemainder(viewHolder.getAdapterPosition(), username)) {
             remainderAdapter.notifyItemRemoved(position);
-            remainderAdapter.notifyItemChanged(position);
         }
     }
 
     @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                            float dX, float dY, int actionState, boolean isCurrentlyActive) {
         super.onChildDraw(c, recyclerView, viewHolder, dX,
                 dY, actionState, isCurrentlyActive);
         // Set background for swipe

@@ -2,9 +2,11 @@ package com.example.androidgaya;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,8 +64,8 @@ public class DetailsFragment extends Fragment {
                 + "/" + calendar.get(Calendar.YEAR);
         if (!(dateNum.compareTo(todayDateNum) == 0 &&
                 (chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
-                (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
-                chosenMinutes <= calendar.get(Calendar.MINUTE))))) {
+                        (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
+                                chosenMinutes <= calendar.get(Calendar.MINUTE))))) {
             return true;
         }
         return false;
@@ -80,7 +83,8 @@ public class DetailsFragment extends Fragment {
     public Remainder createRemainderFromInput() {
         setUpdatedDetails();
         // Returns a remainder based on current input
-        return new Remainder(remainderHeader, remainderDescription, chosenHour, chosenMinutes, chosenDayStr, chosenYear, chosenMonth, chosenDay);
+        return new Remainder(remainderHeader, remainderDescription, chosenHour, chosenMinutes,
+                chosenDayStr, chosenYear, chosenMonth, chosenDay);
     }
 
     public void setUpdatedDetails() {
@@ -116,11 +120,12 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // If editing, get chosen remainder's details. else get current time.
-        Bundle arguments = getArguments();
+        // get current date
         calendar = Calendar.getInstance();
         todayDateNum = calendar.get(Calendar.DATE) + "/" + (calendar.get(Calendar.MONTH) + 1)
                 + "/" + calendar.get(Calendar.YEAR);
+        // If editing, get chosen remainder's details. else (new remainder) get current time.
+        Bundle arguments = getArguments();
         if (arguments != null) {
             remainderHeader = arguments.getString("Header", "");
             remainderDescription = arguments.getString("Description", "");
@@ -132,8 +137,7 @@ public class DetailsFragment extends Fragment {
             chosenMinutes = arguments.getInt("Minutes", 00);
             remainderHeaderET.setText(remainderHeader);
             remainderDescriptionET.setText(remainderDescription);
-        }
-        else {
+        } else {
             // Get and set current time
             chosenYear = calendar.get(Calendar.YEAR);
             chosenMonth = calendar.get(Calendar.MONTH) + 1;
@@ -165,8 +169,8 @@ public class DetailsFragment extends Fragment {
                 calendar = Calendar.getInstance();
                 if (dateNum.compareTo(todayDateNum) == 0 &&
                         (hourOfDay < calendar.get(Calendar.HOUR_OF_DAY) ||
-                        (hourOfDay == calendar.get(Calendar.HOUR_OF_DAY) &&
-                        minute <= calendar.get(Calendar.MINUTE)))) {
+                                (hourOfDay == calendar.get(Calendar.HOUR_OF_DAY) &&
+                                        minute <= calendar.get(Calendar.MINUTE)))) {
                     // Set date to tomorrow according to selected time
                     Toast.makeText(DetailsFragment.this.getContext(),
                             "past time selected. setting remainder date to tomorrow",
@@ -201,7 +205,8 @@ public class DetailsFragment extends Fragment {
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(DetailsFragment.this.getContext(), new DatePickerDialog.OnDateSetListener() {
+                final DatePickerDialog datePickerDialog =
+                        new DatePickerDialog(DetailsFragment.this.getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         dateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
@@ -225,10 +230,10 @@ public class DetailsFragment extends Fragment {
                 // Set min date according to selected time
                 if ((chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
                         (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
-                        chosenMinutes <= calendar.get(Calendar.MINUTE)))) {
-                    datePickerDialog.getDatePicker().setMinDate((System.currentTimeMillis() + 86400 * 1000) - 1000);
-                }
-                else {
+                                chosenMinutes <= calendar.get(Calendar.MINUTE)))) {
+                    datePickerDialog.getDatePicker().setMinDate(
+                            (System.currentTimeMillis() + 86400 * 1000) - 1000);
+                } else {
                     datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 }
                 datePickerDialog.show();
