@@ -5,8 +5,7 @@ public class Remainder {
     private String header, description, time, date, day;
     private int year, month, dayOfMonth, hour, minutes;
 
-    public Remainder() {
-    }
+    public Remainder() {}
 
     public Remainder(String header, String description, int hour, int minutes, String day,
                      int year, int month, int dayOfMonth) {

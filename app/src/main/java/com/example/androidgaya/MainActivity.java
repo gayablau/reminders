@@ -210,20 +210,26 @@ public class MainActivity extends AppCompatActivity {
                      // if position, edit the remainder. else create a new one
                      if (detailsFragment.getPosition() == -1) {
                          // Add new remainder to singleton
-                         if (RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput(), username)) {
-                             Toast.makeText(this, "remainder added", Toast.LENGTH_SHORT).show();
+                         if (RemaindersBase.get().addRemainder(detailsFragment.createRemainderFromInput(),
+                                 username)) {
+                             Toast.makeText(this, "remainder added",
+                                     Toast.LENGTH_SHORT).show();
                          }
                          else {
-                             Toast.makeText(this, "Error adding remainder", Toast.LENGTH_SHORT).show();
+                             Toast.makeText(this, "Error adding remainder",
+                                     Toast.LENGTH_SHORT).show();
                          }
                      }
                      else {
                          // Edit the chosen remainder and save to singleton
-                         if (RemaindersBase.get().editRemainder(detailsFragment.getPosition(), detailsFragment.createRemainderFromInput(), username)) {
-                             Toast.makeText(this, "remainder updated", Toast.LENGTH_SHORT).show();
+                         if (RemaindersBase.get().editRemainder(detailsFragment.getPosition(),
+                                 detailsFragment.createRemainderFromInput(), username)) {
+                             Toast.makeText(this, "remainder updated",
+                                     Toast.LENGTH_SHORT).show();
                          }
                          else {
-                             Toast.makeText(this, "Error updating remainder", Toast.LENGTH_SHORT).show();
+                             Toast.makeText(this, "Error updating remainder",
+                                     Toast.LENGTH_SHORT).show();
                          }
                      }
 
