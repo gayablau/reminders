@@ -1,89 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".DetailsFragment">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="date"
+        app:layout_constraintBottom_toTopOf="@+id/timePicker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+    <Button
+        android:id="@+id/buttonDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-            <TextView
-                android:id="@+id/textViewDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="date" />
 
-            <Button
-                android:id="@+id/buttonDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date" />
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:timePickerMode="clock"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDate" />
 
-        </LinearLayout>
 
-        <TimePicker android:id="@+id/timePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:timePickerMode="clock" />
+    <TextView
+        android:id="@+id/textViewRemainderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remainder Name: "
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextRemainderName"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textViewRemainderName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Remainder Name: " />
+    <EditText
+        android:id="@+id/editTextRemainderName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Remainder Name"
+        app:layout_constraintStart_toEndOf="@+id/textViewRemainderName"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
-            <EditText
-                android:id="@+id/editTextRemainderName"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:layout_weight="1"
-                android:hint="Remainder Name" />
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description: "
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="@+id/textViewRemainderName"
+        app:layout_constraintTop_toTopOf="@+id/editTextDescription" />
 
-        </LinearLayout>
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRemainderName"
+        app:layout_constraintStart_toStartOf="@+id/editTextRemainderName"
+        />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/textViewDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Description: " />
-
-            <EditText
-                android:id="@+id/editTextDescription"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:layout_weight="1"
-                android:hint="Description" />
-        </LinearLayout>
-    </LinearLayout>
-    </ScrollView>
-</FrameLayout>
