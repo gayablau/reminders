@@ -26,26 +26,24 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
         this.getSupportActionBar().hide();
-        // Set layout according to orientation
         orientation = this.getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_login_portrait);
-        } else {
-            setContentView(R.layout.activity_login_landscape);
-        }
         usernameEditText = findViewById(R.id.username);
         loginButton = findViewById(R.id.login);
-        loadingProgressBar = findViewById(R.id.loading);
         imageView = findViewById(R.id.imageClock);
         if (savedInstanceState != null) {
             usernameEditText.setText(savedInstanceState.getString("username", ""));
+        }
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            imageView.setBackgroundResource(R.drawable.alarm_clock_portrait);
+        } else {
+            imageView.setBackgroundResource(R.drawable.alarm_clock_landscape);
         }
         // Click Login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
                 // Go to Main Activity and close Login Activity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 finishAffinity();
@@ -54,7 +52,6 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 prefs.edit().putBoolean("isLoggedIn", true).commit();
                 prefs.edit().putString("username", usernameEditText.getText().toString()).commit();
-                loadingProgressBar.setVisibility(View.INVISIBLE);
             }
         });
 
