@@ -12,18 +12,7 @@
         android:id="@+id/recyclerViewRemainders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#E1E3FA"
+        android:background="@color/colorLightPurple"
         android:scrollbars="vertical" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="#3700B3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

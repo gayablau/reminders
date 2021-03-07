@@ -19,7 +19,6 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText usernameEditText;
     Button loginButton;
-    ProgressBar loadingProgressBar;
     ImageView imageView;
     int orientation;
 

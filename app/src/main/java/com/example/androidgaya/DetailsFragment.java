@@ -65,7 +65,7 @@ public class DetailsFragment extends Fragment {
         if (!(dateNum.compareTo(todayDateNum) == 0 &&
                 (chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
                         (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
-                                chosenMinutes <= calendar.get(Calendar.MINUTE))))) {
+                                chosenMinutes < calendar.get(Calendar.MINUTE))))) {
             return true;
         }
         return false;
@@ -230,7 +230,7 @@ public class DetailsFragment extends Fragment {
                 // Set min date according to selected time
                 if ((chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
                         (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
-                                chosenMinutes <= calendar.get(Calendar.MINUTE)))) {
+                                chosenMinutes < calendar.get(Calendar.MINUTE)))) {
                     datePickerDialog.getDatePicker().setMinDate(
                             (System.currentTimeMillis() + 86400 * 1000) - 1000);
                 } else {

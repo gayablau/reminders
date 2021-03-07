@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
     <TextView
         android:id="@+id/remHeader"
         android:layout_width="0dp"
@@ -13,7 +12,7 @@
         android:layout_marginEnd="4dp"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="Header"
+        android:text="@string/header"
         android:textSize="20sp"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/remDate"
@@ -31,7 +30,7 @@
         android:layout_marginEnd="4dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="Description"
+        android:text="@string/description"
         android:textSize="12sp"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,13 +45,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
         android:gravity="center"
-        android:text="Time"
+        android:text="@string/time"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@id/remDate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/remHeader"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/remDate" />
 
     <TextView
         android:id="@+id/remDate"
@@ -60,7 +59,7 @@
         android:layout_height="15dp"
         android:layout_marginEnd="5dp"
         android:gravity="center"
-        android:text="Date"
+        android:text="@string/date"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/remTime" />
@@ -71,9 +70,9 @@
         android:layout_height="16dp"
         android:layout_marginEnd="20dp"
         android:gravity="center"
-        android:text="Day"
+        android:text="@string/day"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/remDate" />
-
+    
 </androidx.constraintlayout.widget.ConstraintLayout>
