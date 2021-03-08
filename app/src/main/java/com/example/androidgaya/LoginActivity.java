@@ -11,70 +11,79 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
     EditText usernameEditText;
     Button loginButton;
-    ProgressBar loadingProgressBar;
     ImageView imageView;
     int orientation;
+    boolean isLoggedIn = false;
+    String username = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getSupportActionBar().hide();
-        // Set layout according to orientation
+        setContentView(R.layout.activity_login);
+        Objects.requireNonNull(this.getSupportActionBar()).hide();
         orientation = this.getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_login_portrait);
-        } else {
-            setContentView(R.layout.activity_login_landscape);
-        }
         usernameEditText = findViewById(R.id.username);
         loginButton = findViewById(R.id.login);
-        loadingProgressBar = findViewById(R.id.loading);
-        imageView = findViewById(R.id.imageClock);
+        imageView = findViewById(R.id.image_clock);
         if (savedInstanceState != null) {
             usernameEditText.setText(savedInstanceState.getString("username", ""));
         }
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            imageView.setBackgroundResource(R.drawable.alarm_clock_portrait);
+        } else {
+            imageView.setBackgroundResource(R.drawable.alarm_clock_landscape);
+        }
+        // Get info from shared preferences - is user logged in and username
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+        username = prefs.getString("username", "");
+
+        // If user is already logged in, go to main activity
+        if (isLoggedIn) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
         // Click Login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
                 // Go to Main Activity and close Login Activity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 finishAffinity();
                 startActivity(intent);
                 // Save in shared preferences username and that the user is logged in
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                prefs.edit().putBoolean("isLoggedIn", true).commit();
-                prefs.edit().putString("username", usernameEditText.getText().toString()).commit();
-                loadingProgressBar.setVisibility(View.INVISIBLE);
+                prefs.edit().putBoolean("isLoggedIn", true).apply();
+                prefs.edit().putString("username", usernameEditText.getText().toString()).apply();
             }
         });
 
         usernameEditText.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Set Login button enabled or not according to input
-                if (s.toString().trim().length()==0){
-                    loginButton.setEnabled(false);
-                } else {
-                    loginButton.setEnabled(true);
-                }
+                loginButton.setEnabled(s.toString().trim().length() != 0);
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 

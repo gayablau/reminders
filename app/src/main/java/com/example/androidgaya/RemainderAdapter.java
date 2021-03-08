@@ -5,15 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.ViewHolder> {
 
-    private List<Remainder> remainders;
-    private LayoutInflater mInflater;
+    private final List<Remainder> remainders;
+    private final LayoutInflater mInflater;
     private ItemClickListener mClickListener;
-    private static Context context;
 
     RemainderAdapter(Context context, List<Remainder> remainders) {
         this.mInflater = LayoutInflater.from(context);
@@ -21,10 +22,10 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     }
 
     // inflates the row layout from xml when needed
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_recycler_view, parent, false);
-        context = parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -55,12 +56,11 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
 
         ViewHolder(View itemView) {
             super(itemView);
-            header = (TextView) itemView.findViewById(R.id.remHeader);
-            description = (TextView) itemView.findViewById(R.id.remDescription);
-            time = (TextView) itemView.findViewById(R.id.remTime);
-            date = (TextView) itemView.findViewById(R.id.remDate);
-            day = (TextView) itemView.findViewById(R.id.remDay);
-
+            header = itemView.findViewById(R.id.remHeader);
+            description = itemView.findViewById(R.id.rem_description);
+            time = itemView.findViewById(R.id.rem_time);
+            date = itemView.findViewById(R.id.rem_date);
+            day = itemView.findViewById(R.id.rem_day);
             itemView.setOnClickListener(this);
         }
 
@@ -83,9 +83,5 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
-    }
-
-    public static Context getContext() {
-        return context;
     }
 }

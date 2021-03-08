@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RemaindersBase {
 
-    private Map<String, ArrayList<Remainder>> remaindersMap;
+    private final Map<String, ArrayList<Remainder>> remaindersMap;
 
     private RemaindersBase() {
         remaindersMap = new HashMap<String, ArrayList<Remainder>>();

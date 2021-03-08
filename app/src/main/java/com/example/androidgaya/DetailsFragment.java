@@ -1,10 +1,10 @@
 package com.example.androidgaya;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -30,7 +30,6 @@ public class DetailsFragment extends Fragment {
     final int NO_EDIT_FLAG = -1;
     private TextView dateTV;
     private Button dateButton;
-    private Toolbar toolbar;
     private TimePicker timePicker;
     private static EditText remainderHeaderET;
     private static EditText remainderDescriptionET;
@@ -39,8 +38,8 @@ public class DetailsFragment extends Fragment {
     private static int chosenYear = 1970;
     private static int chosenMonth = 1;
     private static int chosenDay = 1;
-    private static int chosenHour = 00;
-    private static int chosenMinutes = 00;
+    private static int chosenHour = 0;
+    private static int chosenMinutes = 0;
     private static String chosenDayStr = "THURSDAY";
     private static String dateNum = "1/1/1970";
     private static String remainderHeader = "";
@@ -62,13 +61,10 @@ public class DetailsFragment extends Fragment {
         calendar = Calendar.getInstance();
         todayDateNum = calendar.get(Calendar.DATE) + "/" + (calendar.get(Calendar.MONTH) + 1)
                 + "/" + calendar.get(Calendar.YEAR);
-        if (!(dateNum.compareTo(todayDateNum) == 0 &&
+        return !(dateNum.compareTo(todayDateNum) == 0 &&
                 (chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
                         (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
-                                chosenMinutes <= calendar.get(Calendar.MINUTE))))) {
-            return true;
-        }
-        return false;
+                                chosenMinutes < calendar.get(Calendar.MINUTE))));
     }
 
     public boolean isInputValid() {
@@ -97,13 +93,11 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View detailsView = inflater.inflate(R.layout.fragment_details, container, false);
-        remainderHeaderET = (EditText) detailsView.findViewById(R.id.editTextRemainderName);
-        remainderDescriptionET = (EditText) detailsView.findViewById(R.id.editTextDescription);
-        dateTV = (TextView) detailsView.findViewById(R.id.textViewDate);
-        toolbar = (Toolbar) detailsView.findViewById(R.id.toolbar);
-        dateButton = (Button) detailsView.findViewById(R.id.buttonDate);
-        timePicker = (TimePicker) detailsView.findViewById(R.id.timePicker);
-        toolbar = (Toolbar) detailsView.findViewById(R.id.toolbar);
+        remainderHeaderET = detailsView.findViewById(R.id.edit_text_remainder_name);
+        remainderDescriptionET = detailsView.findViewById(R.id.edit_text_description);
+        dateTV = detailsView.findViewById(R.id.text_view_date);
+        dateButton = detailsView.findViewById(R.id.button_date);
+        timePicker = detailsView.findViewById(R.id.time_picker);
         position = NO_EDIT_FLAG;
         setHasOptionsMenu(true);
         return detailsView;
@@ -133,8 +127,8 @@ public class DetailsFragment extends Fragment {
             chosenYear = arguments.getInt("Year", 1970);
             chosenMonth = arguments.getInt("Month", 1);
             chosenDay = arguments.getInt("Day", 1);
-            chosenHour = arguments.getInt("Hour", 00);
-            chosenMinutes = arguments.getInt("Minutes", 00);
+            chosenHour = arguments.getInt("Hour", 0);
+            chosenMinutes = arguments.getInt("Minutes", 0);
             remainderHeaderET.setText(remainderHeader);
             remainderDescriptionET.setText(remainderDescription);
         } else {
@@ -146,17 +140,17 @@ public class DetailsFragment extends Fragment {
             chosenMinutes = calendar.get(Calendar.MINUTE);
         }
         dateNum = chosenDay + "/" + chosenMonth + "/" + chosenYear;
-        SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         try {
             date = fullFormat.parse(dateNum);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
+        @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
         dateWords = wordsFormat.format(date);
         dateTV.setText(dateWords);
-        DateFormat dayFormat = new SimpleDateFormat("EEE");
+        @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
         chosenDayStr = dayFormat.format(date);
         timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(chosenHour);
@@ -170,7 +164,7 @@ public class DetailsFragment extends Fragment {
                 if (dateNum.compareTo(todayDateNum) == 0 &&
                         (hourOfDay < calendar.get(Calendar.HOUR_OF_DAY) ||
                                 (hourOfDay == calendar.get(Calendar.HOUR_OF_DAY) &&
-                                        minute <= calendar.get(Calendar.MINUTE)))) {
+                                        minute < calendar.get(Calendar.MINUTE)))) {
                     // Set date to tomorrow according to selected time
                     Toast.makeText(DetailsFragment.this.getContext(),
                             "past time selected. setting remainder date to tomorrow",
@@ -183,17 +177,17 @@ public class DetailsFragment extends Fragment {
                     chosenMonth = tomorrowCalendar.get(Calendar.MONTH) + 1;
                     chosenDay = tomorrowCalendar.get(Calendar.DATE);
                     dateNum = chosenDay + "/" + chosenMonth + "/" + chosenYear;
-                    SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
                     Date date = null;
                     try {
                         date = fullFormat.parse(dateNum);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
+                    @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
                     dateWords = wordsFormat.format(date);
                     dateTV.setText(dateWords);
-                    DateFormat dayFormat = new SimpleDateFormat("EEE");
+                    @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
                     chosenDayStr = dayFormat.format(date);
                 }
                 chosenHour = hourOfDay;
@@ -210,17 +204,17 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         dateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
-                        SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
                         Date date = null;
                         try {
                             date = fullFormat.parse(dateNum);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
+                        @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
                         dateWords = wordsFormat.format(date);
                         dateTV.setText(dateWords);
-                        DateFormat dayFormat = new SimpleDateFormat("EEE");
+                        @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
                         chosenDayStr = dayFormat.format(date);
                         chosenYear = year;
                         chosenMonth = month + 1;
@@ -230,7 +224,7 @@ public class DetailsFragment extends Fragment {
                 // Set min date according to selected time
                 if ((chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
                         (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
-                                chosenMinutes <= calendar.get(Calendar.MINUTE)))) {
+                                chosenMinutes < calendar.get(Calendar.MINUTE)))) {
                     datePickerDialog.getDatePicker().setMinDate(
                             (System.currentTimeMillis() + 86400 * 1000) - 1000);
                 } else {

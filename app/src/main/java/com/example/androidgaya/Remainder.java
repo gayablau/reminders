@@ -2,10 +2,8 @@ package com.example.androidgaya;
 
 public class Remainder {
 
-    private String header, description, time, date, day;
-    private int year, month, dayOfMonth, hour, minutes;
-
-    public Remainder() {}
+    private final String header, description, time, date, day;
+    private final int year, month, dayOfMonth, hour, minutes;
 
     public Remainder(String header, String description, int hour, int minutes, String day,
                      int year, int month, int dayOfMonth) {
@@ -20,49 +18,48 @@ public class Remainder {
         this.dayOfMonth = dayOfMonth;
         if (minutes < 10) {
             this.time = hour + ":0" + minutes;
-        }
-        else {
+        } else {
             this.time = hour + ":" + minutes;
         }
     }
 
-    public int getYear() { return year; }
+    public int getYear() {
+        return year;
+    }
 
-    public void setYear(int year) { this.year = year; }
+    public int getMonth() {
+        return month;
+    }
 
-    public int getMonth() { return month; }
+    public int getDayOfMonth() {
+        return dayOfMonth;
+    }
 
-    public void setMonth(int month) { this.month = month; }
+    public String getHeader() {
+        return header;
+    }
 
-    public int getDayOfMonth() { return dayOfMonth; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setDayOfMonth(int dayOfMonth) { this.dayOfMonth = dayOfMonth; }
+    public String getDate() {
+        return date;
+    }
 
-    public String getHeader() { return header; }
+    public String getDay() {
+        return day;
+    }
 
-    public void setHeader(String header) { this.header = header; }
+    public String getTime() {
+        return time;
+    }
 
-    public String getDescription() { return description; }
+    public int getHour() {
+        return hour;
+    }
 
-    public void setDescription(String description) { this.description = description; }
-
-    public String getDate() { return date; }
-
-    public void setDate(String date) { this.date = date; }
-
-    public String getDay() { return day; }
-
-    public void setDay(String day) { this.day = day; }
-
-    public String getTime() { return time; }
-
-    public void setTime(String time) { this.time = time; }
-
-    public int getHour() { return hour; }
-
-    public void setHour(int hour) { this.hour = hour; }
-
-    public int getMinutes() { return minutes; }
-
-    public void setMinutes(int minutes) { this.minutes = minutes; }
+    public int getMinutes() {
+        return minutes;
+    }
 }
