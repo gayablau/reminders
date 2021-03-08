@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
-    private RemainderAdapter remainderAdapter;
-    private ColorDrawable background;
-    private String username;
+    private final RemainderAdapter remainderAdapter;
+    private final ColorDrawable background;
+    private final String username;
 
     public SwipeToDeleteCallback(RemainderAdapter adapter, String username) {
         super(0, ItemTouchHelper.LEFT);
@@ -39,7 +39,8 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                            @NonNull RecyclerView.ViewHolder viewHolder,
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
         super.onChildDraw(c, recyclerView, viewHolder, dX,
                 dY, actionState, isCurrentlyActive);

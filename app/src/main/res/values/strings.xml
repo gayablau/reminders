@@ -29,4 +29,8 @@
     <string name="time">Time</string>
     <string name="day">Day</string>
     <string name="header">Header</string>
+    <string name="add">add</string>
+    <string name="picture">picture</string>
+    <string name="username">Username</string>
+    <string name="login">Login</string>
 </resources>

@@ -15,21 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class RemaindersFragment extends Fragment implements RemainderAdapter.ItemClickListener {
 
-    private RecyclerView recyclerViewRemainders;
     private RemainderAdapter remainderAdapter;
-    private RecyclerView.LayoutManager layoutManager;
     DetailsFragment detailsFragment = new DetailsFragment();
     private String chosenRemHeader = "";
     private String chosenRemDescription = "";
     private int chosenYear = 1970;
     private int chosenMonth = 1;
     private int chosenDay = 1;
-    private int chosenHour = 00;
-    private int chosenMinutes = 00;
-    private String username = "";
+    private int chosenHour = 0;
+    private int chosenMinutes = 0;
 
     public RemaindersFragment() {
         // Empty public constructor
@@ -44,22 +42,20 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View remaindersView = inflater.inflate(R.layout.fragment_remainders, container, false);
-
         Map<String, ArrayList<Remainder>> remaindersMap = RemaindersBase.get().getRemaindersMap();
-
-        recyclerViewRemainders = (RecyclerView) remaindersView.findViewById(R.id.recyclerViewRemainders);
+        RecyclerView recyclerViewRemainders = remaindersView.findViewById(R.id.recycler_view_remainders);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerViewRemainders.setHasFixedSize(true);
 
         // use a linear layout manager
-        layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
         recyclerViewRemainders.setLayoutManager(layoutManager);
 
         // Get info from shared preferences - is user logged in and username
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RemaindersFragment.this.getContext());
-        username = prefs.getString("username", "");
+        String username = prefs.getString("username", "");
         RemaindersBase.get().addUsername(username);
 
         // specify an adapter to convert the array to views
@@ -109,8 +105,10 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
                 transaction.commit();
 
                 // Set toolbar properties
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Edit Remainder");
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).
+                        getSupportActionBar()).setTitle("Edit Remainder");
+                Objects.requireNonNull(((AppCompatActivity) getActivity()).
+                        getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
                 // Set fab invisible
                 MainActivity.addFab.setVisibility(View.GONE);
             }

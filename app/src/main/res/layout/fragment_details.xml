@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,17 +12,16 @@
         tools:context=".DetailsFragment">
 
         <TextView
-            android:id="@+id/textViewDate"
+            android:id="@+id/text_view_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/date"
-            app:layout_constraintBottom_toTopOf="@+id/timePicker"
+            app:layout_constraintBottom_toTopOf="@id/time_picker"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/buttonDate"
+            android:id="@+id/button_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date"
@@ -31,55 +29,57 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TimePicker
-            android:id="@+id/timePicker"
+            android:id="@+id/time_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonDate" />
+            app:layout_constraintTop_toBottomOf="@id/button_date" />
 
 
         <TextView
-            android:id="@+id/textViewRemainderName"
+            android:id="@+id/text_view_remainder_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/remainder_name_header"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextRemainderName"
+            app:layout_constraintBottom_toBottomOf="@id/edit_text_remainder_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+            app:layout_constraintTop_toBottomOf="@id/time_picker" />
 
 
         <EditText
-            android:id="@+id/editTextRemainderName"
+            android:id="@+id/edit_text_remainder_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/remainder_name"
-            android:maxLines="1"
             android:inputType="text"
+            android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textViewRemainderName"
-            app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+            app:layout_constraintStart_toEndOf="@id/text_view_remainder_name"
+            app:layout_constraintTop_toBottomOf="@id/time_picker"
+            android:autofillHints="@string/remainder_name" />
 
         <TextView
-            android:id="@+id/textViewDescription"
+            android:id="@+id/text_view_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description_header"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextDescription"
-            app:layout_constraintStart_toStartOf="@+id/textViewRemainderName"
-            app:layout_constraintTop_toTopOf="@+id/editTextDescription" />
+            app:layout_constraintBottom_toBottomOf="@id/edit_text_description"
+            app:layout_constraintStart_toStartOf="@id/text_view_remainder_name"
+            app:layout_constraintTop_toTopOf="@id/edit_text_description" />
 
         <EditText
-            android:id="@+id/editTextDescription"
+            android:id="@+id/edit_text_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/description"
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/editTextRemainderName"
-            app:layout_constraintTop_toBottomOf="@+id/editTextRemainderName" />
+            app:layout_constraintStart_toStartOf="@id/edit_text_remainder_name"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_remainder_name"
+            android:autofillHints="@string/description" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

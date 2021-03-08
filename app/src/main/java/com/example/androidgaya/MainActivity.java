@@ -16,8 +16,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-    boolean isLoggedIn = false;
+import java.util.Objects;
+
+ public class MainActivity extends AppCompatActivity {
     String username = "";
     Toolbar toolbar;
     int menuToChoose = R.menu.menu_main;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         addFab = findViewById(R.id.fab);
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 // Commit the transaction
                 transaction.commit();
                 // Set toolbar properties
-                getSupportActionBar().setTitle("Add Remainder");
+                Objects.requireNonNull(getSupportActionBar()).setTitle("Add Remainder");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 // Set fab invisible
                 addFab.setVisibility(View.GONE);
@@ -65,18 +66,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Get info from shared preferences - is user logged in and username
+        // Get username from shared preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        isLoggedIn = prefs.getBoolean("isLoggedIn", false);
         username = prefs.getString("username", "");
 
-        // If user doesn't logged in, go to login activity
-        if (!isLoggedIn) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
         // Set toolbar title
-        getSupportActionBar().setTitle("Welcome " + username);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Hello " + username);
 
         // Managing fragments
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -100,10 +95,10 @@ public class MainActivity extends AppCompatActivity {
             transaction.addToBackStack(null);
             // Commit the transaction
             transaction.commit();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
             // Set toolbar properties
             menuToChoose = R.menu.menu_main;
-            getSupportActionBar().setTitle("Welcome " + username);
+            getSupportActionBar().setTitle("Hello " + username);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             invalidateOptionsMenu();
             // Set fab visible
@@ -122,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks
@@ -143,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
     public void logout() {
         // Update in shared preferences that the user logged out and clear the name
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        prefs.edit().putBoolean("isLoggedIn", false).commit();
-        prefs.edit().putString("username", "").commit();
+        prefs.edit().putBoolean("isLoggedIn", false).apply();
+        prefs.edit().putString("username", "").apply();
         // Go to Login Activity and close Main Activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         finishAffinity();
@@ -163,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
          transaction.commit();
          // Set toolbar properties
          menuToChoose = R.menu.save;
-         getSupportActionBar().setTitle("Profile");
+         Objects.requireNonNull(getSupportActionBar()).setTitle("Profile");
          getSupportActionBar().setDisplayHomeAsUpEnabled(true);
          invalidateOptionsMenu();
          // Set fab invisible
@@ -186,11 +182,11 @@ public class MainActivity extends AppCompatActivity {
                  // Save new username in shared preferences
                  SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                  username = profileFragment.getUsernameETValue();
-                 prefs.edit().putString("username", username).commit();
+                 prefs.edit().putString("username", username).apply();
 
                  // Set toolbar properties
                  menuToChoose = R.menu.menu_main;
-                 getSupportActionBar().setTitle("Welcome " + username);
+                 Objects.requireNonNull(getSupportActionBar()).setTitle("Hello " + username);
                  getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                  invalidateOptionsMenu();
 
@@ -235,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
                      // Set toolbar properties
                      menuToChoose = R.menu.menu_main;
-                     getSupportActionBar().setTitle("Welcome " + username);
+                     getSupportActionBar().setTitle("Hello " + username);
                      getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                      invalidateOptionsMenu();
 
