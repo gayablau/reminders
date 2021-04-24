@@ -19,6 +19,8 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String USERNAME_KEY = "username";
+
     EditText usernameEditText;
     Button loginButton;
     ImageView imageView;
@@ -30,14 +32,20 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Objects.requireNonNull(this.getSupportActionBar()).hide();
-        orientation = this.getResources().getConfiguration().orientation;
+
+        if (getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+
+        orientation = getResources().getConfiguration().orientation;
         usernameEditText = findViewById(R.id.username);
         loginButton = findViewById(R.id.login);
         imageView = findViewById(R.id.image_clock);
+
         if (savedInstanceState != null) {
-            usernameEditText.setText(savedInstanceState.getString("username", ""));
+            usernameEditText.setText(savedInstanceState.getString(USERNAME_KEY, ""));
         }
+
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             imageView.setBackgroundResource(R.drawable.alarm_clock_portrait);
         } else {
@@ -90,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("username", usernameEditText.getText().toString());
+        outState.putString(USERNAME_KEY, usernameEditText.getText().toString());
     }
 
     @Override

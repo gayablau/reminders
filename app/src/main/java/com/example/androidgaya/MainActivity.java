@@ -27,6 +27,7 @@ import java.util.Objects;
     DetailsFragment detailsFragment = new DetailsFragment();
     static FloatingActionButton addFab;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,35 +37,25 @@ import java.util.Objects;
         addFab = findViewById(R.id.fab);
 
         // Click fab add remainder
-        addFab.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onClick(View view) {
-                detailsFragment = new DetailsFragment();
-                // Create a new transaction
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
-                transaction.replace(R.id.fragment_container, detailsFragment);
-                transaction.addToBackStack(null);
-                // Commit the transaction
-                transaction.commit();
-                // Set toolbar properties
-                Objects.requireNonNull(getSupportActionBar()).setTitle("Add Remainder");
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                // Set fab invisible
-                addFab.setVisibility(View.GONE);
-            }
+        addFab.setOnClickListener(view -> {
+            detailsFragment = new DetailsFragment();
+            // Create a new transaction
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, detailsFragment);
+            transaction.addToBackStack(null);
+            // Commit the transaction
+            transaction.commit();
+            // Set toolbar properties
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Add Remainder");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // Set fab invisible
+            addFab.setVisibility(View.GONE);
         });
 
         // Click back on toolbar
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         // Get username from shared preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -117,23 +108,25 @@ import java.util.Objects;
         return true;
     }
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks
+        Boolean reBoolean = true;
         switch (item.getItemId()) {
             case R.id.action_profile:
                 profile();
-                return true;
+                break;
             case R.id.action_logout:
                 logout();
-                return true;
+                break;
             case R.id.action_save:
                 save();
-                return true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                reBoolean = super.onOptionsItemSelected(item);
+                break;
         }
+        return reBoolean;
     }
 
     public void logout() {

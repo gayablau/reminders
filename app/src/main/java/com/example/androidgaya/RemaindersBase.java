@@ -9,7 +9,7 @@ public class RemaindersBase {
     private final Map<String, ArrayList<Remainder>> remaindersMap;
 
     private RemaindersBase() {
-        remaindersMap = new HashMap<String, ArrayList<Remainder>>();
+        remaindersMap = new HashMap<>();
     }
 
     private static RemaindersBase INSTANCE;
