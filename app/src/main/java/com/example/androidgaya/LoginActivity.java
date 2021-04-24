@@ -38,11 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             usernameEditText.setText(savedInstanceState.getString("username", ""));
         }
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            imageView.setBackgroundResource(R.drawable.alarm_clock_portrait);
-        } else {
-            imageView.setBackgroundResource(R.drawable.alarm_clock_landscape);
-        }
+        imageView.setBackgroundResource(R.drawable.alarm_clock);
         // Get info from shared preferences - is user logged in and username
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isLoggedIn = prefs.getBoolean("isLoggedIn", false);
