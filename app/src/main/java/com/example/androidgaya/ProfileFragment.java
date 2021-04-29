@@ -1,5 +1,6 @@
 package com.example.androidgaya;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 public class ProfileFragment extends Fragment {
 
     private EditText usernameET;
+    SharedPreferences prefs;
+
 
     public ProfileFragment() {
         // Empty public constructor
@@ -22,7 +25,6 @@ public class ProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Get current username from shared preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ProfileFragment.this.getContext());
         String username = prefs.getString("username", "");
         usernameET.setText(username);
     }
@@ -42,6 +44,8 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View profileView = inflater.inflate(R.layout.fragment_profile, container, false);
         usernameET = profileView.findViewById(R.id.edit_text_username);
+        prefs = ProfileFragment.this.getContext()
+                .getSharedPreferences("userdetails", Context.MODE_PRIVATE);
         return profileView;
     }
 }

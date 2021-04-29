@@ -26,14 +26,16 @@ import java.util.Objects;
     ProfileFragment profileFragment = new ProfileFragment();
     DetailsFragment detailsFragment = new DetailsFragment();
     static FloatingActionButton addFab;
+    SharedPreferences prefs;
 
-    @Override
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         addFab = findViewById(R.id.fab);
+        prefs = getApplicationContext().getSharedPreferences("userdetails", MODE_PRIVATE);
 
         // Click fab add remainder
         addFab.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +69,6 @@ import java.util.Objects;
         });
 
         // Get username from shared preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         username = prefs.getString("username", "");
 
         // Set toolbar title
@@ -138,7 +139,6 @@ import java.util.Objects;
 
     public void logout() {
         // Update in shared preferences that the user logged out and clear the name
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         prefs.edit().putBoolean("isLoggedIn", false).apply();
         prefs.edit().putString("username", "").apply();
         // Go to Login Activity and close Main Activity
@@ -180,7 +180,6 @@ import java.util.Objects;
                  // Edit name in singleton
                  RemaindersBase.get().editUsername(username, profileFragment.getUsernameETValue());
                  // Save new username in shared preferences
-                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                  username = profileFragment.getUsernameETValue();
                  prefs.edit().putString("username", username).apply();
 

@@ -1,6 +1,7 @@
 package com.example.androidgaya;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     private int chosenDay = 1;
     private int chosenHour = 0;
     private int chosenMinutes = 0;
+    SharedPreferences prefs;
 
     public RemaindersFragment() {
         // Empty public constructor
@@ -44,7 +46,8 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         View remaindersView = inflater.inflate(R.layout.fragment_remainders, container, false);
         Map<String, ArrayList<Remainder>> remaindersMap = RemaindersBase.get().getRemaindersMap();
         RecyclerView recyclerViewRemainders = remaindersView.findViewById(R.id.recycler_view_remainders);
-
+        prefs = RemaindersFragment.this.getContext()
+                .getSharedPreferences("userdetails", Context.MODE_PRIVATE);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerViewRemainders.setHasFixedSize(true);
@@ -54,7 +57,6 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         recyclerViewRemainders.setLayoutManager(layoutManager);
 
         // Get info from shared preferences - is user logged in and username
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RemaindersFragment.this.getContext());
         String username = prefs.getString("username", "");
         RemaindersBase.get().addUsername(username);
 

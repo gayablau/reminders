@@ -22,25 +22,24 @@ public class LoginActivity extends AppCompatActivity {
     EditText usernameEditText;
     Button loginButton;
     ImageView imageView;
-    int orientation;
     boolean isLoggedIn = false;
     String username = "";
+    SharedPreferences prefs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Objects.requireNonNull(this.getSupportActionBar()).hide();
-        orientation = this.getResources().getConfiguration().orientation;
         usernameEditText = findViewById(R.id.username);
         loginButton = findViewById(R.id.login);
         imageView = findViewById(R.id.image_clock);
+        prefs = getApplicationContext().getSharedPreferences("userdetails", MODE_PRIVATE);
         if (savedInstanceState != null) {
             usernameEditText.setText(savedInstanceState.getString("username", ""));
         }
         imageView.setBackgroundResource(R.drawable.alarm_clock);
         // Get info from shared preferences - is user logged in and username
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isLoggedIn = prefs.getBoolean("isLoggedIn", false);
         username = prefs.getString("username", "");
 
@@ -59,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                 finishAffinity();
                 startActivity(intent);
                 // Save in shared preferences username and that the user is logged in
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences("userdetails", MODE_PRIVATE);
                 prefs.edit().putBoolean("isLoggedIn", true).apply();
                 prefs.edit().putString("username", usernameEditText.getText().toString()).apply();
             }
