@@ -33,4 +33,7 @@
     <string name="picture">picture</string>
     <string name="username">Username</string>
     <string name="login">Login</string>
+    <string name="isLoggedIn">isLoggedIn</string>
+    <string name="userdetails">userdetails</string>
+
 </resources>

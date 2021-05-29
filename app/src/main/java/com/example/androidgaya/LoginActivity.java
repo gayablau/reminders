@@ -30,37 +30,28 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Objects.requireNonNull(this.getSupportActionBar()).hide();
+        getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username);
         loginButton = findViewById(R.id.login);
         imageView = findViewById(R.id.image_clock);
-        prefs = getApplicationContext().getSharedPreferences("userdetails", MODE_PRIVATE);
+        prefs = getApplicationContext().getSharedPreferences(getString(R.string.userdetails), MODE_PRIVATE);
         if (savedInstanceState != null) {
-            usernameEditText.setText(savedInstanceState.getString("username", ""));
+            usernameEditText.setText(savedInstanceState.getString(getString(R.string.username), ""));
         }
         imageView.setBackgroundResource(R.drawable.alarm_clock);
-        // Get info from shared preferences - is user logged in and username
-        isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-        username = prefs.getString("username", "");
+        isLoggedIn = prefs.getBoolean(getString(R.string.isLoggedIn), false);
+        username = prefs.getString(getString(R.string.username), "");
 
-        // If user is already logged in, go to main activity
         if (isLoggedIn) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            goToMainActivity();
         }
 
-        // Click Login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Go to Main Activity and close Login Activity
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                finishAffinity();
-                startActivity(intent);
-                // Save in shared preferences username and that the user is logged in
-                SharedPreferences prefs = getApplicationContext().getSharedPreferences("userdetails", MODE_PRIVATE);
-                prefs.edit().putBoolean("isLoggedIn", true).apply();
-                prefs.edit().putString("username", usernameEditText.getText().toString()).apply();
+                goToMainActivity();
+                prefs.edit().putBoolean(getString(R.string.isLoggedIn), true).apply();
+                prefs.edit().putString(getString(R.string.username), usernameEditText.getText().toString()).apply();
             }
         });
 
@@ -85,11 +76,17 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("username", usernameEditText.getText().toString());
+        outState.putString(getString(R.string.username), usernameEditText.getText().toString());
     }
 
     @Override
     public void onBackPressed() {
-        this.finishAffinity();
+        finishAffinity();
+    }
+
+    public void goToMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        finishAffinity();
+        startActivity(intent);
     }
 }

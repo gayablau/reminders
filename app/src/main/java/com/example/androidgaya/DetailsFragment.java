@@ -2,14 +2,17 @@ package com.example.androidgaya;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -46,6 +49,8 @@ public class DetailsFragment extends Fragment {
     private static String remainderDescription = "";
     private static String dateWords;
     private static String todayDateNum = "1/1/1970";
+    private static String username = "";
+    SharedPreferences prefs;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -54,10 +59,13 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        prefs = DetailsFragment.this.getContext()
+                .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
+        username = prefs.getString(getString(R.string.username), "");
     }
 
     public boolean isTimeValid() {
-        // Returns true if time is valid, else false
         calendar = Calendar.getInstance();
         todayDateNum = calendar.get(Calendar.DATE) + "/" + (calendar.get(Calendar.MONTH) + 1)
                 + "/" + calendar.get(Calendar.YEAR);
@@ -67,8 +75,13 @@ public class DetailsFragment extends Fragment {
                                 chosenMinutes < calendar.get(Calendar.MINUTE))));
     }
 
+    public boolean isTimePast(Calendar calendar) {
+        return ((chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
+                (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
+                        chosenMinutes < calendar.get(Calendar.MINUTE))));
+    }
+
     public boolean isInputValid() {
-        // Returns true if input is valid (name is not empty), else false
         return remainderHeaderET.getText().toString().trim().length() != 0;
     }
 
@@ -78,13 +91,11 @@ public class DetailsFragment extends Fragment {
 
     public Remainder createRemainderFromInput() {
         setUpdatedDetails();
-        // Returns a remainder based on current input
         return new Remainder(remainderHeader, remainderDescription, chosenHour, chosenMinutes,
                 chosenDayStr, chosenYear, chosenMonth, chosenDay);
     }
 
     public void setUpdatedDetails() {
-        // Save current input to variables
         remainderHeader = remainderHeaderET.getText().toString();
         remainderDescription = remainderDescriptionET.getText().toString();
     }
@@ -99,26 +110,66 @@ public class DetailsFragment extends Fragment {
         dateButton = detailsView.findViewById(R.id.button_date);
         timePicker = detailsView.findViewById(R.id.time_picker);
         position = NO_EDIT_FLAG;
-        setHasOptionsMenu(true);
         return detailsView;
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        // Set menu save
         menu.clear();
         inflater.inflate(R.menu.save, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_save) {
+            save();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressLint("RestrictedApi")
+    public void save() {
+        if (isInputValid()) {
+            if (isTimeValid()) {
+                if (getPosition() == -1) {
+                    if (RemaindersBase.get().addRemainder(createRemainderFromInput(), username)) {
+                        Toast.makeText(getActivity(), "remainder added",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "Error adding remainder",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    if (RemaindersBase.get().editRemainder(getPosition(), createRemainderFromInput(), username)) {
+                        Toast.makeText(getActivity(), "remainder updated",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "Error updating remainder",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                ((MainActivity)getActivity()).changeToolbar("Hello " + username, false);
+                RemaindersFragment remaindersFragment = new RemaindersFragment();
+                ((MainActivity)getActivity()).changeFragment(remaindersFragment);
+            } else {
+                Toast.makeText(getActivity(), "please select a valid time for your remainder", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getActivity(), "please enter a name for your remainder", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        // get current date
         calendar = Calendar.getInstance();
         todayDateNum = calendar.get(Calendar.DATE) + "/" + (calendar.get(Calendar.MONTH) + 1)
                 + "/" + calendar.get(Calendar.YEAR);
-        // If editing, get chosen remainder's details. else (new remainder) get current time.
         Bundle arguments = getArguments();
         if (arguments != null) {
             remainderHeader = arguments.getString("Header", "");
@@ -132,7 +183,6 @@ public class DetailsFragment extends Fragment {
             remainderHeaderET.setText(remainderHeader);
             remainderDescriptionET.setText(remainderDescription);
         } else {
-            // Get and set current time
             chosenYear = calendar.get(Calendar.YEAR);
             chosenMonth = calendar.get(Calendar.MONTH) + 1;
             chosenDay = calendar.get(Calendar.DATE);
@@ -156,7 +206,6 @@ public class DetailsFragment extends Fragment {
         timePicker.setCurrentHour(chosenHour);
         timePicker.setCurrentMinute(chosenMinutes);
 
-        // Pick time
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
@@ -165,7 +214,6 @@ public class DetailsFragment extends Fragment {
                         (hourOfDay < calendar.get(Calendar.HOUR_OF_DAY) ||
                                 (hourOfDay == calendar.get(Calendar.HOUR_OF_DAY) &&
                                         minute < calendar.get(Calendar.MINUTE)))) {
-                    // Set date to tomorrow according to selected time
                     Toast.makeText(DetailsFragment.this.getContext(),
                             "past time selected. setting remainder date to tomorrow",
                             Toast.LENGTH_LONG).show();
@@ -195,7 +243,6 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-        // Pick a date
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
