@@ -63,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Set Login button enabled or not according to input
                 loginButton.setEnabled(s.toString().trim().length() != 0);
             }
 

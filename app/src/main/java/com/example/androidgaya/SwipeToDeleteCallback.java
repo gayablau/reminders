@@ -32,10 +32,8 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        // delete the chosen remainder
-        if (RemaindersBase.get().deleteRemainder(viewHolder.getAdapterPosition(), username)) {
-            remainderAdapter.notifyItemRemoved(position);
-        }
+        RemaindersBase.get().deleteRemainder(viewHolder.getAdapterPosition(), username);
+        remainderAdapter.notifyItemRemoved(position);
     }
 
     @Override
@@ -44,7 +42,6 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
         super.onChildDraw(c, recyclerView, viewHolder, dX,
                 dY, actionState, isCurrentlyActive);
-        // Set background for swipe
         View itemView = viewHolder.itemView;
         int backgroundCornerOffset = 20;
         if (dX < 0) { // Swiping to the left

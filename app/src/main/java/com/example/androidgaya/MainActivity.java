@@ -1,14 +1,17 @@
- package com.example.androidgaya;
+package com.example.androidgaya;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
 import android.preference.PreferenceManager;
 import android.view.MenuInflater;
 import android.view.View;
@@ -18,16 +21,13 @@ import android.widget.Toast;
 
 import java.util.Objects;
 
- public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     String username = "";
     Toolbar toolbar;
-    int menuToChoose = R.menu.menu_main;
-    RemaindersFragment remaindersFragment = new RemaindersFragment();
-    ProfileFragment profileFragment = new ProfileFragment();
-    DetailsFragment detailsFragment = new DetailsFragment();
+    RemaindersFragment remaindersFragment;
     SharedPreferences prefs;
 
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -45,30 +45,15 @@ import java.util.Objects;
         });
         username = prefs.getString(getString(R.string.username), "");
         getSupportActionBar().setTitle("Hello " + username);
+        remaindersFragment = new RemaindersFragment();
         changeFragment(remaindersFragment);
 
-     }
-
-    @SuppressLint("RestrictedApi")
-    @Override
-    public void onBackPressed() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof DetailsFragment || currentFragment instanceof ProfileFragment) {
-            changeFragment(remaindersFragment);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            menuToChoose = R.menu.menu_main;
-            changeToolbar("Hello " + username, false);
-        }
-        else {
-            finishAffinity();
-        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -80,18 +65,19 @@ import java.util.Objects;
         startActivity(intent);
     }
 
-     public void changeFragment(Fragment fragment) {
-         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-         transaction.replace(R.id.fragment_container, fragment);
-         transaction.addToBackStack(null);
-         transaction.commit();
-     }
+    public void changeFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
-     public void changeToolbar(String title, Boolean back) {
-         if (getSupportActionBar() != null) {
-             getSupportActionBar().setTitle(title);
-             getSupportActionBar().setDisplayHomeAsUpEnabled(back);
-         }
-         invalidateOptionsMenu();
-     }
+    public void changeToolbar(String title, Boolean back) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(back);
+        }
+        invalidateOptionsMenu();
+    }
 }
+

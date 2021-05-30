@@ -5,10 +5,14 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,8 +38,8 @@ public class DetailsFragment extends Fragment {
     private TextView dateTV;
     private Button dateButton;
     private TimePicker timePicker;
-    private static EditText remainderHeaderET;
-    private static EditText remainderDescriptionET;
+    private EditText remainderHeaderET;
+    private EditText remainderDescriptionET;
     private static Calendar calendar;
     private static int position;
     private static int chosenYear = 1970;
@@ -63,6 +67,11 @@ public class DetailsFragment extends Fragment {
         prefs = DetailsFragment.this.getContext()
                 .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
         username = prefs.getString(getString(R.string.username), "");
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     public boolean isTimeValid() {
@@ -110,6 +119,7 @@ public class DetailsFragment extends Fragment {
         dateButton = detailsView.findViewById(R.id.button_date);
         timePicker = detailsView.findViewById(R.id.time_picker);
         position = NO_EDIT_FLAG;
+
         return detailsView;
     }
 
@@ -134,28 +144,16 @@ public class DetailsFragment extends Fragment {
         if (isInputValid()) {
             if (isTimeValid()) {
                 if (getPosition() == -1) {
-                    if (RemaindersBase.get().addRemainder(createRemainderFromInput(), username)) {
-                        Toast.makeText(getActivity(), "remainder added",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getActivity(), "Error adding remainder",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    RemaindersBase.get().addRemainder(createRemainderFromInput(), username);
+                    Toast.makeText(getActivity(), "remainder added",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    RemaindersBase.get().editRemainder(getPosition(), createRemainderFromInput(), username);
+                    Toast.makeText(getActivity(), "remainder updated",
+                            Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    if (RemaindersBase.get().editRemainder(getPosition(), createRemainderFromInput(), username)) {
-                        Toast.makeText(getActivity(), "remainder updated",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getActivity(), "Error updating remainder",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-                ((MainActivity)getActivity()).changeToolbar("Hello " + username, false);
                 RemaindersFragment remaindersFragment = new RemaindersFragment();
-                ((MainActivity)getActivity()).changeFragment(remaindersFragment);
+                ((MainActivity) getActivity()).changeFragment(remaindersFragment);
             } else {
                 Toast.makeText(getActivity(), "please select a valid time for your remainder", Toast.LENGTH_SHORT).show();
             }
@@ -175,11 +173,11 @@ public class DetailsFragment extends Fragment {
             remainderHeader = arguments.getString("Header", "");
             remainderDescription = arguments.getString("Description", "");
             position = arguments.getInt("Position", -1);
-            chosenYear = arguments.getInt("Year", 1970);
-            chosenMonth = arguments.getInt("Month", 1);
-            chosenDay = arguments.getInt("Day", 1);
-            chosenHour = arguments.getInt("Hour", 0);
-            chosenMinutes = arguments.getInt("Minutes", 0);
+            chosenYear = arguments.getInt("Year", calendar.get(Calendar.YEAR));
+            chosenMonth = arguments.getInt("Month", calendar.get(Calendar.MONTH) + 1);
+            chosenDay = arguments.getInt("Day", calendar.get(Calendar.DATE));
+            chosenHour = arguments.getInt("Hour", calendar.get(Calendar.HOUR_OF_DAY));
+            chosenMinutes = arguments.getInt("Minutes", calendar.get(Calendar.MINUTE));
             remainderHeaderET.setText(remainderHeader);
             remainderDescriptionET.setText(remainderDescription);
         } else {
@@ -248,27 +246,26 @@ public class DetailsFragment extends Fragment {
             public void onClick(View v) {
                 final DatePickerDialog datePickerDialog =
                         new DatePickerDialog(DetailsFragment.this.getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
-                        @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        Date date = null;
-                        try {
-                            date = fullFormat.parse(dateNum);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
-                        dateWords = wordsFormat.format(date);
-                        dateTV.setText(dateWords);
-                        @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
-                        chosenDayStr = dayFormat.format(date);
-                        chosenYear = year;
-                        chosenMonth = month + 1;
-                        chosenDay = dayOfMonth;
-                    }
-                }, chosenYear, chosenMonth - 1, chosenDay);
-                // Set min date according to selected time
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                dateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
+                                @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                Date date = null;
+                                try {
+                                    date = fullFormat.parse(dateNum);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
+                                dateWords = wordsFormat.format(date);
+                                dateTV.setText(dateWords);
+                                @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
+                                chosenDayStr = dayFormat.format(date);
+                                chosenYear = year;
+                                chosenMonth = month + 1;
+                                chosenDay = dayOfMonth;
+                            }
+                        }, chosenYear, chosenMonth - 1, chosenDay);
                 if ((chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
                         (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
                                 chosenMinutes < calendar.get(Calendar.MINUTE)))) {
@@ -280,5 +277,23 @@ public class DetailsFragment extends Fragment {
                 datePickerDialog.show();
             }
         });
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    public void onBackPressed() {
+        RemaindersFragment remaindersFragment = new RemaindersFragment();
+        ((MainActivity) getActivity()).changeFragment(remaindersFragment);
     }
 }

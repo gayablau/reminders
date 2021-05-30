@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,16 +26,31 @@ public class ProfileFragment extends Fragment {
     private static String username;
     SharedPreferences prefs;
 
-    public ProfileFragment() {
-        // Empty public constructor
-    }
+    public ProfileFragment() {}
 
     @Override
     public void onResume() {
         super.onResume();
-        // Get current username from shared preferences
         username = prefs.getString(getString(R.string.username), "");
         usernameET.setText(username);
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    public void onBackPressed() {
+        RemaindersFragment remaindersFragment = new RemaindersFragment();
+        ((MainActivity) getActivity()).changeFragment(remaindersFragment);
     }
 
     @Override
@@ -45,7 +61,6 @@ public class ProfileFragment extends Fragment {
     }
 
     public String getUsernameETValue() {
-        // Returns current input
         return usernameET.getText().toString();
     }
 
@@ -62,6 +77,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View profileView = inflater.inflate(R.layout.fragment_profile, container, false);
         usernameET = profileView.findViewById(R.id.edit_text_username);
+        ((MainActivity)getActivity()).changeToolbar(getString(R.string.profile), true);
         return profileView;
     }
 
@@ -83,7 +99,6 @@ public class ProfileFragment extends Fragment {
             RemaindersBase.get().editUsername(username, getUsernameETValue());
             username = getUsernameETValue();
             prefs.edit().putString(getString(R.string.username), username).apply();
-            ((MainActivity)getActivity()).changeToolbar("Hello " + username, false);
             RemaindersFragment remaindersFragment = new RemaindersFragment();
             ((MainActivity)getActivity()).changeFragment(remaindersFragment);
         }

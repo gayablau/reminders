@@ -21,7 +21,6 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         this.remainders = remainders;
     }
 
-    // inflates the row layout from xml when needed
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,7 +28,6 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         return new ViewHolder(view);
     }
 
-    // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Remainder remainder = remainders.get(position);
@@ -40,13 +38,11 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         holder.day.setText(remainder.getDay());
     }
 
-    // total number of rows
     @Override
     public int getItemCount() {
         return remainders.size();
     }
 
-    // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView header;
         TextView description;
@@ -70,17 +66,14 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         }
     }
 
-    // convenience method for getting data at click position
     Remainder getItem(int id) {
         return remainders.get(id);
     }
 
-    // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 
-    // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }

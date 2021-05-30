@@ -35,5 +35,6 @@
     <string name="login">Login</string>
     <string name="isLoggedIn">isLoggedIn</string>
     <string name="userdetails">userdetails</string>
+    <string name="profile">Profile</string>
 
 </resources>

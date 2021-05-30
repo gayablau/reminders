@@ -1,4 +1,4 @@
-package com.example.androidgaya;
+ package com.example.androidgaya;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,13 +31,15 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     DetailsFragment detailsFragment = new DetailsFragment();
     private String chosenRemHeader = "";
     private String chosenRemDescription = "";
-    private int chosenYear = 1970;
-    private int chosenMonth = 1;
-    private int chosenDay = 1;
-    private int chosenHour = 0;
-    private int chosenMinutes = 0;
+    private int chosenYear;
+    private int chosenMonth;
+    private int chosenDay;
+    private int chosenHour;
+    private int chosenMinutes;
+    private Calendar calendar;
+    String username;
     SharedPreferences prefs;
-    static FloatingActionButton addFab;
+    FloatingActionButton addFab;
 
     public RemaindersFragment() {
         // Empty public constructor
@@ -57,6 +61,17 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         prefs = RemaindersFragment.this.getContext()
                 .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
         recyclerViewRemainders.setHasFixedSize(true);
+
+        calendar = Calendar.getInstance();
+        chosenYear = calendar.get(Calendar.YEAR);
+        chosenMonth = calendar.get(Calendar.MONTH) + 1;
+        chosenDay = calendar.get(Calendar.DATE);
+        chosenHour = calendar.get(Calendar.HOUR_OF_DAY);
+        chosenMinutes = calendar.get(Calendar.MINUTE);
+
+        username = prefs.getString(getString(R.string.username), "");
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((MainActivity) getActivity()).changeToolbar("Hello " + username, false);
 
         addFab.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
@@ -122,6 +137,23 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {
             profile();
@@ -142,11 +174,13 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     public void profile() {
         ProfileFragment profileFragment = new ProfileFragment();
         ((MainActivity)getActivity()).changeFragment(profileFragment);
-        ((MainActivity)getActivity()).changeToolbar("Profile", true);
     }
-
 
     @Override
     public void onItemClick(View view, int position) {}
+
+    public void onBackPressed() {
+        getActivity().finishAffinity();
+    }
 }
 
