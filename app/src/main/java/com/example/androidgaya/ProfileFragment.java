@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.preference.PreferenceManager;
@@ -31,20 +32,14 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        username = prefs.getString(getString(R.string.username), "");
-        usernameET.setText(username);
-
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    onBackPressed();
-                    return true;
-                }
-                return false;
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+                return true;
             }
+            return false;
         });
     }
 
@@ -68,17 +63,22 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        prefs = ProfileFragment.this.getContext()
-                .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View profileView = inflater.inflate(R.layout.fragment_profile, container, false);
-        usernameET = profileView.findViewById(R.id.edit_text_username);
+        return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        usernameET = view.findViewById(R.id.edit_text_username);
+        prefs = ProfileFragment.this.getContext()
+                .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
+        username = prefs.getString(getString(R.string.username), "");
+        usernameET.setText(username);
         ((MainActivity)getActivity()).changeToolbar(getString(R.string.profile), true);
-        return profileView;
     }
 
     @Override
