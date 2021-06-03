@@ -21,6 +21,15 @@ public class RemaindersBase {
         return INSTANCE;
     }
 
+    public Remainder getRemainderByID(String username, String id) {
+        for(Remainder remainder : remaindersMap.get(username)) {
+            if(remainder.getId().equals(id)){
+                return remainder;
+            }
+        }
+        return null;
+    }
+
     public Map<String, ArrayList<Remainder>> getRemaindersMap() {
         return remaindersMap;
     }
@@ -47,9 +56,18 @@ public class RemaindersBase {
         remaindersMap.get(username).add(remainder);
     }
 
-    public void editRemainder(int position, Remainder updatedRemainder, String username) {
-        remaindersMap.get(username).remove(position);
-        remaindersMap.get(username).add(position, updatedRemainder);
+    public void editRemainder(Remainder updatedRemainder, String username) {
+        for(Remainder remainder : remaindersMap.get(username)) {
+            if(remainder.getId().contains(updatedRemainder.getId())){
+                remainder.setHeader(updatedRemainder.getHeader());
+                remainder.setDescription(updatedRemainder.getDescription());
+                remainder.setYear(updatedRemainder.getYear());
+                remainder.setMonth(updatedRemainder.getMonth());
+                remainder.setDayOfMonth(updatedRemainder.getDayOfMonth());
+                remainder.setHour(updatedRemainder.getHour());
+                remainder.setMinutes(updatedRemainder.getMinutes());
+            }
+        }
     }
 
     public void deleteRemainder(int position, String username) {

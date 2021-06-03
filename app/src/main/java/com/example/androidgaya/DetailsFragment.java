@@ -29,8 +29,11 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 public class DetailsFragment extends Fragment {
 
@@ -41,7 +44,6 @@ public class DetailsFragment extends Fragment {
     private EditText remainderHeaderET;
     private EditText remainderDescriptionET;
     private static Calendar calendar;
-    private static int position;
     private static int chosenYear = 1970;
     private static int chosenMonth = 1;
     private static int chosenDay = 1;
@@ -54,6 +56,8 @@ public class DetailsFragment extends Fragment {
     private static String dateWords;
     private static String todayDateNum = "1/1/1970";
     private static String username = "";
+    private static String remainderId = "";
+    private boolean isNewFlag = true;
     SharedPreferences prefs;
 
     public DetailsFragment() {
@@ -94,13 +98,9 @@ public class DetailsFragment extends Fragment {
         return remainderHeaderET.getText().toString().trim().length() != 0;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
     public Remainder createRemainderFromInput() {
         setUpdatedDetails();
-        return new Remainder(remainderHeader, remainderDescription, chosenHour, chosenMinutes,
+        return new Remainder(remainderId, remainderHeader, remainderDescription, chosenHour, chosenMinutes,
                 chosenDayStr, chosenYear, chosenMonth, chosenDay);
     }
 
@@ -118,8 +118,6 @@ public class DetailsFragment extends Fragment {
         dateTV = detailsView.findViewById(R.id.text_view_date);
         dateButton = detailsView.findViewById(R.id.button_date);
         timePicker = detailsView.findViewById(R.id.time_picker);
-        position = NO_EDIT_FLAG;
-
         return detailsView;
     }
 
@@ -143,12 +141,14 @@ public class DetailsFragment extends Fragment {
     public void save() {
         if (isInputValid()) {
             if (isTimeValid()) {
-                if (getPosition() == -1) {
+                if (isNewFlag) {
+                    UUID uuid = UUID.randomUUID();
+                    remainderId = uuid.toString();
                     RemaindersBase.get().addRemainder(createRemainderFromInput(), username);
                     Toast.makeText(getActivity(), "remainder added",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    RemaindersBase.get().editRemainder(getPosition(), createRemainderFromInput(), username);
+                    RemaindersBase.get().editRemainder(createRemainderFromInput(), username);
                     Toast.makeText(getActivity(), "remainder updated",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -170,14 +170,16 @@ public class DetailsFragment extends Fragment {
                 + "/" + calendar.get(Calendar.YEAR);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            remainderHeader = arguments.getString("Header", "");
-            remainderDescription = arguments.getString("Description", "");
-            position = arguments.getInt("Position", -1);
-            chosenYear = arguments.getInt("Year", calendar.get(Calendar.YEAR));
-            chosenMonth = arguments.getInt("Month", calendar.get(Calendar.MONTH) + 1);
-            chosenDay = arguments.getInt("Day", calendar.get(Calendar.DATE));
-            chosenHour = arguments.getInt("Hour", calendar.get(Calendar.HOUR_OF_DAY));
-            chosenMinutes = arguments.getInt("Minutes", calendar.get(Calendar.MINUTE));
+            isNewFlag = false;
+            remainderId = arguments.getString("Id", "");
+            Remainder remainder = RemaindersBase.get().getRemainderByID(username, remainderId);
+            remainderHeader = remainder.getHeader();
+            remainderDescription = remainder.getDescription();
+            chosenYear = remainder.getYear();
+            chosenMonth = remainder.getMonth();
+            chosenDay = remainder.getDayOfMonth();
+            chosenHour = remainder.getHour();
+            chosenMinutes = remainder.getMinutes();
             remainderHeaderET.setText(remainderHeader);
             remainderDescriptionET.setText(remainderDescription);
         } else {
@@ -204,91 +206,79 @@ public class DetailsFragment extends Fragment {
         timePicker.setCurrentHour(chosenHour);
         timePicker.setCurrentMinute(chosenMinutes);
 
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                calendar = Calendar.getInstance();
-                if (dateNum.compareTo(todayDateNum) == 0 &&
-                        (hourOfDay < calendar.get(Calendar.HOUR_OF_DAY) ||
-                                (hourOfDay == calendar.get(Calendar.HOUR_OF_DAY) &&
-                                        minute < calendar.get(Calendar.MINUTE)))) {
-                    Toast.makeText(DetailsFragment.this.getContext(),
-                            "past time selected. setting remainder date to tomorrow",
-                            Toast.LENGTH_LONG).show();
-                    Date tomorrowDate = new Date();
-                    Calendar tomorrowCalendar = Calendar.getInstance();
-                    tomorrowCalendar.setTime(tomorrowDate);
-                    tomorrowCalendar.add(Calendar.DATE, 1);
-                    chosenYear = tomorrowCalendar.get(Calendar.YEAR);
-                    chosenMonth = tomorrowCalendar.get(Calendar.MONTH) + 1;
-                    chosenDay = tomorrowCalendar.get(Calendar.DATE);
-                    dateNum = chosenDay + "/" + chosenMonth + "/" + chosenYear;
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    Date date = null;
-                    try {
-                        date = fullFormat.parse(dateNum);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
-                    dateWords = wordsFormat.format(date);
-                    dateTV.setText(dateWords);
-                    @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
-                    chosenDayStr = dayFormat.format(date);
+        timePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> {
+            calendar = Calendar.getInstance();
+            if (dateNum.compareTo(todayDateNum) == 0 &&
+                    (hourOfDay < calendar.get(Calendar.HOUR_OF_DAY) ||
+                            (hourOfDay == calendar.get(Calendar.HOUR_OF_DAY) &&
+                                    minute < calendar.get(Calendar.MINUTE)))) {
+                Toast.makeText(DetailsFragment.this.getContext(),
+                        "past time selected. setting remainder date to tomorrow",
+                        Toast.LENGTH_LONG).show();
+                Date tomorrowDate = new Date();
+                Calendar tomorrowCalendar = Calendar.getInstance();
+                tomorrowCalendar.setTime(tomorrowDate);
+                tomorrowCalendar.add(Calendar.DATE, 1);
+                chosenYear = tomorrowCalendar.get(Calendar.YEAR);
+                chosenMonth = tomorrowCalendar.get(Calendar.MONTH) + 1;
+                chosenDay = tomorrowCalendar.get(Calendar.DATE);
+                dateNum = chosenDay + "/" + chosenMonth + "/" + chosenYear;
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat1 = new SimpleDateFormat("dd/MM/yyyy");
+                Date date1 = null;
+                try {
+                    date1 = fullFormat1.parse(dateNum);
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                chosenHour = hourOfDay;
-                chosenMinutes = minute;
+                @SuppressLint("SimpleDateFormat") DateFormat wordsFormat1 = new SimpleDateFormat("EEE, MMM d");
+                dateWords = wordsFormat1.format(date1);
+                dateTV.setText(dateWords);
+                @SuppressLint("SimpleDateFormat") DateFormat dayFormat1 = new SimpleDateFormat("EEEE");
+                chosenDayStr = dayFormat1.format(date1);
             }
+            chosenHour = hourOfDay;
+            chosenMinutes = minute;
         });
 
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final DatePickerDialog datePickerDialog =
-                        new DatePickerDialog(DetailsFragment.this.getContext(), new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                dateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
-                                @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
-                                Date date = null;
-                                try {
-                                    date = fullFormat.parse(dateNum);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
-                                dateWords = wordsFormat.format(date);
-                                dateTV.setText(dateWords);
-                                @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
-                                chosenDayStr = dayFormat.format(date);
-                                chosenYear = year;
-                                chosenMonth = month + 1;
-                                chosenDay = dayOfMonth;
-                            }
-                        }, chosenYear, chosenMonth - 1, chosenDay);
-                if ((chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
-                        (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
-                                chosenMinutes < calendar.get(Calendar.MINUTE)))) {
-                    datePickerDialog.getDatePicker().setMinDate(
-                            (System.currentTimeMillis() + 86400 * 1000) - 1000);
-                } else {
-                    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                }
-                datePickerDialog.show();
+        dateButton.setOnClickListener(v -> {
+            final DatePickerDialog datePickerDialog =
+                    new DatePickerDialog(DetailsFragment.this.getContext(), (view, year, month, dayOfMonth) -> {
+                        dateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat12 = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date12 = null;
+                        try {
+                            date12 = fullFormat12.parse(dateNum);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        @SuppressLint("SimpleDateFormat") DateFormat wordsFormat12 = new SimpleDateFormat("EEE, MMM d");
+                        dateWords = wordsFormat12.format(date12);
+                        dateTV.setText(dateWords);
+                        @SuppressLint("SimpleDateFormat") DateFormat dayFormat12 = new SimpleDateFormat("EEEE");
+                        chosenDayStr = dayFormat12.format(date12);
+                        chosenYear = year;
+                        chosenMonth = month + 1;
+                        chosenDay = dayOfMonth;
+                    }, chosenYear, chosenMonth - 1, chosenDay);
+            if ((chosenHour < calendar.get(Calendar.HOUR_OF_DAY) ||
+                    (chosenHour == calendar.get(Calendar.HOUR_OF_DAY) &&
+                            chosenMinutes < calendar.get(Calendar.MINUTE)))) {
+                datePickerDialog.getDatePicker().setMinDate(
+                        (System.currentTimeMillis() + 86400 * 1000) - 1000);
+            } else {
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             }
+            datePickerDialog.show();
         });
 
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    onBackPressed();
-                    return true;
-                }
-                return false;
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+                return true;
             }
+            return false;
         });
     }
 

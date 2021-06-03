@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,6 +34,7 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     DetailsFragment detailsFragment = new DetailsFragment();
     private String chosenRemHeader = "";
     private String chosenRemDescription = "";
+    private String id = "";
     private int chosenYear;
     private int chosenMonth;
     private int chosenDay;
@@ -41,6 +44,8 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     String username;
     SharedPreferences prefs;
     FloatingActionButton addFab;
+    RecyclerView recyclerViewRemainders;
+    Map<String, ArrayList<Remainder>> remaindersMap;
 
     public RemaindersFragment() {
         // Empty public constructor
@@ -57,8 +62,8 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View remaindersView = inflater.inflate(R.layout.fragment_remainders, container, false);
-        Map<String, ArrayList<Remainder>> remaindersMap = RemaindersBase.get().getRemaindersMap();
-        RecyclerView recyclerViewRemainders = remaindersView.findViewById(R.id.recycler_view_remainders);
+        remaindersMap = RemaindersBase.get().getRemaindersMap();
+        recyclerViewRemainders = remaindersView.findViewById(R.id.recycler_view_remainders);
         addFab = remaindersView.findViewById(R.id.fab);
         prefs = RemaindersFragment.this.getContext()
                 .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
@@ -75,51 +80,28 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((MainActivity) getActivity()).changeToolbar("Hello " + username, false);
 
-        addFab.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onClick(View view) {
-                detailsFragment = new DetailsFragment();
-                ((MainActivity) getActivity()).changeFragment(detailsFragment);
-                ((MainActivity) getActivity()).changeToolbar("Add Remainder", true);
-            }
+        addFab.setOnClickListener(view -> {
+            detailsFragment = new DetailsFragment();
+            ((MainActivity) getActivity()).changeFragment(detailsFragment);
+            ((MainActivity) getActivity()).changeToolbar("Add Remainder", true);
         });
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
         recyclerViewRemainders.setLayoutManager(layoutManager);
 
-        String username = prefs.getString(getString(R.string.username), "");
         RemaindersBase.get().addUsername(username);
+        return remaindersView;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        remaindersMap = RemaindersBase.get().getRemaindersMap();
         remainderAdapter = new RemainderAdapter(RemaindersFragment.this.getContext(), remaindersMap.get(username), reminder -> {
-            // TODO go to detials
-        });
-        recyclerViewRemainders.setAdapter(remainderAdapter);
-        recyclerViewRemainders.setLayoutManager(new LinearLayoutManager(RemaindersFragment.this.getContext()));
-
-        ItemTouchHelper itemTouchHelper = new
-                ItemTouchHelper(new SwipeToDeleteCallback(remainderAdapter, username));
-        itemTouchHelper.attachToRecyclerView(recyclerViewRemainders);
-
-        recyclerViewRemainders.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), (view, position) -> {
             detailsFragment = new DetailsFragment();
-            chosenRemHeader = remainderAdapter.getItem(position).getHeader();
-            chosenRemDescription = remainderAdapter.getItem(position).getDescription();
-            chosenYear = remainderAdapter.getItem(position).getYear();
-            chosenMonth = remainderAdapter.getItem(position).getMonth();
-            chosenDay = remainderAdapter.getItem(position).getDayOfMonth();
-            chosenHour = remainderAdapter.getItem(position).getHour();
-            chosenMinutes = remainderAdapter.getItem(position).getMinutes();
-
+            id = reminder.getId();
             Bundle arguments = new Bundle();
-            arguments.putInt("Position", position);
-            arguments.putString("Header", chosenRemHeader);
-            arguments.putString("Description", chosenRemDescription);
-            arguments.putInt("Year", chosenYear);
-            arguments.putInt("Month", chosenMonth);
-            arguments.putInt("Day", chosenDay);
-            arguments.putInt("Hour", chosenHour);
-            arguments.putInt("Minutes", chosenMinutes);
+            arguments.putString("Id", id);
             detailsFragment.setArguments(arguments);
 
             ((MainActivity)getActivity()).changeFragment(detailsFragment);
@@ -127,9 +109,13 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
                     getSupportActionBar().setTitle("Edit Remainder");
             ((AppCompatActivity) getActivity()).
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }));
+        });
+        recyclerViewRemainders.setAdapter(remainderAdapter);
+        recyclerViewRemainders.setLayoutManager(new LinearLayoutManager(RemaindersFragment.this.getContext()));
 
-        return remaindersView;
+        ItemTouchHelper itemTouchHelper = new
+                ItemTouchHelper(new SwipeToDeleteCallback(remainderAdapter, username));
+        itemTouchHelper.attachToRecyclerView(recyclerViewRemainders);
     }
 
     @Override
@@ -137,15 +123,12 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    onBackPressed();
-                    return true;
-                }
-                return false;
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+                return true;
             }
+            return false;
         });
     }
 
