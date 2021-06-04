@@ -28,19 +28,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 
-public class RemaindersFragment extends Fragment implements RemainderAdapter.ItemClickListener {
+public class RemaindersFragment extends Fragment {
 
     private RemainderAdapter remainderAdapter;
     DetailsFragment detailsFragment = new DetailsFragment();
-    private String chosenRemHeader = "";
-    private String chosenRemDescription = "";
     private String id = "";
-    private int chosenYear;
-    private int chosenMonth;
-    private int chosenDay;
-    private int chosenHour;
-    private int chosenMinutes;
-    private Calendar calendar;
     String username;
     SharedPreferences prefs;
     FloatingActionButton addFab;
@@ -68,13 +60,6 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
         prefs = RemaindersFragment.this.getContext()
                 .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
         recyclerViewRemainders.setHasFixedSize(true);
-
-        calendar = Calendar.getInstance();
-        chosenYear = calendar.get(Calendar.YEAR);
-        chosenMonth = calendar.get(Calendar.MONTH) + 1;
-        chosenDay = calendar.get(Calendar.DATE);
-        chosenHour = calendar.get(Calendar.HOUR_OF_DAY);
-        chosenMinutes = calendar.get(Calendar.MINUTE);
 
         username = prefs.getString(getString(R.string.username), "");
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -152,10 +137,6 @@ public class RemaindersFragment extends Fragment implements RemainderAdapter.Ite
     public void profile() {
         ProfileFragment profileFragment = new ProfileFragment();
         ((MainActivity) getActivity()).changeFragment(profileFragment);
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
     }
 
     public void onBackPressed() {

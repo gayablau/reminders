@@ -66,6 +66,9 @@ public class RemaindersBase {
                 remainder.setDayOfMonth(updatedRemainder.getDayOfMonth());
                 remainder.setHour(updatedRemainder.getHour());
                 remainder.setMinutes(updatedRemainder.getMinutes());
+                remainder.setTime(updatedRemainder.getTime());
+                remainder.setDate(updatedRemainder.getDate());
+                remainder.setDay(updatedRemainder.getDay());
             }
         }
     }

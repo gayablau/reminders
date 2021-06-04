@@ -75,15 +75,7 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         }
     }
 
-    Remainder getItem(int id) {
-        return remainders.get(id);
-    }
-
     public interface OnRemainderClicked {
         void click(Remainder remainder);
-    }
-
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
     }
 }
