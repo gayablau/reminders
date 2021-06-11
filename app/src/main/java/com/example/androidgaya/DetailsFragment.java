@@ -28,7 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 public class DetailsFragment extends Fragment {
@@ -40,12 +39,12 @@ public class DetailsFragment extends Fragment {
     private EditText remainderDescriptionET;
     private static Calendar currentTime;
     private static Calendar chosenTime;
-    private static String chosenDayStr = "THURSDAY";
-    private static String dateNum = "1/1/1970";
+    private static String chosenDayStr;
+    private static String dateNum;
     private static String remainderHeader = "";
     private static String remainderDescription = "";
     private static String dateWords;
-    private static String todayDateNum = "1/1/1970";
+    private static String todayDateNum;
     private static String username = "";
     private static String remainderId = "";
     private boolean isNewFlag = true;
@@ -79,10 +78,24 @@ public class DetailsFragment extends Fragment {
                                 chosenTime.get(Calendar.MINUTE) < currentTime.get(Calendar.MINUTE))));
     }
 
-    public boolean isTimePast(Calendar calendar) {
-        return ((chosenTime.get(Calendar.HOUR_OF_DAY) < calendar.get(Calendar.HOUR_OF_DAY) ||
-                (chosenTime.get(Calendar.HOUR_OF_DAY) == calendar.get(Calendar.HOUR_OF_DAY) &&
-                        chosenTime.get(Calendar.MINUTE) < calendar.get(Calendar.MINUTE))));
+    public boolean isChosenTimePassed() {
+        currentTime = Calendar.getInstance();
+        return ((chosenTime.get(Calendar.HOUR_OF_DAY) < currentTime.get(Calendar.HOUR_OF_DAY) ||
+                (chosenTime.get(Calendar.HOUR_OF_DAY) == currentTime.get(Calendar.HOUR_OF_DAY) &&
+                        chosenTime.get(Calendar.MINUTE) < currentTime.get(Calendar.MINUTE))));
+    }
+
+    public boolean isChosenTimeAndDayPassed(int hourOfDay, int minute) {
+        currentTime = Calendar.getInstance();
+        return dateNum.compareTo(todayDateNum) == 0 &&
+                (hourOfDay < currentTime.get(Calendar.HOUR_OF_DAY) ||
+                        (hourOfDay == currentTime.get(Calendar.HOUR_OF_DAY) &&
+                                minute < currentTime.get(Calendar.MINUTE)));
+    }
+
+    public String getDateString(Calendar calendar) {
+        return calendar.get(Calendar.DATE) + "/" + calendar.get(Calendar.MONTH) +
+                "/" + calendar.get(Calendar.YEAR);
     }
 
     public boolean isInputValid() {
@@ -162,8 +175,7 @@ public class DetailsFragment extends Fragment {
         chosenTime = Calendar.getInstance();
         chosenTime.add(Calendar.MONTH, 1);
         currentTime.add(Calendar.MONTH, 1);
-        todayDateNum = currentTime.get(Calendar.DATE) + "/" + currentTime.get(Calendar.MONTH)
-                + "/" + currentTime.get(Calendar.YEAR);
+        todayDateNum = getDateString(currentTime);
         Bundle arguments = getArguments();
         if (arguments != null) {
             isNewFlag = false;
@@ -180,11 +192,9 @@ public class DetailsFragment extends Fragment {
                     currentTime.get(Calendar.DATE), currentTime.get(Calendar.HOUR_OF_DAY),
                     currentTime.get(Calendar.MINUTE));
         }
-        dateNum = chosenTime.get(Calendar.DATE) + "/" + currentTime.get(Calendar.MONTH) +
-                "/" + currentTime.get(Calendar.YEAR);
+        dateNum = getDateString(chosenTime);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
-        //date = chosenTime.getTime();
         try {
             date = fullFormat.parse(dateNum);
         } catch (ParseException e) {
@@ -200,17 +210,12 @@ public class DetailsFragment extends Fragment {
         timePicker.setCurrentMinute(chosenTime.get(Calendar.MINUTE));
 
         timePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> {
-            currentTime = Calendar.getInstance();
-            if (dateNum.compareTo(todayDateNum) == 0 &&
-                    (hourOfDay < currentTime.get(Calendar.HOUR_OF_DAY) ||
-                            (hourOfDay == currentTime.get(Calendar.HOUR_OF_DAY) &&
-                                    minute < currentTime.get(Calendar.MINUTE)))) {
+             if (isChosenTimeAndDayPassed(hourOfDay, minute)) {
                 Toast.makeText(DetailsFragment.this.getContext(),
                         "past time selected. setting remainder date to tomorrow",
                         Toast.LENGTH_LONG).show();
                 chosenTime.add(Calendar.DATE, 1);
-                dateNum = chosenTime.get(Calendar.DATE) + "/" + (chosenTime.get(Calendar.MONTH)) +
-                        "/" + chosenTime.get(Calendar.YEAR);
+                dateNum = getDateString(chosenTime);
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat1 = new SimpleDateFormat("dd/MM/yyyy");
                 Date date1 = null;
                 try {
@@ -244,14 +249,12 @@ public class DetailsFragment extends Fragment {
                         dateTV.setText(dateWords);
                         @SuppressLint("SimpleDateFormat") DateFormat dayFormat12 = new SimpleDateFormat("EEEE");
                         chosenDayStr = dayFormat12.format(date12);
-                        chosenTime.set(year, month + 1, dayOfMonth, chosenTime.get(Calendar.HOUR_OF_DAY),
-                                chosenTime.get(Calendar.MINUTE));
+                        chosenTime.set(year, month + 1, dayOfMonth,
+                                chosenTime.get(Calendar.HOUR_OF_DAY), chosenTime.get(Calendar.MINUTE));
                     }, chosenTime.get(Calendar.YEAR), chosenTime.get(Calendar.MONTH) - 1, chosenTime.get(Calendar.DATE));
-            if ((chosenTime.get(Calendar.HOUR_OF_DAY) < currentTime.get(Calendar.HOUR_OF_DAY) ||
-                    (chosenTime.get(Calendar.HOUR_OF_DAY) == currentTime.get(Calendar.HOUR_OF_DAY) &&
-                            chosenTime.get(Calendar.MINUTE) < currentTime.get(Calendar.MINUTE)))) {
+            if (isChosenTimePassed()) {
                 datePickerDialog.getDatePicker().setMinDate(
-                        (System.currentTimeMillis() + 86400 * 1000) - 1000);
+                        (System.currentTimeMillis() + 24 * 60 * 60 * 1000) - 1000);
             } else {
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             }
