@@ -30,36 +30,6 @@ public class ProfileFragment extends Fragment {
     public ProfileFragment() {}
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
-                return true;
-            }
-            return false;
-        });
-    }
-
-    public void onBackPressed() {
-        RemaindersFragment remaindersFragment = new RemaindersFragment();
-        ((MainActivity) getActivity()).changeFragment(remaindersFragment);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.save, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    public String getUsernameETValue() {
-        return usernameET.getText().toString();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -79,6 +49,36 @@ public class ProfileFragment extends Fragment {
         username = prefs.getString(getString(R.string.username), "");
         usernameET.setText(username);
         ((MainActivity)getActivity()).changeToolbar(getString(R.string.profile), true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.save, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void onBackPressed() {
+        RemaindersFragment remaindersFragment = new RemaindersFragment();
+        ((MainActivity) getActivity()).changeFragment(remaindersFragment);
+    }
+
+    public String getUsernameETValue() {
+        return usernameET.getText().toString();
     }
 
     @Override

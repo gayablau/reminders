@@ -80,9 +80,9 @@ public class RemaindersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         remaindersMap = RemaindersBase.get().getRemaindersMap();
-        remainderAdapter = new RemainderAdapter(remaindersMap.get(username), reminder -> {
+        remainderAdapter = new RemainderAdapter(remaindersMap.get(username), remainder -> {
             detailsFragment = new DetailsFragment();
-            id = reminder.getId();
+            id = remainder.getId();
             Bundle arguments = new Bundle();
             arguments.putString("Id", id);
             detailsFragment.setArguments(arguments);

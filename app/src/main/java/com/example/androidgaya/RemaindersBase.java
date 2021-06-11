@@ -75,5 +75,21 @@ public class RemaindersBase {
 
     public void deleteRemainder(int position, String username) {
         remaindersMap.get(username).remove(position);
+
+ /*       for(Remainder remainder : remaindersMap.get(username)) {
+            if(remainder.getId().contains(id)){
+                remaindersMap.get(username).remove(remainder);
+            }
+        }*/
+    }
+
+    public void deleteRemainderById(String id, String username) {
+        //remaindersMap.get(username).remove(position);
+
+        for(Remainder remainder : remaindersMap.get(username)) {
+            if(remainder.getId().contains(id)){
+                remaindersMap.get(username).remove(remainder);
+            }
+        }
     }
 }
