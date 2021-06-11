@@ -39,9 +39,7 @@ public class RemaindersFragment extends Fragment {
     RecyclerView recyclerViewRemainders;
     Map<String, ArrayList<Remainder>> remaindersMap;
 
-    public RemaindersFragment() {
-        // Empty public constructor
-    }
+    public RemaindersFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

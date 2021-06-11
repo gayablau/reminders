@@ -18,7 +18,6 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
         super(0, ItemTouchHelper.LEFT);
         this.remainderAdapter = adapter;
         this.username = username;
-        // Set background color for swipe
         background = new ColorDrawable(Color.RED);
     }
 

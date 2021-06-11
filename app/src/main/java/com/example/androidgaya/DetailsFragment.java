@@ -49,6 +49,9 @@ public class DetailsFragment extends Fragment {
     private static String remainderId = "";
     private boolean isNewFlag = true;
     SharedPreferences prefs;
+    SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
+    DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
+    DateFormat dayFormat = new SimpleDateFormat("EEEE");
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -69,28 +72,29 @@ public class DetailsFragment extends Fragment {
     }
 
     public boolean isTimeValid() {
-        currentTime = Calendar.getInstance();
-        todayDateNum = currentTime.get(Calendar.DATE) + "/" + (currentTime.get(Calendar.MONTH) + 1)
-                + "/" + currentTime.get(Calendar.YEAR);
-        return !(dateNum.compareTo(todayDateNum) == 0 &&
-                (chosenTime.get(Calendar.HOUR_OF_DAY) < currentTime.get(Calendar.HOUR_OF_DAY) ||
-                        (chosenTime.get(Calendar.HOUR_OF_DAY) == currentTime.get(Calendar.HOUR_OF_DAY) &&
-                                chosenTime.get(Calendar.MINUTE) < currentTime.get(Calendar.MINUTE))));
+        updateCurrentTime();
+        return !(isChosenTimeAndDayPassed(chosenTime.get(Calendar.HOUR_OF_DAY),
+                chosenTime.get(Calendar.MINUTE)));
     }
 
     public boolean isChosenTimePassed() {
-        currentTime = Calendar.getInstance();
+        updateCurrentTime();
         return ((chosenTime.get(Calendar.HOUR_OF_DAY) < currentTime.get(Calendar.HOUR_OF_DAY) ||
                 (chosenTime.get(Calendar.HOUR_OF_DAY) == currentTime.get(Calendar.HOUR_OF_DAY) &&
                         chosenTime.get(Calendar.MINUTE) < currentTime.get(Calendar.MINUTE))));
     }
 
     public boolean isChosenTimeAndDayPassed(int hourOfDay, int minute) {
-        currentTime = Calendar.getInstance();
+        updateCurrentTime();
         return dateNum.compareTo(todayDateNum) == 0 &&
                 (hourOfDay < currentTime.get(Calendar.HOUR_OF_DAY) ||
                         (hourOfDay == currentTime.get(Calendar.HOUR_OF_DAY) &&
                                 minute < currentTime.get(Calendar.MINUTE)));
+    }
+
+    public void updateCurrentTime() {
+        currentTime = Calendar.getInstance();
+        currentTime.add(Calendar.MONTH, 1);
     }
 
     public String getDateString(Calendar calendar) {
@@ -171,10 +175,9 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        currentTime = Calendar.getInstance();
+        updateCurrentTime();
         chosenTime = Calendar.getInstance();
         chosenTime.add(Calendar.MONTH, 1);
-        currentTime.add(Calendar.MONTH, 1);
         todayDateNum = getDateString(currentTime);
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -193,17 +196,14 @@ public class DetailsFragment extends Fragment {
                     currentTime.get(Calendar.MINUTE));
         }
         dateNum = getDateString(chosenTime);
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         try {
             date = fullFormat.parse(dateNum);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        @SuppressLint("SimpleDateFormat") DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
         dateWords = wordsFormat.format(date);
         dateTV.setText(dateWords);
-        @SuppressLint("SimpleDateFormat") DateFormat dayFormat = new SimpleDateFormat("EEEE");
         chosenDayStr = dayFormat.format(date);
         timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(chosenTime.get(Calendar.HOUR_OF_DAY));
@@ -216,18 +216,15 @@ public class DetailsFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
                 chosenTime.add(Calendar.DATE, 1);
                 dateNum = getDateString(chosenTime);
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat1 = new SimpleDateFormat("dd/MM/yyyy");
                 Date date1 = null;
                 try {
-                    date1 = fullFormat1.parse(dateNum);
+                    date1 = fullFormat.parse(dateNum);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                @SuppressLint("SimpleDateFormat") DateFormat wordsFormat1 = new SimpleDateFormat("EEE, MMM d");
-                dateWords = wordsFormat1.format(date1);
+                dateWords = wordsFormat.format(date1);
                 dateTV.setText(dateWords);
-                @SuppressLint("SimpleDateFormat") DateFormat dayFormat1 = new SimpleDateFormat("EEEE");
-                chosenDayStr = dayFormat1.format(date1);
+                chosenDayStr = dayFormat.format(date1);
             }
             chosenTime.set(chosenTime.get(Calendar.YEAR), chosenTime.get(Calendar.MONTH),
                     chosenTime.get(Calendar.DATE), hourOfDay, minute);
@@ -237,21 +234,19 @@ public class DetailsFragment extends Fragment {
             final DatePickerDialog datePickerDialog =
                     new DatePickerDialog(DetailsFragment.this.getContext(), (view, year, month, dayOfMonth) -> {
                         dateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
-                        @SuppressLint("SimpleDateFormat") SimpleDateFormat fullFormat12 = new SimpleDateFormat("dd/MM/yyyy");
                         Date date12 = null;
                         try {
-                            date12 = fullFormat12.parse(dateNum);
+                            date12 = fullFormat.parse(dateNum);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        @SuppressLint("SimpleDateFormat") DateFormat wordsFormat12 = new SimpleDateFormat("EEE, MMM d");
-                        dateWords = wordsFormat12.format(date12);
+                        dateWords = wordsFormat.format(date12);
                         dateTV.setText(dateWords);
-                        @SuppressLint("SimpleDateFormat") DateFormat dayFormat12 = new SimpleDateFormat("EEEE");
-                        chosenDayStr = dayFormat12.format(date12);
+                        chosenDayStr = dayFormat.format(date12);
                         chosenTime.set(year, month + 1, dayOfMonth,
                                 chosenTime.get(Calendar.HOUR_OF_DAY), chosenTime.get(Calendar.MINUTE));
-                    }, chosenTime.get(Calendar.YEAR), chosenTime.get(Calendar.MONTH) - 1, chosenTime.get(Calendar.DATE));
+                    }, chosenTime.get(Calendar.YEAR), chosenTime.get(Calendar.MONTH) - 1,
+                            chosenTime.get(Calendar.DATE));
             if (isChosenTimePassed()) {
                 datePickerDialog.getDatePicker().setMinDate(
                         (System.currentTimeMillis() + 24 * 60 * 60 * 1000) - 1000);
@@ -260,9 +255,7 @@ public class DetailsFragment extends Fragment {
             }
             datePickerDialog.show();
         });
-
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
+        
         getView().setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                 onBackPressed();
