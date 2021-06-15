@@ -36,7 +36,10 @@ public class RemainderAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return remainders.size();
+        if (remainders != null) {
+            return remainders.size();
+        }
+        return 0;
     }
 
     public interface OnRemainderClicked {

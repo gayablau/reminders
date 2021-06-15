@@ -5,37 +5,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
-import android.preference.PreferenceManager;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
-import java.util.Objects;
-
-public class MainActivity extends AppCompatActivity {
+ public class MainActivity extends AppCompatActivity {
     String username = "";
     Toolbar toolbar;
-    RemaindersFragment remaindersFragment;
     SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        invalidateOptionsMenu();
-        prefs = getApplicationContext().getSharedPreferences(getString(R.string.userdetails), MODE_PRIVATE);
-
+        init();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -43,11 +30,6 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        username = prefs.getString(getString(R.string.username), "");
-        getSupportActionBar().setTitle("Hello " + username);
-        remaindersFragment = new RemaindersFragment();
-        changeFragment(remaindersFragment);
-
     }
 
     @Override
@@ -65,19 +47,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void changeFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    public void changeToolbar(String title, Boolean back) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(back);
-        }
+    public void init() {
+        setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         invalidateOptionsMenu();
+        prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
+        username = prefs.getString(getString(R.string.username), "");
+        RemaindersBase.get().addUsername(username);
+        getSupportActionBar().setTitle(getString(R.string.toolbar_main, username));
     }
 }
 

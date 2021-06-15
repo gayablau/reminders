@@ -16,11 +16,11 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
     ViewHolder(View itemView, RemainderAdapter.OnRemainderClicked onclick) {
         super(itemView);
-        header = itemView.findViewById(R.id.remHeader);
-        description = itemView.findViewById(R.id.rem_description);
-        time = itemView.findViewById(R.id.rem_time);
-        date = itemView.findViewById(R.id.rem_date);
-        day = itemView.findViewById(R.id.rem_day);
+        header = itemView.findViewById(R.id.rem_header_tv);
+        description = itemView.findViewById(R.id.rem_description_tv);
+        time = itemView.findViewById(R.id.rem_time_tv);
+        date = itemView.findViewById(R.id.rem_date_tv);
+        day = itemView.findViewById(R.id.rem_day_tv);
         this.onclick = onclick;
         itemView.setOnClickListener(this);
     }

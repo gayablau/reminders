@@ -7,9 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import android.preference.PreferenceManager;
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +25,7 @@ public class ProfileFragment extends Fragment {
     private EditText usernameET;
     private static String username;
     SharedPreferences prefs;
+    Navigator navigator = new Navigator();
 
     public ProfileFragment() {}
 
@@ -43,19 +43,12 @@ public class ProfileFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usernameET = view.findViewById(R.id.edit_text_username);
-        prefs = ProfileFragment.this.getContext()
-                .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
-        username = prefs.getString(getString(R.string.username), "");
-        usernameET.setText(username);
-        ((MainActivity)getActivity()).changeToolbar(getString(R.string.profile), true);
+        init(view);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
         getView().setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                 onBackPressed();
@@ -74,7 +67,7 @@ public class ProfileFragment extends Fragment {
 
     public void onBackPressed() {
         RemaindersFragment remaindersFragment = new RemaindersFragment();
-        ((MainActivity) getActivity()).changeFragment(remaindersFragment);
+        navigator.changeFragment(remaindersFragment, getContext());
     }
 
     public String getUsernameETValue() {
@@ -100,7 +93,15 @@ public class ProfileFragment extends Fragment {
             username = getUsernameETValue();
             prefs.edit().putString(getString(R.string.username), username).apply();
             RemaindersFragment remaindersFragment = new RemaindersFragment();
-            ((MainActivity)getActivity()).changeFragment(remaindersFragment);
+            navigator.changeFragment(remaindersFragment, getContext());
         }
+    }
+
+    public void init(View view) {
+        usernameET = view.findViewById(R.id.profile_username_et);
+        prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
+        username = prefs.getString(getString(R.string.username), "");
+        usernameET.setText(username);
+        ((MainActivity)getActivity()).changeToolbar(getString(R.string.profile), true);
     }
 }

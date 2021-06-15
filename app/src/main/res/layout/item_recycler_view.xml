@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/remHeader"
+        android:id="@+id/rem_header_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -16,27 +16,27 @@
         android:text="@string/header"
         android:textSize="16sp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toStartOf="@+id/rem_date"
+        app:layout_constraintEnd_toStartOf="@+id/rem_date_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/rem_description"
+        android:id="@+id/rem_description_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@id/remHeader"
+        android:layout_alignStart="@id/rem_header_tv"
         android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/description"
         android:textSize="12sp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="@+id/remHeader"
+        app:layout_constraintEnd_toEndOf="@+id/rem_header_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/remHeader" />
+        app:layout_constraintTop_toBottomOf="@id/rem_header_tv" />
 
     <TextView
-        android:id="@+id/rem_time"
+        android:id="@+id/rem_time_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -45,26 +45,26 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rem_date" />
+        app:layout_constraintBottom_toTopOf="@id/rem_date_tv" />
 
     <TextView
-        android:id="@+id/rem_date"
+        android:id="@+id/rem_date_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/date"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rem_time" />
+        app:layout_constraintTop_toBottomOf="@id/rem_time_tv" />
 
     <TextView
-        android:id="@+id/rem_day"
+        android:id="@+id/rem_day_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/day"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rem_date" />
+        app:layout_constraintTop_toBottomOf="@id/rem_date_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,14 +10,14 @@
         android:id="@+id/image_clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/alarm_clock"
+        android:background="@drawable/alarm_clock_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/picture" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/username_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -30,15 +30,15 @@
         android:autofillHints="@string/username" />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/login_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:enabled="false"
         android:text="@string/login"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/username"
-        app:layout_constraintStart_toStartOf="@id/username"
-        app:layout_constraintTop_toBottomOf="@id/username" />
+        app:layout_constraintEnd_toEndOf="@id/username_et"
+        app:layout_constraintStart_toStartOf="@id/username_et"
+        app:layout_constraintTop_toBottomOf="@id/username_et" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

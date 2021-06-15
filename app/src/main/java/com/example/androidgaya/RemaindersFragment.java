@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,8 +25,6 @@ import android.view.MenuItem;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Calendar;
-
 public class RemaindersFragment extends Fragment {
 
     private RemainderAdapter remainderAdapter;
@@ -38,6 +35,7 @@ public class RemaindersFragment extends Fragment {
     FloatingActionButton addFab;
     RecyclerView recyclerViewRemainders;
     Map<String, ArrayList<Remainder>> remaindersMap;
+    Navigator navigator = new Navigator();
 
     public RemaindersFragment() {}
 
@@ -54,25 +52,22 @@ public class RemaindersFragment extends Fragment {
         View remaindersView = inflater.inflate(R.layout.fragment_remainders, container, false);
         remaindersMap = RemaindersBase.get().getRemaindersMap();
         recyclerViewRemainders = remaindersView.findViewById(R.id.recycler_view_remainders);
-        addFab = remaindersView.findViewById(R.id.fab);
-        prefs = RemaindersFragment.this.getContext()
-                .getSharedPreferences(getString(R.string.userdetails), Context.MODE_PRIVATE);
+        addFab = remaindersView.findViewById(R.id.add_fab);
+        prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
         recyclerViewRemainders.setHasFixedSize(true);
 
         username = prefs.getString(getString(R.string.username), "");
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((MainActivity) getActivity()).changeToolbar("Hello " + username, false);
+        ((MainActivity) getActivity()).changeToolbar(getString(R.string.toolbar_main, username), false);
 
         addFab.setOnClickListener(view -> {
             detailsFragment = new DetailsFragment();
-            ((MainActivity) getActivity()).changeFragment(detailsFragment);
-            ((MainActivity) getActivity()).changeToolbar("Add Remainder", true);
+            navigator.changeFragment(detailsFragment, getContext());
+            ((MainActivity) getActivity()).changeToolbar(getString(R.string.add_rem), true);
         });
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
         recyclerViewRemainders.setLayoutManager(layoutManager);
-
-        RemaindersBase.get().addUsername(username);
         return remaindersView;
     }
 
@@ -84,12 +79,12 @@ public class RemaindersFragment extends Fragment {
             detailsFragment = new DetailsFragment();
             id = remainder.getId();
             Bundle arguments = new Bundle();
-            arguments.putString("Id", id);
+            arguments.putString(getString(R.string.id), id);
             detailsFragment.setArguments(arguments);
 
-            ((MainActivity)getActivity()).changeFragment(detailsFragment);
+            navigator.changeFragment(detailsFragment, getContext());
             ((AppCompatActivity) getActivity()).
-                    getSupportActionBar().setTitle("Edit Remainder");
+                    getSupportActionBar().setTitle(R.string.edit_rem);
             ((AppCompatActivity) getActivity()).
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         });
@@ -104,8 +99,6 @@ public class RemaindersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
         getView().setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                 onBackPressed();
@@ -134,7 +127,7 @@ public class RemaindersFragment extends Fragment {
     @SuppressLint("RestrictedApi")
     public void profile() {
         ProfileFragment profileFragment = new ProfileFragment();
-        ((MainActivity) getActivity()).changeFragment(profileFragment);
+        navigator.changeFragment(profileFragment, getContext());
     }
 
     public void onBackPressed() {
