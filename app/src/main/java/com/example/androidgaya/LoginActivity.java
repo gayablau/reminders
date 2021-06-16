@@ -2,9 +2,7 @@ package com.example.androidgaya;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -15,86 +13,75 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Objects;
-
 public class LoginActivity extends AppCompatActivity {
 
     EditText usernameEditText;
     Button loginButton;
     ImageView imageView;
-    int orientation;
     boolean isLoggedIn = false;
     String username = "";
+    SharedPreferences prefs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        Objects.requireNonNull(this.getSupportActionBar()).hide();
-        orientation = this.getResources().getConfiguration().orientation;
-        usernameEditText = findViewById(R.id.username);
-        loginButton = findViewById(R.id.login);
-        imageView = findViewById(R.id.image_clock);
+        init();
+
+
         if (savedInstanceState != null) {
-            usernameEditText.setText(savedInstanceState.getString("username", ""));
-        }
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            imageView.setBackgroundResource(R.drawable.alarm_clock_portrait);
-        } else {
-            imageView.setBackgroundResource(R.drawable.alarm_clock_landscape);
-        }
-        // Get info from shared preferences - is user logged in and username
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-        username = prefs.getString("username", "");
-
-        // If user is already logged in, go to main activity
-        if (isLoggedIn) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            usernameEditText.setText(savedInstanceState.getString(getString(R.string.username), ""));
         }
 
-        // Click Login button
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go to Main Activity and close Login Activity
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                finishAffinity();
-                startActivity(intent);
-                // Save in shared preferences username and that the user is logged in
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                prefs.edit().putBoolean("isLoggedIn", true).apply();
-                prefs.edit().putString("username", usernameEditText.getText().toString()).apply();
-            }
-        });
+        loginButton.setOnClickListener(v -> login());
 
         usernameEditText.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Set Login button enabled or not according to input
                 loginButton.setEnabled(s.toString().trim().length() != 0);
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) { }
         });
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("username", usernameEditText.getText().toString());
+        outState.putString(getString(R.string.username), usernameEditText.getText().toString());
     }
 
     @Override
     public void onBackPressed() {
-        this.finishAffinity();
+        finishAffinity();
+    }
+
+    public void goToMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        finishAffinity();
+        startActivity(intent);
+    }
+
+    public void init() {
+        setContentView(R.layout.activity_login);
+        prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
+        isLoggedIn = prefs.getBoolean(getString(R.string.isLoggedIn), false);
+        if (isLoggedIn) { goToMainActivity(); }
+        getSupportActionBar().hide();
+        usernameEditText = findViewById(R.id.username_et);
+        loginButton = findViewById(R.id.login_btn);
+        imageView = findViewById(R.id.image_clock);
+        imageView.setBackgroundResource(R.drawable.alarm_clock_img);
+        username = prefs.getString(getString(R.string.username), "");
+    }
+
+    public void login() {
+        goToMainActivity();
+        prefs.edit().putBoolean(getString(R.string.isLoggedIn), true).apply();
+        prefs.edit().putString(getString(R.string.username), usernameEditText.getText().toString()).apply();
     }
 }

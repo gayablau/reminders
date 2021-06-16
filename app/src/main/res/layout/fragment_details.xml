@@ -12,7 +12,7 @@
         tools:context=".DetailsFragment">
 
         <TextView
-            android:id="@+id/text_view_date"
+            android:id="@+id/date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date"
@@ -38,47 +38,47 @@
 
 
         <TextView
-            android:id="@+id/text_view_remainder_name"
+            android:id="@+id/de_rem_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/remainder_name_header"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@id/edit_text_remainder_name"
+            app:layout_constraintBottom_toBottomOf="@id/rem_name_et"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/time_picker" />
 
 
         <EditText
-            android:id="@+id/edit_text_remainder_name"
+            android:id="@+id/rem_name_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/remainder_name"
             android:inputType="text"
             android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/text_view_remainder_name"
+            app:layout_constraintStart_toEndOf="@id/de_rem_name_tv"
             app:layout_constraintTop_toBottomOf="@id/time_picker"
             android:autofillHints="@string/remainder_name" />
 
         <TextView
-            android:id="@+id/text_view_description"
+            android:id="@+id/de_rem_description_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description_header"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@id/edit_text_description"
-            app:layout_constraintStart_toStartOf="@id/text_view_remainder_name"
-            app:layout_constraintTop_toTopOf="@id/edit_text_description" />
+            app:layout_constraintBottom_toBottomOf="@id/rem_description_et"
+            app:layout_constraintStart_toStartOf="@id/de_rem_name_tv"
+            app:layout_constraintTop_toTopOf="@id/rem_description_et" />
 
         <EditText
-            android:id="@+id/edit_text_description"
+            android:id="@+id/rem_description_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/description"
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/edit_text_remainder_name"
-            app:layout_constraintTop_toBottomOf="@id/edit_text_remainder_name"
+            app:layout_constraintStart_toStartOf="@id/rem_name_et"
+            app:layout_constraintTop_toBottomOf="@id/rem_name_et"
             android:autofillHints="@string/description" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

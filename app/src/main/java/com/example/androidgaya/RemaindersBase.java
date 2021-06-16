@@ -9,7 +9,7 @@ public class RemaindersBase {
     private final Map<String, ArrayList<Remainder>> remaindersMap;
 
     private RemaindersBase() {
-        remaindersMap = new HashMap<String, ArrayList<Remainder>>();
+        remaindersMap = new HashMap<>();
     }
 
     private static RemaindersBase INSTANCE;
@@ -21,6 +21,15 @@ public class RemaindersBase {
         return INSTANCE;
     }
 
+    public Remainder getRemainderByID(String username, String id) {
+        for(Remainder remainder : remaindersMap.get(username)) {
+            if(remainder.getId().equals(id)){
+                return remainder;
+            }
+        }
+        return null;
+    }
+
     public Map<String, ArrayList<Remainder>> getRemaindersMap() {
         return remaindersMap;
     }
@@ -29,56 +38,48 @@ public class RemaindersBase {
         return remaindersMap.containsKey(username);
     }
 
-    public boolean addUsername(String username) {
-        try {
-            if (!isUsernameExists(username)) {
-                remaindersMap.put(username, new ArrayList<Remainder>());
+    public void addUsername(String username) {
+        if (!isUsernameExists(username)) {
+            remaindersMap.put(username, new ArrayList<>());
+        }
+    }
+
+    public void editUsername(String oldUsername, String newUsername ) {
+        if (isUsernameExists(oldUsername)) {
+            remaindersMap.put(newUsername, remaindersMap.get(oldUsername));
+            remaindersMap.remove(oldUsername);
+        }
+        else { addUsername(newUsername); }
+    }
+
+    public void addRemainder(Remainder remainder, String username) {
+        remaindersMap.get(username).add(remainder);
+    }
+
+    public void editRemainder(Remainder updatedRemainder, String username) {
+        for(Remainder remainder : remaindersMap.get(username)) {
+            if(remainder.getId().contains(updatedRemainder.getId())){
+                remainder.setHeader(updatedRemainder.getHeader());
+                remainder.setDescription(updatedRemainder.getDescription());
+                remainder.setYear(updatedRemainder.getYear());
+                remainder.setMonth(updatedRemainder.getMonth());
+                remainder.setDayOfMonth(updatedRemainder.getDayOfMonth());
+                remainder.setHour(updatedRemainder.getHour());
+                remainder.setMinutes(updatedRemainder.getMinutes());
+                remainder.setDay(updatedRemainder.getDay());
             }
-            else { return false; }
-            return true;
         }
-        catch (Exception ex) {}
-        return false;
     }
 
-    public boolean editUsername(String oldUsername, String newUsername ) {
-        try {
-            if (isUsernameExists(oldUsername)) {
-                remaindersMap.put(newUsername, remaindersMap.get(oldUsername));
-                remaindersMap.remove(oldUsername);
+    public void deleteRemainder(int position, String username) {
+        remaindersMap.get(username).remove(position);
+    }
+
+    public void deleteRemainderById(String id, String username) {
+        for(Remainder remainder : remaindersMap.get(username)) {
+            if(remainder.getId().contains(id)){
+                remaindersMap.get(username).remove(remainder);
             }
-            else { addUsername(newUsername); }
-            return true;
         }
-        catch (Exception ex) {}
-        return false;
-    }
-
-    public boolean addRemainder(Remainder remainder, String username) {
-        try {
-            remaindersMap.get(username).add(remainder);
-            return true;
-        }
-        catch (Exception ex) {}
-        return false;
-    }
-
-    public boolean editRemainder(int position, Remainder updatedRemainder, String username) {
-        try {
-            remaindersMap.get(username).remove(position);
-            remaindersMap.get(username).add(position, updatedRemainder);
-            return true;
-        }
-        catch (Exception ex) {}
-        return false;
-    }
-
-    public boolean deleteRemainder(int position, String username) {
-        try {
-            remaindersMap.get(username).remove(position);
-            return true;
-        }
-        catch (Exception ex) {}
-        return false;
     }
 }
