@@ -5,12 +5,9 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,9 +46,9 @@ public class DetailsFragment extends Fragment {
     private boolean isNewFlag = true;
     SharedPreferences prefs;
     Navigator navigator = new Navigator();
-    SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy");
-    DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d");
-    DateFormat dayFormat = new SimpleDateFormat("EEEE");
+    SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
+    DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d", java.util.Locale.getDefault());
+    DateFormat dayFormat = new SimpleDateFormat("EEEE", java.util.Locale.getDefault());
 
     public DetailsFragment() {}
 
@@ -73,37 +68,18 @@ public class DetailsFragment extends Fragment {
         updateChosenTimeToCurrent();
         setDetailesOnScreen();
 
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker timePicker, int hourOfDay, int minute) {
-                addDayIfTimePassed(hourOfDay, minute);
-                setNewTime(hourOfDay, minute);
-            }
+        timePicker.setOnTimeChangedListener((timePicker, hourOfDay, minute) -> {
+            addDayIfTimePassed(hourOfDay, minute);
+            setNewTime(hourOfDay, minute);
         });
 
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                datePickerDialog =
-                        new DatePickerDialog(DetailsFragment.this.getContext(), (datePicker, year, month, dayOfMonth) -> {
-                           setNewDate(year, month, dayOfMonth);
-                        }, chosenTime.get(Calendar.YEAR), chosenTime.get(Calendar.MONTH) - 1,
-                                chosenTime.get(Calendar.DATE));
-                setMinDate();
-                datePickerDialog.show();
-            }
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getView().setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
-                return true;
-            }
-            return false;
+        dateButton.setOnClickListener(view1 -> {
+            datePickerDialog =
+                    new DatePickerDialog(DetailsFragment.this.getContext(), (datePicker, year, month, dayOfMonth) ->
+                            setNewDate(year, month, dayOfMonth), chosenTime.get(Calendar.YEAR),
+                            chosenTime.get(Calendar.MONTH) - 1, chosenTime.get(Calendar.DATE));
+            setMinDate();
+            datePickerDialog.show();
         });
     }
 
@@ -198,16 +174,12 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-    public void onBackPressed() {
-        RemaindersFragment remaindersFragment = new RemaindersFragment();
-        navigator.changeFragment(remaindersFragment, getContext());
-    }
-
     public void setDetailesOnScreen() {
         todayDateNum = getDateString(currentTime);
         Bundle arguments = getArguments();
         if (arguments != null) {
             isNewFlag = false;
+            navigator.changeToolbar(getString(R.string.edit_rem), true, getContext());
             remainderId = arguments.getString(getString(R.string.id), "");
             Remainder remainder = RemaindersBase.get().getRemainderByID(username, remainderId);
             remainderHeader = remainder.getHeader();
@@ -217,6 +189,7 @@ public class DetailsFragment extends Fragment {
             remainderHeaderET.setText(remainderHeader);
             remainderDescriptionET.setText(remainderDescription);
         } else {
+            navigator.changeToolbar(getString(R.string.add_rem), true, getContext());
             chosenTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
                     currentTime.get(Calendar.DATE), currentTime.get(Calendar.HOUR_OF_DAY),
                     currentTime.get(Calendar.MINUTE));

@@ -4,12 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,27 +44,10 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getView().setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
-                return true;
-            }
-            return false;
-        });
-    }
-
-    @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.save, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    public void onBackPressed() {
-        RemaindersFragment remaindersFragment = new RemaindersFragment();
-        navigator.changeFragment(remaindersFragment, getContext());
     }
 
     public String getUsernameETValue() {

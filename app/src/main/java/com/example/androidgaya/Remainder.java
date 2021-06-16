@@ -2,7 +2,7 @@ package com.example.androidgaya;
 
 public class Remainder {
 
-    private String id, header, description, time, date, day;
+    private String id, header, description, day;
     private int year, month, dayOfMonth, hour, minutes;
 
     public Remainder(String id, String header, String description, int hour, int minutes, String day,
@@ -12,16 +12,10 @@ public class Remainder {
         this.description = description;
         this.hour = hour;
         this.minutes = minutes;
-        this.date = dayOfMonth + "/" + month + "/" + year;
         this.day = day;
         this.year = year;
         this.month = month;
         this.dayOfMonth = dayOfMonth;
-        if (minutes < 10) {
-            this.time = hour + ":0" + minutes;
-        } else {
-            this.time = hour + ":" + minutes;
-        }
     }
 
     public int getYear() {
@@ -45,7 +39,7 @@ public class Remainder {
     }
 
     public String getDate() {
-        return date;
+        return dayOfMonth + "/" + month + "/" + year;
     }
 
     public String getDay() {
@@ -53,7 +47,8 @@ public class Remainder {
     }
 
     public String getTime() {
-        return time;
+        if (minutes < 10) { return hour + ":0" + minutes; }
+            return hour + ":" + minutes;
     }
 
     public int getHour() {
@@ -74,14 +69,6 @@ public class Remainder {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public void setDay(String day) {

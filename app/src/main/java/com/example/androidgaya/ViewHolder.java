@@ -2,7 +2,6 @@ package com.example.androidgaya;
 
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

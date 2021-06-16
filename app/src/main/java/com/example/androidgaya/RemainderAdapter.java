@@ -1,11 +1,8 @@
 package com.example.androidgaya;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.List;
 public class RemainderAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private final List<Remainder> remainders;
-    private OnRemainderClicked onclick;
+    private final OnRemainderClicked onclick;
 
     RemainderAdapter(List<Remainder> remainders, OnRemainderClicked onclick) {
         this.remainders = remainders;

@@ -32,10 +32,7 @@ public class LoginActivity extends AppCompatActivity {
             usernameEditText.setText(savedInstanceState.getString(getString(R.string.username), ""));
         }
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { login(); }
-        });
+        loginButton.setOnClickListener(v -> login());
 
         usernameEditText.addTextChangedListener(new TextWatcher() {
 

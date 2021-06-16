@@ -3,32 +3,24 @@ package com.example.androidgaya;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 import java.util.Map;
-
 import android.content.Context;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class RemaindersFragment extends Fragment {
 
-    private RemainderAdapter remainderAdapter;
-    DetailsFragment detailsFragment = new DetailsFragment();
     private String id = "";
     String username;
     SharedPreferences prefs;
@@ -61,9 +53,8 @@ public class RemaindersFragment extends Fragment {
         navigator.changeToolbar(getString(R.string.toolbar_main, username), false, getContext());
 
         addFab.setOnClickListener(view -> {
-            detailsFragment = new DetailsFragment();
+            DetailsFragment detailsFragment = new DetailsFragment();
             navigator.changeFragment(detailsFragment, getContext());
-            navigator.changeToolbar(getString(R.string.add_rem), true, getContext());
         });
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
@@ -75,18 +66,14 @@ public class RemaindersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         remaindersMap = RemaindersBase.get().getRemaindersMap();
-        remainderAdapter = new RemainderAdapter(remaindersMap.get(username), remainder -> {
-            detailsFragment = new DetailsFragment();
+        RemainderAdapter remainderAdapter = new RemainderAdapter(remaindersMap.get(username), remainder -> {
+            DetailsFragment detailsFragment = new DetailsFragment();
             id = remainder.getId();
             Bundle arguments = new Bundle();
             arguments.putString(getString(R.string.id), id);
             detailsFragment.setArguments(arguments);
-
             navigator.changeFragment(detailsFragment, getContext());
-            ((AppCompatActivity) getActivity()).
-                    getSupportActionBar().setTitle(R.string.edit_rem);
-            ((AppCompatActivity) getActivity()).
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            navigator.changeToolbar(getString(R.string.add_rem), true, getContext());
         });
         recyclerViewRemainders.setAdapter(remainderAdapter);
         recyclerViewRemainders.setLayoutManager(new LinearLayoutManager(RemaindersFragment.this.getContext()));
@@ -99,6 +86,8 @@ public class RemaindersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
         getView().setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                 onBackPressed();
