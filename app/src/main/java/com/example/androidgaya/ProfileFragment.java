@@ -102,6 +102,6 @@ public class ProfileFragment extends Fragment {
         prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
         username = prefs.getString(getString(R.string.username), "");
         usernameET.setText(username);
-        ((MainActivity)getActivity()).changeToolbar(getString(R.string.profile), true);
+        navigator.changeToolbar(getString(R.string.profile), true, getContext());
     }
 }

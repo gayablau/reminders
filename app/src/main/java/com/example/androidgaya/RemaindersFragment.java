@@ -58,12 +58,12 @@ public class RemaindersFragment extends Fragment {
 
         username = prefs.getString(getString(R.string.username), "");
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((MainActivity) getActivity()).changeToolbar(getString(R.string.toolbar_main, username), false);
+        navigator.changeToolbar(getString(R.string.toolbar_main, username), false, getContext());
 
         addFab.setOnClickListener(view -> {
             detailsFragment = new DetailsFragment();
             navigator.changeFragment(detailsFragment, getContext());
-            ((MainActivity) getActivity()).changeToolbar(getString(R.string.add_rem), true);
+            navigator.changeToolbar(getString(R.string.add_rem), true, getContext());
         });
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
