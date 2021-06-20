@@ -1,8 +1,11 @@
-package com.example.androidgaya;
+package com.example.androidgaya.reminders.ui;
 
 import android.view.View;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.androidgaya.R;
+import com.example.androidgaya.repositories.Reminder;
 
 public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     TextView header;
@@ -10,10 +13,10 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     TextView time;
     TextView date;
     TextView day;
-    Remainder remainder;
-    RemainderAdapter.OnRemainderClicked onclick;
+    Reminder reminder;
+    ReminderAdapter.OnReminderClicked onclick;
 
-    ViewHolder(View itemView, RemainderAdapter.OnRemainderClicked onclick) {
+    ViewHolder(View itemView, ReminderAdapter.OnReminderClicked onclick) {
         super(itemView);
         header = itemView.findViewById(R.id.rem_header_tv);
         description = itemView.findViewById(R.id.rem_description_tv);
@@ -24,8 +27,8 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
         itemView.setOnClickListener(this);
     }
 
-    public void bind(Remainder reminder) {
-        this.remainder = reminder;
+    public void bind(Reminder reminder) {
+        this.reminder = reminder;
         header.setText(reminder.getHeader());
         description.setText(reminder.getDescription());
         time.setText(reminder.getTime());
@@ -35,6 +38,6 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        onclick.click(remainder);
+        onclick.click(reminder);
     }
 }

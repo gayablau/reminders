@@ -1,17 +1,19 @@
-package com.example.androidgaya;
+package com.example.androidgaya.login.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.androidgaya.main.ui.MainActivity;
+import com.example.androidgaya.R;
 
 public class LoginActivity extends AppCompatActivity {
 

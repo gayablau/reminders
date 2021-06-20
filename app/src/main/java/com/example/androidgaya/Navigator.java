@@ -4,6 +4,8 @@ import android.content.Context;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.androidgaya.main.ui.MainActivity;
+
 public class Navigator {
 
     public void changeFragment(Fragment fragment, Context context) {

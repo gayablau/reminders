@@ -1,4 +1,4 @@
-package com.example.androidgaya;
+package com.example.androidgaya.reminders.ui;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
@@ -17,19 +17,27 @@ import java.util.Map;
 import android.content.Context;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+
+import com.example.androidgaya.Navigator;
+import com.example.androidgaya.R;
+import com.example.androidgaya.details.ui.DetailsFragment;
+import com.example.androidgaya.main.ui.MainActivity;
+import com.example.androidgaya.repositories.Reminder;
+import com.example.androidgaya.repositories.reminder.RemindersRepository;
+import com.example.androidgaya.profile.ui.ProfileFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class RemaindersFragment extends Fragment {
+public class RemindersFragment extends Fragment {
 
     private String id = "";
     String username;
     SharedPreferences prefs;
     FloatingActionButton addFab;
-    RecyclerView recyclerViewRemainders;
-    Map<String, ArrayList<Remainder>> remaindersMap;
+    RecyclerView recyclerViewReminders;
+    Map<String, ArrayList<Reminder>> remindersMap;
     Navigator navigator = new Navigator();
 
-    public RemaindersFragment() {}
+    public RemindersFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,12 +49,12 @@ public class RemaindersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View remaindersView = inflater.inflate(R.layout.fragment_remainders, container, false);
-        remaindersMap = RemaindersBase.get().getRemaindersMap();
-        recyclerViewRemainders = remaindersView.findViewById(R.id.recycler_view_remainders);
-        addFab = remaindersView.findViewById(R.id.add_fab);
+        View remindersView = inflater.inflate(R.layout.fragment_reminders, container, false);
+        remindersMap = RemindersRepository.getInstance().getRemindersMap();
+        recyclerViewReminders = remindersView.findViewById(R.id.recycler_view_reminders);
+        addFab = remindersView.findViewById(R.id.add_fab);
         prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
-        recyclerViewRemainders.setHasFixedSize(true);
+        recyclerViewReminders.setHasFixedSize(true);
 
         username = prefs.getString(getString(R.string.username), "");
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -57,30 +65,30 @@ public class RemaindersFragment extends Fragment {
             navigator.changeFragment(detailsFragment, getContext());
         });
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RemaindersFragment.this.getContext());
-        recyclerViewRemainders.setLayoutManager(layoutManager);
-        return remaindersView;
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RemindersFragment.this.getContext());
+        recyclerViewReminders.setLayoutManager(layoutManager);
+        return remindersView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        remaindersMap = RemaindersBase.get().getRemaindersMap();
-        RemainderAdapter remainderAdapter = new RemainderAdapter(remaindersMap.get(username), remainder -> {
+        remindersMap = RemindersRepository.getInstance().getRemindersMap();
+        ReminderAdapter reminderAdapter = new ReminderAdapter(remindersMap.get(username), reminder -> {
             DetailsFragment detailsFragment = new DetailsFragment();
-            id = remainder.getId();
+            id = reminder.getId();
             Bundle arguments = new Bundle();
             arguments.putString(getString(R.string.id), id);
             detailsFragment.setArguments(arguments);
             navigator.changeFragment(detailsFragment, getContext());
             navigator.changeToolbar(getString(R.string.add_rem), true, getContext());
         });
-        recyclerViewRemainders.setAdapter(remainderAdapter);
-        recyclerViewRemainders.setLayoutManager(new LinearLayoutManager(RemaindersFragment.this.getContext()));
+        recyclerViewReminders.setAdapter(reminderAdapter);
+        recyclerViewReminders.setLayoutManager(new LinearLayoutManager(RemindersFragment.this.getContext()));
 
         ItemTouchHelper itemTouchHelper = new
-                ItemTouchHelper(new SwipeToDeleteCallback(remainderAdapter, username));
-        itemTouchHelper.attachToRecyclerView(recyclerViewRemainders);
+                ItemTouchHelper(new SwipeToDeleteCallback(reminderAdapter, username));
+        itemTouchHelper.attachToRecyclerView(recyclerViewReminders);
     }
 
     @Override

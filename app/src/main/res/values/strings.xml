@@ -22,8 +22,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="description">Description</string>
     <string name="description_header">Description:</string>
-    <string name="remainder_name">Remainder Name</string>
-    <string name="remainder_name_header">Remainder Name:</string>
+    <string name="reminder_name">Reminder Name</string>
+    <string name="reminder_name_header">Reminder Name:</string>
     <string name="date">date</string>
     <string name="name">Name</string>
     <string name="time">Time</string>
@@ -36,13 +36,13 @@
     <string name="isLoggedIn">isLoggedIn</string>
     <string name="user_details_sp">userDetailsSP</string>
     <string name="profile">Profile</string>
-    <string name="select_valid_time_msg">please select a valid time for your remainder</string>
-    <string name="enter_name_msg">please enter a name for your remainder</string>
-    <string name="add_msg">remainder added</string>
-    <string name="update_msg">remainder updated</string>
+    <string name="select_valid_time_msg">please select a valid time for your reminder</string>
+    <string name="enter_name_msg">please enter a name for your reminder</string>
+    <string name="add_msg">reminder added</string>
+    <string name="update_msg">reminder updated</string>
     <string name="id">Id</string>
-    <string name="tomorrow_msg">past time selected. setting remainder date to tomorrow</string>
+    <string name="tomorrow_msg">past time selected. setting reminder date to tomorrow</string>
     <string name="toolbar_main">Hello %1$s</string>
-    <string name="add_rem">Add Remainder</string>
-    <string name="edit_rem">Edit Remainder</string>
+    <string name="add_rem">Add Reminder</string>
+    <string name="edit_rem">Edit Reminder</string>
 </resources>

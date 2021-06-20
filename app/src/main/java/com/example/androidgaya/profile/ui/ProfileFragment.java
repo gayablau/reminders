@@ -1,4 +1,4 @@
-package com.example.androidgaya;
+package com.example.androidgaya.profile.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,6 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.androidgaya.Navigator;
+import com.example.androidgaya.R;
+import com.example.androidgaya.repositories.reminder.RemindersRepository;
+import com.example.androidgaya.reminders.ui.RemindersFragment;
 
 
 public class ProfileFragment extends Fragment {
@@ -65,15 +70,15 @@ public class ProfileFragment extends Fragment {
 
     @SuppressLint("RestrictedApi")
     public void save() {
-        if (RemaindersBase.get().isUsernameExists(getUsernameETValue())) {
+        if (RemindersRepository.getInstance().isUsernameExists(getUsernameETValue())) {
             Toast.makeText(getActivity(), "user exists", Toast.LENGTH_LONG).show();
         }
         else {
-            RemaindersBase.get().editUsername(username, getUsernameETValue());
+            RemindersRepository.getInstance().editUsername(username, getUsernameETValue());
             username = getUsernameETValue();
             prefs.edit().putString(getString(R.string.username), username).apply();
-            RemaindersFragment remaindersFragment = new RemaindersFragment();
-            navigator.changeFragment(remaindersFragment, getContext());
+            RemindersFragment remindersFragment = new RemindersFragment();
+            navigator.changeFragment(remindersFragment, getContext());
         }
     }
 

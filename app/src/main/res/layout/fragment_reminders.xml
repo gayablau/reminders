@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_remainders"
+    android:id="@+id/fragment_reminders"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RemaindersFragment">
+    tools:context=".reminders.ui.RemindersFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_remainders"
+        android:id="@+id/recycler_view_reminders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorLightPurple"
@@ -23,7 +23,7 @@
         android:backgroundTint="@color/colorAccent"
         android:contentDescription="@string/add"
         android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toBottomOf="@+id/recycler_view_remainders"
-        app:layout_constraintEnd_toEndOf="@+id/recycler_view_remainders" />
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view_reminders"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_view_reminders" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,12 @@
-package com.example.androidgaya;
+package com.example.androidgaya.repositories;
 
-public class Remainder {
+public class Reminder {
 
     private String id, header, description, day;
     private int year, month, dayOfMonth, hour, minutes;
 
-    public Remainder(String id, String header, String description, int hour, int minutes, String day,
-                     int year, int month, int dayOfMonth) {
+    public Reminder(String id, String header, String description, int hour, int minutes, String day,
+                    int year, int month, int dayOfMonth) {
         this.id = id;
         this.header = header;
         this.description = description;
