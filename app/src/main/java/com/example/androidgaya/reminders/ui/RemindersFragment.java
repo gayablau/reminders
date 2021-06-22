@@ -22,6 +22,7 @@ import com.example.androidgaya.Navigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.ui.DetailsFragment;
 import com.example.androidgaya.main.ui.MainActivity;
+import com.example.androidgaya.reminders.vm.RemindersViewModel;
 import com.example.androidgaya.repositories.Reminder;
 import com.example.androidgaya.repositories.reminder.RemindersRepository;
 import com.example.androidgaya.profile.ui.ProfileFragment;
@@ -36,6 +37,7 @@ public class RemindersFragment extends Fragment {
     RecyclerView recyclerViewReminders;
     Map<String, ArrayList<Reminder>> remindersMap;
     Navigator navigator = new Navigator();
+    RemindersViewModel viewModel;
 
     public RemindersFragment() {}
 

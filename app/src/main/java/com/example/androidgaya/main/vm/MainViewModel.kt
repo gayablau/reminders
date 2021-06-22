@@ -1,12 +1,12 @@
-package com.example.androidgaya.main
+package com.example.androidgaya.main.vm
 
 import androidx.lifecycle.ViewModel
 import com.example.androidgaya.repositories.reminder.RemindersRepository
 
-class MainViewModel constructor(val username: String) : ViewModel() {
+class MainViewModel : ViewModel() {
     private var repository : RemindersRepository = RemindersRepository.getInstance()
 
-    fun addUsername() {
+    fun addUsername(username: String) {
         repository.addUsername(username)
     }
 }

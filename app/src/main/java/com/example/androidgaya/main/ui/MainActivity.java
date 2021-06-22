@@ -11,13 +11,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.R;
 import com.example.androidgaya.login.ui.LoginActivity;
-import com.example.androidgaya.main.vm.MainViewModel2;
+import com.example.androidgaya.main.vm.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
     String username = "";
     Toolbar toolbar;
     SharedPreferences prefs;
-    MainViewModel2 viewModel;
+    MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
-
-        //viewModel = new ViewModelProvider(this).get(MainViewModel2.class);
-        viewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())).get(MainViewModel2.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
         username = prefs.getString(getString(R.string.username), "");
         viewModel.addUsername(username);
