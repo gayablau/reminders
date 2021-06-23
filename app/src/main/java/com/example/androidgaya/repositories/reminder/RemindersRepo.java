@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemindersRepository {
+public class RemindersRepo {
     private final Map<String, ArrayList<Reminder>> remindersMap;
 
-    private RemindersRepository() {
+    private RemindersRepo() {
         remindersMap = new HashMap<>();
     }
 
-    private static RemindersRepository INSTANCE;
+    private static RemindersRepo INSTANCE;
 
-    public static RemindersRepository getInstance() {
+    public static RemindersRepo getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new RemindersRepository();
+            INSTANCE = new RemindersRepo();
         }
         return INSTANCE;
     }

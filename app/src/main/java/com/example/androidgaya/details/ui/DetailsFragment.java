@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,9 +24,10 @@ import android.widget.Toast;
 
 import com.example.androidgaya.Navigator;
 import com.example.androidgaya.R;
+import com.example.androidgaya.details.vm.DetailsViewModel;
 import com.example.androidgaya.reminders.ui.RemindersFragment;
 import com.example.androidgaya.repositories.Reminder;
-import com.example.androidgaya.repositories.reminder.RemindersRepository;
+import com.example.androidgaya.repositories.reminder.RemindersRepo;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -51,6 +54,7 @@ public class DetailsFragment extends Fragment {
     private static String username = "";
     private static String reminderId = "";
     private boolean isNewFlag = true;
+    DetailsViewModel viewModel;
     SharedPreferences prefs;
     Navigator navigator = new Navigator();
     SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
@@ -165,10 +169,10 @@ public class DetailsFragment extends Fragment {
             if (isTimeValid()) {
                 if (isNewFlag) {
                     setNewID();
-                    RemindersRepository.getInstance().addReminder(createReminderFromInput(), username);
+                    viewModel.addReminder(createReminderFromInput(), username);
                     makeToast(getString(R.string.add_msg));
                 } else {
-                    RemindersRepository.getInstance().editReminder(createReminderFromInput(), username);
+                    viewModel.editReminder(createReminderFromInput(), username);
                     makeToast(getString(R.string.update_msg));
                 }
                 RemindersFragment remindersFragment = new RemindersFragment();
@@ -188,7 +192,7 @@ public class DetailsFragment extends Fragment {
             isNewFlag = false;
             navigator.changeToolbar(getString(R.string.edit_rem), true, getContext());
             reminderId = arguments.getString(getString(R.string.id), "");
-            Reminder reminder = RemindersRepository.getInstance().getReminderByID(username, reminderId);
+            Reminder reminder = RemindersRepo.getInstance().getReminderByID(username, reminderId);
             reminderHeader = reminder.getHeader();
             reminderDescription = reminder.getDescription();
             chosenTime.set(reminder.getYear(), reminder.getMonth(), reminder.getDayOfMonth(),
@@ -222,6 +226,7 @@ public class DetailsFragment extends Fragment {
         dateTV = view.findViewById(R.id.date_tv);
         dateButton = view.findViewById(R.id.button_date);
         timePicker = view.findViewById(R.id.time_picker);
+        viewModel = new ViewModelProvider(this).get(DetailsViewModel.class);
     }
 
     public void getUsername() {

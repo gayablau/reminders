@@ -11,9 +11,13 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.androidgaya.login.vm.LoginViewModel;
 import com.example.androidgaya.main.ui.MainActivity;
 import com.example.androidgaya.R;
+import com.example.androidgaya.main.vm.MainViewModel;
+import com.example.androidgaya.repositories.implementetions.SharedPref;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -23,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     boolean isLoggedIn = false;
     String username = "";
     SharedPreferences prefs;
+    LoginViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,20 +75,22 @@ public class LoginActivity extends AppCompatActivity {
 
     public void init() {
         setContentView(R.layout.activity_login);
-        prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
-        isLoggedIn = prefs.getBoolean(getString(R.string.isLoggedIn), false);
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        SharedPref.INSTANCE.init(getApplicationContext());
+        //prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
+        isLoggedIn = viewModel.isUserLoggedIn();
         if (isLoggedIn) { goToMainActivity(); }
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         loginButton = findViewById(R.id.login_btn);
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
-        username = prefs.getString(getString(R.string.username), "");
+        username = viewModel.getUsername();
     }
 
     public void login() {
         goToMainActivity();
-        prefs.edit().putBoolean(getString(R.string.isLoggedIn), true).apply();
-        prefs.edit().putString(getString(R.string.username), usernameEditText.getText().toString()).apply();
+        viewModel.setIsLoggedIn(true);
+        viewModel.setUsername(username);
     }
 }

@@ -16,7 +16,7 @@ import com.example.androidgaya.main.vm.MainViewModel;
 public class MainActivity extends AppCompatActivity {
     String username = "";
     Toolbar toolbar;
-    SharedPreferences prefs;
+    //SharedPreferences prefs;
     MainViewModel viewModel;
 
     @Override
@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logout() {
-        prefs.edit().putBoolean(getString(R.string.isLoggedIn), false).apply();
-        prefs.edit().putString(getString(R.string.username), "").apply();
+        viewModel.setIsLoggedIn(false);
+        viewModel.setUsername("");
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         finishAffinity();
         startActivity(intent);
@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
-        username = prefs.getString(getString(R.string.username), "");
+        //prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
+        username = viewModel.getUsername();
         viewModel.addUsername(username);
         getSupportActionBar().setTitle(getString(R.string.toolbar_main, username));
     }

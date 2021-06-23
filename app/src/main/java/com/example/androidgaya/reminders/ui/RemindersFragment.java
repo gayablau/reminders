@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +25,7 @@ import com.example.androidgaya.details.ui.DetailsFragment;
 import com.example.androidgaya.main.ui.MainActivity;
 import com.example.androidgaya.reminders.vm.RemindersViewModel;
 import com.example.androidgaya.repositories.Reminder;
-import com.example.androidgaya.repositories.reminder.RemindersRepository;
+import com.example.androidgaya.repositories.reminder.RemindersRepo;
 import com.example.androidgaya.profile.ui.ProfileFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -32,7 +33,7 @@ public class RemindersFragment extends Fragment {
 
     private String id = "";
     String username;
-    SharedPreferences prefs;
+    //SharedPreferences prefs;
     FloatingActionButton addFab;
     RecyclerView recyclerViewReminders;
     Map<String, ArrayList<Reminder>> remindersMap;
@@ -52,13 +53,13 @@ public class RemindersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View remindersView = inflater.inflate(R.layout.fragment_reminders, container, false);
-        remindersMap = RemindersRepository.getInstance().getRemindersMap();
+        remindersMap = RemindersRepo.getInstance().getRemindersMap();
         recyclerViewReminders = remindersView.findViewById(R.id.recycler_view_reminders);
         addFab = remindersView.findViewById(R.id.add_fab);
-        prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
+        //prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
         recyclerViewReminders.setHasFixedSize(true);
 
-        username = prefs.getString(getString(R.string.username), "");
+        username = viewModel.getUsername();
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         navigator.changeToolbar(getString(R.string.toolbar_main, username), false, getContext());
 
@@ -75,7 +76,8 @@ public class RemindersFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        remindersMap = RemindersRepository.getInstance().getRemindersMap();
+        viewModel = new ViewModelProvider(this).get(RemindersViewModel.class);
+        remindersMap = viewModel.getRemindersMap();
         ReminderAdapter reminderAdapter = new ReminderAdapter(remindersMap.get(username), reminder -> {
             DetailsFragment detailsFragment = new DetailsFragment();
             id = reminder.getId();

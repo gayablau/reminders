@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.androidgaya.repositories.reminder.RemindersRepository;
+import com.example.androidgaya.repositories.reminder.RemindersRepo;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
@@ -32,7 +32,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        RemindersRepository.getInstance().deleteReminder(viewHolder.getAdapterPosition(), username);
+        RemindersRepo.getInstance().deleteReminder(viewHolder.getAdapterPosition(), username);
         reminderAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
     }
 
