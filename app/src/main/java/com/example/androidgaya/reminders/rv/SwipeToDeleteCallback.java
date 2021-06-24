@@ -1,4 +1,4 @@
-package com.example.androidgaya;
+package com.example.androidgaya.reminders.rv;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,16 +7,17 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.androidgaya.repositories.reminder.RemindersRepo;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
-    private final RemainderAdapter remainderAdapter;
+    private final ReminderAdapter reminderAdapter;
     private final ColorDrawable background;
     private final String username;
 
-    public SwipeToDeleteCallback(RemainderAdapter adapter, String username) {
+    public SwipeToDeleteCallback(ReminderAdapter adapter, String username) {
         super(0, ItemTouchHelper.LEFT);
-        this.remainderAdapter = adapter;
+        this.reminderAdapter = adapter;
         this.username = username;
         background = new ColorDrawable(Color.RED);
     }
@@ -30,8 +31,8 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        RemaindersBase.get().deleteRemainder(viewHolder.getAdapterPosition(), username);
-        remainderAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+        RemindersRepo.getInstance().deleteReminder(viewHolder.getAdapterPosition(), username);
+        reminderAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
     }
 
     @Override

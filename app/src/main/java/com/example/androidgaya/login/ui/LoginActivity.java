@@ -1,17 +1,18 @@
-package com.example.androidgaya;
+package com.example.androidgaya.login.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import com.example.androidgaya.login.vm.LoginViewModel;
+import com.example.androidgaya.main.ui.MainActivity;
+import com.example.androidgaya.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -20,14 +21,12 @@ public class LoginActivity extends AppCompatActivity {
     ImageView imageView;
     boolean isLoggedIn = false;
     String username = "";
-    SharedPreferences prefs;
+    LoginViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-
-
         if (savedInstanceState != null) {
             usernameEditText.setText(savedInstanceState.getString(getString(R.string.username), ""));
         }
@@ -68,20 +67,20 @@ public class LoginActivity extends AppCompatActivity {
 
     public void init() {
         setContentView(R.layout.activity_login);
-        prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
-        isLoggedIn = prefs.getBoolean(getString(R.string.isLoggedIn), false);
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        isLoggedIn = viewModel.isUserLoggedIn();
+        username = viewModel.getUsername();
         if (isLoggedIn) { goToMainActivity(); }
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         loginButton = findViewById(R.id.login_btn);
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
-        username = prefs.getString(getString(R.string.username), "");
     }
 
     public void login() {
         goToMainActivity();
-        prefs.edit().putBoolean(getString(R.string.isLoggedIn), true).apply();
-        prefs.edit().putString(getString(R.string.username), usernameEditText.getText().toString()).apply();
+        viewModel.setIsLoggedIn(true);
+        viewModel.setUsername(usernameEditText.getText().toString());
     }
 }

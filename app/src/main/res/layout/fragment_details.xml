@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".DetailsFragment">
+        tools:context=".details.ui.DetailsFragment">
 
         <TextView
             android:id="@+id/date_tv"
@@ -41,7 +41,7 @@
             android:id="@+id/de_rem_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/remainder_name_header"
+            android:text="@string/reminder_name_header"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/rem_name_et"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,13 +52,13 @@
             android:id="@+id/rem_name_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/remainder_name"
+            android:hint="@string/reminder_name"
             android:inputType="text"
             android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/de_rem_name_tv"
             app:layout_constraintTop_toBottomOf="@id/time_picker"
-            android:autofillHints="@string/remainder_name" />
+            android:autofillHints="@string/reminder_name" />
 
         <TextView
             android:id="@+id/de_rem_description_tv"
