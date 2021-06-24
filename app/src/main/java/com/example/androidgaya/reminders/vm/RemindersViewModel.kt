@@ -1,19 +1,21 @@
 package com.example.androidgaya.reminders.vm
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.example.androidgaya.repositories.Reminder
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import java.util.*
 
-class RemindersViewModel : ViewModel() {
-    private var repo : RemindersRepo = RemindersRepo.getInstance()
+class RemindersViewModel(application: Application) : AndroidViewModel(application) {
+    private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
+    private var userRepo : UserRepo = UserRepo(application)
 
     fun getRemindersMap() : Map<String, ArrayList<Reminder>> {
-        return repo.getRemindersMap()
+        return remindersRepo.remindersMap
     }
 
-    fun getUsername() : String {
-        return UserRepo.getUsername()
+    fun getUsername() : String? {
+        return userRepo.getUsername(getApplication())
     }
 }

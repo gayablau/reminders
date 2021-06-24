@@ -1,4 +1,4 @@
-package com.example.androidgaya.reminders.ui;
+package com.example.androidgaya.reminders.rv;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.androidgaya.repositories.reminder.RemindersRepo;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {

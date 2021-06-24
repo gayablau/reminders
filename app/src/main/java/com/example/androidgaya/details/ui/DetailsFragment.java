@@ -2,14 +2,11 @@ package com.example.androidgaya.details.ui;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,14 +18,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import com.example.androidgaya.Navigator;
+import com.example.androidgaya.util.Navigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.vm.DetailsViewModel;
 import com.example.androidgaya.reminders.ui.RemindersFragment;
 import com.example.androidgaya.repositories.Reminder;
 import com.example.androidgaya.repositories.reminder.RemindersRepo;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,7 +50,6 @@ public class DetailsFragment extends Fragment {
     private static String reminderId = "";
     private boolean isNewFlag = true;
     DetailsViewModel viewModel;
-    SharedPreferences prefs;
     Navigator navigator = new Navigator();
     SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
     DateFormat wordsFormat = new SimpleDateFormat("EEE, MMM d", java.util.Locale.getDefault());
@@ -73,8 +67,8 @@ public class DetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        getUsername();
         init(view);
+        getUsername();
         updateCurrentTime();
         updateChosenTimeToCurrent();
         setDetailesOnScreen();
@@ -212,6 +206,7 @@ public class DetailsFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        assert date != null;
         dateWords = wordsFormat.format(date);
         dateTV.setText(dateWords);
         chosenDayStr = dayFormat.format(date);
@@ -230,8 +225,7 @@ public class DetailsFragment extends Fragment {
     }
 
     public void getUsername() {
-        prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
-        username = prefs.getString(getString(R.string.username), "");
+        username = viewModel.getUsername();
     }
 
     public void makeToast(String msg) {
@@ -256,6 +250,7 @@ public class DetailsFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        assert date12 != null;
         dateWords = wordsFormat.format(date12);
         dateTV.setText(dateWords);
         chosenDayStr = dayFormat.format(date12);
@@ -274,6 +269,7 @@ public class DetailsFragment extends Fragment {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            assert date1 != null;
             dateWords = wordsFormat.format(date1);
             dateTV.setText(dateWords);
             chosenDayStr = dayFormat.format(date1);

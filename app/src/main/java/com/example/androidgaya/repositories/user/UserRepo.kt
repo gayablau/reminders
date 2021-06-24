@@ -1,34 +1,27 @@
 package com.example.androidgaya.repositories.user
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.provider.Settings.Global.getString
 import com.example.androidgaya.R
-import com.example.androidgaya.repositories.Reminder
-import com.example.androidgaya.repositories.implementetions.SharedPref
-import com.example.androidgaya.repositories.reminder.RemindersRepo
-import java.security.AccessController.getContext
-import java.util.*
 
-class UserRepo {
-    private var username: String = ""
-    private var isLoggedIn: Boolean = false
-    //val prefs : SharedPreferences = getContext().getSharedPreferences(getString(R.string.user_details_sp), context.getPackageName().MODE_PRIVATE);
+class UserRepo(context: Context) {
+    private var prefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
 
 
-    fun isUserLoggedIn() : Boolean {
-        //return SharedPref.read(getString(R.id.us))
-        return isLoggedIn
+    fun isUserLoggedIn(context: Context): Boolean {
+        return prefs.getBoolean(context.getString(R.string.isLoggedIn), false)
     }
 
-    fun getUsername() : String {
-        return username
+    fun getUsername(context: Context): String? {
+        return prefs.getString(context.getString(R.string.username), "")
     }
 
-    fun setIsLoggedIn(isLoggedIn : Boolean) {
-        this.isLoggedIn = isLoggedIn
+    fun setIsLoggedIn(context: Context, isLoggedIn: Boolean) {
+        prefs.edit().putBoolean(context.getString(R.string.isLoggedIn), isLoggedIn)?.apply()
     }
 
-    fun setUsername(username : String) {
-        this.username = username
+    fun setUsername(context: Context, username: String) {
+        prefs.edit().putString(context.getString(R.string.username), username)?.apply()
     }
 }

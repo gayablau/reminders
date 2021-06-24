@@ -1,4 +1,4 @@
-package com.example.androidgaya.reminders.ui;
+package com.example.androidgaya.reminders.rv;
 
 import android.view.View;
 import android.widget.TextView;

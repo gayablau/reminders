@@ -1,22 +1,28 @@
 package com.example.androidgaya.login.vm
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.UserRepo
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
+    private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
+    private var userRepo : UserRepo = UserRepo(application)
+
     fun setIsLoggedIn(isLoggedIn : Boolean) {
-        UserRepo.setIsLoggedIn(isLoggedIn)
+        userRepo.setIsLoggedIn(getApplication(), isLoggedIn)
     }
 
     fun setUsername(username : String) {
-        UserRepo.setUsername(username)
+        userRepo.setUsername(getApplication(), username)
+        remindersRepo.addUsername(username)
     }
 
     fun isUserLoggedIn() : Boolean {
-        return UserRepo.isUserLoggedIn()
+        return userRepo.isUserLoggedIn(getApplication())
     }
 
-    fun getUsername() : String {
-        return UserRepo.getUsername()
+    fun getUsername() : String? {
+        return userRepo.getUsername(getApplication())
     }
 }

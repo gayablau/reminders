@@ -1,14 +1,12 @@
-package com.example.androidgaya.reminders.ui;
+package com.example.androidgaya.reminders.rv;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.androidgaya.R;
 import com.example.androidgaya.repositories.Reminder;
-
 import java.util.List;
 
  public class ReminderAdapter extends RecyclerView.Adapter<ViewHolder> {
@@ -16,7 +14,7 @@ import java.util.List;
     private final List<Reminder> reminders;
     private final OnReminderClicked onclick;
 
-    ReminderAdapter(List<Reminder> reminders, OnReminderClicked onclick) {
+    public ReminderAdapter(List<Reminder> reminders, OnReminderClicked onclick) {
         this.reminders = reminders;
         this.onclick = onclick;
     }

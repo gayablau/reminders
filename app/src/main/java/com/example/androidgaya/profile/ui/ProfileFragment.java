@@ -1,14 +1,11 @@
 package com.example.androidgaya.profile.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,19 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.example.androidgaya.Navigator;
+import com.example.androidgaya.util.Navigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.profile.vm.ProfileViewModel;
 import com.example.androidgaya.repositories.reminder.RemindersRepo;
 import com.example.androidgaya.reminders.ui.RemindersFragment;
 
-
 public class ProfileFragment extends Fragment {
 
     private EditText usernameET;
     private static String username;
-    //SharedPreferences prefs;
     Navigator navigator = new Navigator();
     ProfileViewModel viewModel;
 
@@ -88,10 +82,9 @@ public class ProfileFragment extends Fragment {
 
     public void init(View view) {
         usernameET = view.findViewById(R.id.profile_username_et);
-        //prefs = getContext().getSharedPreferences(getString(R.string.user_details_sp), Context.MODE_PRIVATE);
-        username = viewModel.getUsername();
-        usernameET.setText(username);
         navigator.changeToolbar(getString(R.string.profile), true, getContext());
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        username = viewModel.getUsername();
+        usernameET.setText(username);
     }
 }

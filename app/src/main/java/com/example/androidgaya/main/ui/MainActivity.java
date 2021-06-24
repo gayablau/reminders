@@ -1,22 +1,20 @@
 package com.example.androidgaya.main.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.androidgaya.R;
 import com.example.androidgaya.login.ui.LoginActivity;
 import com.example.androidgaya.main.vm.MainViewModel;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
     String username = "";
     Toolbar toolbar;
-    //SharedPreferences prefs;
     MainViewModel viewModel;
 
     @Override
@@ -47,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        //prefs = getApplicationContext().getSharedPreferences(getString(R.string.user_details_sp), MODE_PRIVATE);
         username = viewModel.getUsername();
+        assert username != null;
         viewModel.addUsername(username);
-        getSupportActionBar().setTitle(getString(R.string.toolbar_main, username));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
     }
 }
 
