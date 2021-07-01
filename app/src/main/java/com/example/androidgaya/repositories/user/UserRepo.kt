@@ -8,17 +8,12 @@ import com.example.androidgaya.R
 class UserRepo(context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
 
-
     fun isUserLoggedIn(context: Context): Boolean {
-        return prefs.getBoolean(context.getString(R.string.isLoggedIn), false)
+        return prefs.getString(context.getString(R.string.username), "") != ""
     }
 
     fun getUsername(context: Context): String? {
         return prefs.getString(context.getString(R.string.username), "")
-    }
-
-    fun setIsLoggedIn(context: Context, isLoggedIn: Boolean) {
-        prefs.edit().putBoolean(context.getString(R.string.isLoggedIn), isLoggedIn)?.apply()
     }
 
     fun setUsername(context: Context, username: String) {

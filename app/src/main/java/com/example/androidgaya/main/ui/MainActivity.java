@@ -1,5 +1,6 @@
 package com.example.androidgaya.main.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,21 +8,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.R;
-import com.example.androidgaya.login.ui.LoginActivity;
-import com.example.androidgaya.main.vm.MainViewModel;
+import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.main.viewmodel.MainViewModel;
+import com.example.androidgaya.util.MainNavigator;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityInterface {
     String username = "";
     Toolbar toolbar;
     MainViewModel viewModel;
+    MainNavigator nav;
+
+    public static Intent getintent(Context context){
+        return new Intent(context, MainActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
+
     }
 
     @Override
@@ -32,11 +40,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logout() {
-        viewModel.setIsLoggedIn(false);
         viewModel.setUsername("");
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        finishAffinity();
-        startActivity(intent);
+        nav.toLoginActivity();
     }
 
     public void init() {
@@ -48,7 +53,23 @@ public class MainActivity extends AppCompatActivity {
         username = viewModel.getUsername();
         assert username != null;
         viewModel.addUsername(username);
+        nav = new MainNavigator(R.id.fragment_container, this);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
+    }
+
+
+    @Override
+    public MainNavigator getNavigator() {
+        return nav;
+    }
+
+    @Override
+    public void changeToolbar(String title, Boolean back) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(back);
+        }
+        invalidateOptionsMenu();
     }
 }
 

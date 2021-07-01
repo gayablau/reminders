@@ -1,4 +1,4 @@
-package com.example.androidgaya.main.vm
+package com.example.androidgaya.main.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -12,10 +12,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun addUsername(username: String) {
         remindersRepo.addUsername(username)
         userRepo.setUsername(getApplication(), username)
-    }
-
-    fun setIsLoggedIn(isLoggedIn : Boolean) {
-        userRepo.setIsLoggedIn(getApplication(), isLoggedIn)
     }
 
     fun setUsername(username : String) {

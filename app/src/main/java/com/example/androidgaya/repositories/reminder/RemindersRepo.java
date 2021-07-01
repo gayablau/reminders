@@ -1,6 +1,6 @@
 package com.example.androidgaya.repositories.reminder;
 
-import com.example.androidgaya.repositories.Reminder;
+import com.example.androidgaya.repositories.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +35,10 @@ public class RemindersRepo {
         return remindersMap;
     }
 
+    public ArrayList<Reminder> getRemindersByUsername(String username) {
+        return remindersMap.get(username);
+    }
+
     public boolean isUsernameExists(String username) {
         return remindersMap.containsKey(username);
     }
@@ -62,12 +66,7 @@ public class RemindersRepo {
             if(reminder.getId().contains(updatedReminder.getId())){
                 reminder.setHeader(updatedReminder.getHeader());
                 reminder.setDescription(updatedReminder.getDescription());
-                reminder.setYear(updatedReminder.getYear());
-                reminder.setMonth(updatedReminder.getMonth());
-                reminder.setDayOfMonth(updatedReminder.getDayOfMonth());
-                reminder.setHour(updatedReminder.getHour());
-                reminder.setMinutes(updatedReminder.getMinutes());
-                reminder.setDay(updatedReminder.getDay());
+                reminder.setCalendar(updatedReminder.getCalendar());
             }
         }
     }
