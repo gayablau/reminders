@@ -1,20 +1,15 @@
 package com.example.androidgaya.reminders.recyclerview;
 
-import android.app.Dialog;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.androidgaya.R;
 import com.example.androidgaya.repositories.models.Reminder;
-
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Logger;
+
 
 public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     TextView header_tv;
@@ -23,7 +18,6 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
     TextView date_tv;
     TextView day_tv;
     Reminder reminder;
-
     ReminderAdapter.OnReminderClicked onclick;
     OnReminderDelete onDelete;
 
@@ -49,11 +43,17 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
     public void setTimeText(Calendar calendar) {
-        SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
-        DateFormat dayFormat = new SimpleDateFormat("EEEE", java.util.Locale.getDefault());
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+        SimpleDateFormat fullFormat = new SimpleDateFormat(itemView.getResources().getString(R.string.full_date),
+                java.util.Locale.getDefault());
+        DateFormat dayFormat = new SimpleDateFormat(itemView.getResources().getString(R.string.day_date),
+                java.util.Locale.getDefault());
+        DateFormat timeFormat = new SimpleDateFormat(itemView.getResources().getString(R.string.hour),
+                java.util.Locale.getDefault());
         Date date = calendar.getTime();
-        date.setMonth(calendar.get(Calendar.MONTH) - 1);
+        Calendar updatedCal = Calendar.getInstance();
+        updatedCal.setTime(date);
+        updatedCal.add(Calendar.MONTH, -1);
+        date = updatedCal.getTime();
         time_tv.setText(timeFormat.format(date));
         date_tv.setText(fullFormat.format(date));
         day_tv.setText(dayFormat.format(date));

@@ -116,7 +116,6 @@ public class RemindersFragment extends Fragment {
         remindersList = viewModel.getRemindersByUsername(username);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
         ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.toolbar_main, username), false);
-
     }
 
     public void add() {
@@ -127,7 +126,6 @@ public class RemindersFragment extends Fragment {
         ReminderAdapter reminderAdapter = new ReminderAdapter(remindersList, reminder -> {
             id = reminder.getId();
             nav.toDetailsFragment(id);
-           // ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.add_rem), true);
         },
                 reminder -> viewModel.deleteReminderById(reminder.getId(), username));
         recyclerViewReminders.setAdapter(reminderAdapter);

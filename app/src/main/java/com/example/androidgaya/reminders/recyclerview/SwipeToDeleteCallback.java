@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.androidgaya.repositories.reminder.RemindersRepo;
-
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     private final ReminderAdapter reminderAdapter;

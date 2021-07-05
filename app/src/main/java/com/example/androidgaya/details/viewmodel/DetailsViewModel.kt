@@ -21,4 +21,8 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
     fun getUsername() : String? {
         return userRepo.getUsername(getApplication())
     }
+
+    fun getReminderByID(id : String, username: String) : Reminder? {
+        return remindersRepo.getReminderByID(id, username)
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     MainViewModel viewModel;
     MainNavigator nav;
 
-    public static Intent getintent(Context context){
+    public static Intent getIntent(Context context){
         return new Intent(context, MainActivity.class);
     }
 
@@ -29,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         super.onCreate(savedInstanceState);
         init();
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
-
     }
 
     @Override

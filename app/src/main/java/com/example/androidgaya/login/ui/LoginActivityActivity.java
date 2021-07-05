@@ -1,5 +1,7 @@
 package com.example.androidgaya.login.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,12 +11,13 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.util.LoginNavigator;
-import com.example.androidgaya.util.MainNavigator;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivityActivity extends AppCompatActivity implements LoginActivityInterface {
 
     EditText usernameEditText;
     Button loginButton;
@@ -48,6 +51,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public static Intent getIntent(Context context){
+        return new Intent(context, LoginActivityActivity.class);
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -68,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         username = viewModel.getUsername();
         nav = new LoginNavigator(this);
-        if (viewModel.isUserLoggedIn()) { goToMainActivity(); }
+        if (viewModel.isUserLoggedIn()) { nav.toMainActivity(); }
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         loginButton = findViewById(R.id.login_btn);
@@ -82,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         viewModel.setUsername(usernameEditText.getText().toString());
     }
 
+    @Override
     public LoginNavigator getNavigator() {
         return nav;
     }

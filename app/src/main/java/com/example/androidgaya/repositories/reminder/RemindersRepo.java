@@ -1,12 +1,13 @@
 package com.example.androidgaya.repositories.reminder;
 
+import com.example.androidgaya.repositories.interfaces.ReminderInterface;
 import com.example.androidgaya.repositories.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemindersRepo {
+public class RemindersRepo implements ReminderInterface {
     private final Map<String, ArrayList<Reminder>> remindersMap;
 
     private RemindersRepo() {
@@ -22,7 +23,7 @@ public class RemindersRepo {
         return INSTANCE;
     }
 
-    public Reminder getReminderByID(String username, String id) {
+    public Reminder getReminderByID(String id, String username) {
         for(Reminder reminder : remindersMap.get(username)) {
             if(reminder.getId().equals(id)){
                 return reminder;
@@ -69,10 +70,6 @@ public class RemindersRepo {
                 reminder.setCalendar(updatedReminder.getCalendar());
             }
         }
-    }
-
-    public void deleteReminder(int position, String username) {
-        remindersMap.get(username).remove(position);
     }
 
     public void deleteReminderById(String id, String username) {
