@@ -34,7 +34,7 @@
     <string name="username">Username</string>
     <string name="login">Login</string>
     <string name="isLoggedIn">isLoggedIn</string>
-    <string name="user_details_sp">userDetailsSP</string>
+    <string name="user_details_sp" translatable="false">userDetailsSP</string>
     <string name="profile">Profile</string>
     <string name="select_valid_time_msg">please select a valid time for your reminder</string>
     <string name="enter_name_msg">please enter a name for your reminder</string>
@@ -46,4 +46,10 @@
     <string name="add_rem">Add Reminder</string>
     <string name="edit_rem">Edit Reminder</string>
     <string name="user_exists">user exists</string>
+    <string name="save">save</string>
+    <string name="logout">Logout</string>
+    <string name="full_date">dd/MM/yyyy</string>
+    <string name="words_date">EEE, MMM d</string>
+    <string name="day_date">EEEE</string>
+    <string name="hour">HH:mm</string>
 </resources>

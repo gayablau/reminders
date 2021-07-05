@@ -2,10 +2,12 @@ package com.example.androidgaya.profile.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,20 +16,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.androidgaya.util.Navigator;
+
+import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
-import com.example.androidgaya.profile.vm.ProfileViewModel;
+import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
 import com.example.androidgaya.repositories.reminder.RemindersRepo;
-import com.example.androidgaya.reminders.ui.RemindersFragment;
 
 public class ProfileFragment extends Fragment {
 
     private EditText usernameET;
     private static String username;
-    Navigator navigator = new Navigator();
+    MainNavigator nav;
     ProfileViewModel viewModel;
 
-    public ProfileFragment() {}
+    public ProfileFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class ProfileFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public String getUsernameETValue() {
+    public String getNewUsername() {
         return usernameET.getText().toString();
     }
 
@@ -68,21 +72,20 @@ public class ProfileFragment extends Fragment {
 
     @SuppressLint("RestrictedApi")
     public void save() {
-        if (RemindersRepo.getInstance().isUsernameExists(getUsernameETValue())) {
+        if (RemindersRepo.getInstance().isUsernameExists(getNewUsername())) {
             Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();
-        }
-        else {
-            viewModel.editUsername(username, getUsernameETValue());
-            username = getUsernameETValue();
+        } else {
+            viewModel.editUsername(username, getNewUsername());
+            username = getNewUsername();
             viewModel.setUsername(username);
-            RemindersFragment remindersFragment = new RemindersFragment();
-            navigator.changeFragment(remindersFragment, getContext());
+            nav.toRemindersFragment();
         }
     }
 
     public void init(View view) {
         usernameET = view.findViewById(R.id.profile_username_et);
-        navigator.changeToolbar(getString(R.string.profile), true, getContext());
+        nav = ((MainActivityInterface) getActivity()).getNavigator();
+        ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.profile), true);
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         username = viewModel.getUsername();
         usernameET.setText(username);

@@ -4,24 +4,23 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.example.androidgaya.R
+import com.example.androidgaya.repositories.interfaces.UserInterface
 
-class UserRepo(context: Context) {
+class UserRepo(context: Context) : UserInterface {
+    companion object {
+        val EMPTY = ""
+    }
     private var prefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
 
-
-    fun isUserLoggedIn(context: Context): Boolean {
-        return prefs.getBoolean(context.getString(R.string.isLoggedIn), false)
+    override fun isUserLoggedIn(context: Context): Boolean {
+        return prefs.getString(context.getString(R.string.username), EMPTY) != EMPTY
     }
 
-    fun getUsername(context: Context): String? {
-        return prefs.getString(context.getString(R.string.username), "")
+    override fun getUsername(context: Context): String? {
+        return prefs.getString(context.getString(R.string.username), EMPTY)
     }
 
-    fun setIsLoggedIn(context: Context, isLoggedIn: Boolean) {
-        prefs.edit().putBoolean(context.getString(R.string.isLoggedIn), isLoggedIn)?.apply()
-    }
-
-    fun setUsername(context: Context, username: String) {
+    override fun setUsername(context: Context, username: String) {
         prefs.edit().putString(context.getString(R.string.username), username)?.apply()
     }
 }

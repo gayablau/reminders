@@ -1,12 +1,13 @@
 package com.example.androidgaya.repositories.reminder;
 
-import com.example.androidgaya.repositories.Reminder;
+import com.example.androidgaya.repositories.interfaces.ReminderInterface;
+import com.example.androidgaya.repositories.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemindersRepo {
+public class RemindersRepo implements ReminderInterface {
     private final Map<String, ArrayList<Reminder>> remindersMap;
 
     private RemindersRepo() {
@@ -22,7 +23,7 @@ public class RemindersRepo {
         return INSTANCE;
     }
 
-    public Reminder getReminderByID(String username, String id) {
+    public Reminder getReminderByID(String id, String username) {
         for(Reminder reminder : remindersMap.get(username)) {
             if(reminder.getId().equals(id)){
                 return reminder;
@@ -33,6 +34,10 @@ public class RemindersRepo {
 
     public Map<String, ArrayList<Reminder>> getRemindersMap() {
         return remindersMap;
+    }
+
+    public ArrayList<Reminder> getRemindersByUsername(String username) {
+        return remindersMap.get(username);
     }
 
     public boolean isUsernameExists(String username) {
@@ -62,18 +67,9 @@ public class RemindersRepo {
             if(reminder.getId().contains(updatedReminder.getId())){
                 reminder.setHeader(updatedReminder.getHeader());
                 reminder.setDescription(updatedReminder.getDescription());
-                reminder.setYear(updatedReminder.getYear());
-                reminder.setMonth(updatedReminder.getMonth());
-                reminder.setDayOfMonth(updatedReminder.getDayOfMonth());
-                reminder.setHour(updatedReminder.getHour());
-                reminder.setMinutes(updatedReminder.getMinutes());
-                reminder.setDay(updatedReminder.getDay());
+                reminder.setCalendar(updatedReminder.getCalendar());
             }
         }
-    }
-
-    public void deleteReminder(int position, String username) {
-        remindersMap.get(username).remove(position);
     }
 
     public void deleteReminderById(String id, String username) {

@@ -1,13 +1,13 @@
-package com.example.androidgaya.reminders.rv;
+package com.example.androidgaya.reminders.recyclerview;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.androidgaya.repositories.reminder.RemindersRepo;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
@@ -31,7 +31,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        RemindersRepo.getInstance().deleteReminder(viewHolder.getAdapterPosition(), username);
+        ((ReminderViewHolder) viewHolder).onSwipe();
         reminderAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
     }
 
@@ -39,8 +39,13 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
                             @NonNull RecyclerView.ViewHolder viewHolder,
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        super.onChildDraw(c, recyclerView, viewHolder, dX,
-                dY, actionState, isCurrentlyActive);
+        super.onChildDraw(c,
+                recyclerView,
+                viewHolder,
+                dX,
+                dY,
+                actionState,
+                isCurrentlyActive);
         View itemView = viewHolder.itemView;
         int backgroundCornerOffset = 20;
         if (dX < 0) { // Swiping to the left

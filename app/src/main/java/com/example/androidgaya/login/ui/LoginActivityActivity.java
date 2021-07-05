@@ -1,5 +1,6 @@
 package com.example.androidgaya.login.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,18 +11,20 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.androidgaya.login.vm.LoginViewModel;
-import com.example.androidgaya.main.ui.MainActivity;
-import com.example.androidgaya.R;
 
-public class LoginActivity extends AppCompatActivity {
+import com.example.androidgaya.login.interfaces.LoginActivityInterface;
+import com.example.androidgaya.login.viewmodel.LoginViewModel;
+import com.example.androidgaya.R;
+import com.example.androidgaya.util.LoginNavigator;
+
+public class LoginActivityActivity extends AppCompatActivity implements LoginActivityInterface {
 
     EditText usernameEditText;
     Button loginButton;
     ImageView imageView;
-    boolean isLoggedIn = false;
     String username = "";
     LoginViewModel viewModel;
+    LoginNavigator nav;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public static Intent getIntent(Context context){
+        return new Intent(context, LoginActivityActivity.class);
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -60,27 +67,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void goToMainActivity() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        finishAffinity();
-        startActivity(intent);
+        nav.toMainActivity();
     }
 
     public void init() {
         setContentView(R.layout.activity_login);
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        isLoggedIn = viewModel.isUserLoggedIn();
         username = viewModel.getUsername();
-        if (isLoggedIn) { goToMainActivity(); }
+        nav = new LoginNavigator(this);
+        if (viewModel.isUserLoggedIn()) { nav.toMainActivity(); }
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         loginButton = findViewById(R.id.login_btn);
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
+
     }
 
     public void login() {
         goToMainActivity();
-        viewModel.setIsLoggedIn(true);
         viewModel.setUsername(usernameEditText.getText().toString());
+    }
+
+    @Override
+    public LoginNavigator getNavigator() {
+        return nav;
     }
 }
