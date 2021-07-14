@@ -20,4 +20,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun setUsername(username : String) {
         userRepo.setUsername(getApplication(), username)
     }
+
+    fun isUsernameExists(username: String) : Boolean {
+        return remindersRepo.isUsernameExists(username)
+    }
 }

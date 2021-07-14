@@ -10,17 +10,35 @@ class UserRepo(context: Context) : UserInterface {
     companion object {
         val EMPTY = ""
     }
-    private var prefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
+    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
+    private var allUsersPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.allUsersSP), MODE_PRIVATE)
 
     override fun isUserLoggedIn(context: Context): Boolean {
-        return prefs.getString(context.getString(R.string.username), EMPTY) != EMPTY
+        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY) != EMPTY
     }
 
     override fun getUsername(context: Context): String? {
-        return prefs.getString(context.getString(R.string.username), EMPTY)
+        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY)
     }
 
     override fun setUsername(context: Context, username: String) {
-        prefs.edit().putString(context.getString(R.string.username), username)?.apply()
+        loggedInUserPref.edit().putString(context.getString(R.string.username), username)?.apply()
+    }
+
+    override fun areDetailsOK(username: String, password: String): Boolean {
+        if (allUsersPref.getString(username, EMPTY) == password) {
+            return true
+        }
+        return false
+    }
+
+    override fun isUserExists(username: String): Boolean {
+        return allUsersPref.contains(username)
+    }
+
+    override fun createUser(username: String, password: String) {
+        if (!isUserExists(username)) {
+            allUsersPref.edit().putString(username,password).apply()
+        }
     }
 }
