@@ -25,6 +25,12 @@ class UserRepo(context: Context) : UserInterface {
         loggedInUserPref.edit().putString(context.getString(R.string.username), username)?.apply()
     }
 
+    override fun editUsername(oldUsername: String, newUsername: String) {
+        val password = allUsersPref.getString(oldUsername, EMPTY)
+        allUsersPref.edit().remove(oldUsername).apply()
+        allUsersPref.edit().putString(newUsername, password).apply()
+    }
+
     override fun areDetailsOK(username: String, password: String): Boolean {
         if (allUsersPref.getString(username, EMPTY) == password) {
             return true

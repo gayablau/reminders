@@ -11,6 +11,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun editUsername(oldUsername: String, newUsername: String) {
         remindersRepo.editUsername(oldUsername, newUsername)
+        userRepo.editUsername(oldUsername, newUsername)
     }
 
     fun getUsername() : String? {
