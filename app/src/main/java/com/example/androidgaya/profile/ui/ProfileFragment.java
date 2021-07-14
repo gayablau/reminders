@@ -72,7 +72,7 @@ public class ProfileFragment extends Fragment {
 
     @SuppressLint("RestrictedApi")
     public void save() {
-        if (RemindersRepo.getInstance().isUsernameExists(getNewUsername())) {
+        if (viewModel.isUsernameExists(getNewUsername())) {
             Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();
         } else {
             viewModel.editUsername(username, getNewUsername());

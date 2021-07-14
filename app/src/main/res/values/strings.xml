@@ -32,6 +32,7 @@
     <string name="add">add</string>
     <string name="picture">picture</string>
     <string name="username">Username</string>
+    <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="isLoggedIn">isLoggedIn</string>
     <string name="user_details_sp" translatable="false">userDetailsSP</string>
@@ -52,4 +53,6 @@
     <string name="words_date">EEE, MMM d</string>
     <string name="day_date">EEEE</string>
     <string name="hour">HH:mm</string>
+    <string name="allUsersSP">allUsersSP</string>
+    <string name="wrong_login">wrong password</string>
 </resources>

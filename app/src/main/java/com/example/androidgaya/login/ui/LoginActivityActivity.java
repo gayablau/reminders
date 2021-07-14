@@ -8,6 +8,8 @@ import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +22,7 @@ import com.example.androidgaya.util.LoginNavigator;
 public class LoginActivityActivity extends AppCompatActivity implements LoginActivityInterface {
 
     EditText usernameEditText;
+    EditText passwordEditText;
     Button loginButton;
     ImageView imageView;
     String username = "";
@@ -32,6 +35,7 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
         init();
         if (savedInstanceState != null) {
             usernameEditText.setText(savedInstanceState.getString(getString(R.string.username), ""));
+            passwordEditText.setText(savedInstanceState.getString(getString(R.string.password), ""));
         }
 
         loginButton.setOnClickListener(v -> login());
@@ -59,6 +63,7 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(getString(R.string.username), usernameEditText.getText().toString());
+        outState.putString(getString(R.string.password), passwordEditText.getText().toString());
     }
 
     @Override
@@ -78,6 +83,7 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
         if (viewModel.isUserLoggedIn()) { nav.toMainActivity(); }
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
+        passwordEditText = findViewById(R.id.password_et);
         loginButton = findViewById(R.id.login_btn);
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
@@ -85,8 +91,21 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
     }
 
     public void login() {
-        goToMainActivity();
-        viewModel.setUsername(usernameEditText.getText().toString());
+        if (viewModel.areDetailesOK(usernameEditText.getText().toString(), passwordEditText.getText().toString())) {
+            viewModel.setUsername(usernameEditText.getText().toString());
+            goToMainActivity();
+        }
+        else {
+            if (viewModel.isUserExists(usernameEditText.getText().toString())) {
+                Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
+            }
+            else {
+                viewModel.createUser(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                viewModel.addUsername(usernameEditText.getText().toString());
+                viewModel.setUsername(usernameEditText.getText().toString());
+                goToMainActivity();
+            }
+        }
     }
 
     @Override

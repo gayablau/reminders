@@ -9,11 +9,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
     private var userRepo : UserRepo = UserRepo(application)
 
-    fun addUsername(username: String) {
-        remindersRepo.addUsername(username)
-        userRepo.setUsername(getApplication(), username)
-    }
-
     fun setUsername(username : String) {
         userRepo.setUsername(getApplication(), username)
     }
