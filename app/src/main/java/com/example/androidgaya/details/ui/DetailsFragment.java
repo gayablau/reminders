@@ -8,6 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +26,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.main.notify.NotifyWork;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
@@ -33,9 +38,17 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static com.google.android.material.snackbar.Snackbar.make;
 
 public class DetailsFragment extends Fragment {
     private static final String ID_KEY = "id";
+    private static final String NOTIFICATION_ID = "appName_notification_id";
+    private static final String REMINDER_ID = "reminder_id";
+    private static final String REMINDER_HEADER = "reminder_header";
+    private static final String REMINDER_DESC = "reminder_desc";
+    private static final String NOTIFICATION_WORK = "appName_notification_work";
     private TextView dateTV;
     private Button dateButton;
     private TimePicker timePicker;
@@ -203,6 +216,7 @@ public class DetailsFragment extends Fragment {
                 if (isNewFlag) {
                     setNewID();
                     viewModel.addReminder(createReminderFromInput(), username);
+                    setNotify();
                     makeToast(getString(R.string.add_msg));
                 } else {
                     viewModel.editReminder(createReminderFromInput(), username);
@@ -215,6 +229,43 @@ public class DetailsFragment extends Fragment {
         } else {
             makeToast(getString(R.string.enter_name_msg));
         }
+    }
+
+    private void setNotify() {
+        if (chosenTime.getTimeInMillis() > currentTime.getTimeInMillis()) {
+            setUpdatedDetails();
+            Data data = new Data.Builder().putInt(NOTIFICATION_ID, 0)
+                    .putString(REMINDER_HEADER, chosenReminderHeader)
+                    .putString(REMINDER_DESC, chosenReminderDescription)
+                    .build();
+            long delay = chosenTime.getTimeInMillis() - currentTime.getTimeInMillis();
+            scheduleNotification(delay, data);
+
+            //String titleNotificationSchedule = getString(R.string.notification_schedule_title)
+            //String patternNotificationSchedule = getString(R.string.notification_schedule_pattern)
+
+            String titleNotificationSchedule = chosenReminderHeader;
+            String patternNotificationSchedule = chosenReminderDescription;
+//            make(
+//                    coordinator_l,
+//                    titleNotificationSchedule + SimpleDateFormat(
+//                            patternNotificationSchedule, getDefault()
+//                    ).format(chosenTime.time).toString(),
+//                    LENGTH_LONG
+//            ).show();
+        } else {
+            //val errorNotificationSchedule = getString(R.string.notification_schedule_error)
+            String errorNotificationSchedule = "test3";
+            //make(coordinator_l, errorNotificationSchedule, LENGTH_LONG).show();
+        }
+    }
+
+    private void scheduleNotification(long delay, Data data) {
+        OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(NotifyWork.class)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS).setInputData(data).build();
+
+        WorkManager instanceWorkManager = WorkManager.getInstance(DetailsFragment.this.getContext());
+        instanceWorkManager.beginUniqueWork(NOTIFICATION_WORK, ExistingWorkPolicy.REPLACE, notificationWork).enqueue();
     }
 
     public void setDetailsOnScreen() {

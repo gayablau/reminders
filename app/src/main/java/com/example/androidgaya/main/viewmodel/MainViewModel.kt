@@ -11,6 +11,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setUsername(username : String) {
         userRepo.setUsername(getApplication(), username)
+        remindersRepo.addUsername(username)
+    }
+
+    fun addUsername(username : String) {
+        remindersRepo.addUsername(username)
     }
 
     fun getUsername() : String? {
