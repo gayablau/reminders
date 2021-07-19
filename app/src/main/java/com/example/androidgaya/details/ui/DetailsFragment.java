@@ -232,6 +232,7 @@ public class DetailsFragment extends Fragment {
     }
 
     private void setNotify() {
+        updateCurrentTime();
         if (chosenTime.getTimeInMillis() > currentTime.getTimeInMillis()) {
             setUpdatedDetails();
             Data data = new Data.Builder().putInt(NOTIFICATION_ID, 0)
