@@ -26,6 +26,7 @@ import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
 import com.example.androidgaya.repositories.models.Reminder;
+import com.example.androidgaya.util.NotificationUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -59,6 +60,7 @@ public class DetailsFragment extends Fragment {
     private SimpleDateFormat fullFormat;
     private DateFormat wordsFormat;
     private DateFormat dayFormat;
+    private boolean isNotified = false;
 
     public DetailsFragment() {
     }
@@ -203,6 +205,9 @@ public class DetailsFragment extends Fragment {
                 if (isNewFlag) {
                     setNewID();
                     viewModel.addReminder(createReminderFromInput(), username);
+                    if (!isNotified) {
+                        new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity());
+                    }
                     makeToast(getString(R.string.add_msg));
                 } else {
                     viewModel.editReminder(createReminderFromInput(), username);

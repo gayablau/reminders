@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         invalidateOptionsMenu();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         username = viewModel.getUsername();
+        viewModel.addUsername(username);
         nav = new MainNavigator(R.id.fragment_container, this);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
     }
