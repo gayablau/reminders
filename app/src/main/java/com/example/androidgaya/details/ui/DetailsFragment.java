@@ -206,7 +206,8 @@ public class DetailsFragment extends Fragment {
                     setNewID();
                     viewModel.addReminder(createReminderFromInput(), username);
                     if (!isNotified) {
-                        new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity());
+                        new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity(), chosenReminderHeader, chosenReminderDescription);
+                        isNotified = true;
                     }
                     makeToast(getString(R.string.add_msg));
                 } else {

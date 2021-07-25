@@ -8,29 +8,36 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
-import androidx.core.app.JobIntentService
 import com.example.androidgaya.R
 import com.example.androidgaya.main.ui.MainActivity
 import java.util.*
 
-class NotificationService : JobIntentService() {
-    override fun onHandleWork(intent: Intent) {
+class NotificationService : IntentService("NotificationService") {
+
+
+    companion object {
+        const val CHANNEL_ID = "samples.notification.devdeeds.com.CHANNEL_ID"
+        const val CHANNEL_NAME = "Sample Notification"
+    }
+
+    override fun onHandleIntent(intent: Intent?) {
         createChannel()
         var timestamp: Long = 0
+        var header: String = ""
+        var description: String = ""
         if (intent != null && intent.extras != null) {
-            timestamp = intent.extras!!.getLong("timestamp")
+            timestamp = intent.extras!!.getLong(getString(R.string.timestamp))
+            header = intent?.extras!!.getString(getString(R.string.header)).toString()
+            description = intent?.extras!!.getString(getString(R.string.description)).toString()
         }
         if (timestamp > 0) {
             val context = this.applicationContext
             var notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val notifyIntent = Intent(this, MainActivity::class.java)
 
-            val title = "Sample Notification"
-            val message = "You have received a sample notification. This notification will take you to the details page."
-
-            notifyIntent.putExtra("title", title)
-            notifyIntent.putExtra("message", message)
-            notifyIntent.putExtra("notification", true)
+            notifyIntent.putExtra(getString(R.string.header), header)
+            notifyIntent.putExtra(getString(R.string.description), description)
+            notifyIntent.putExtra(getString(R.string.notification), true)
 
             notifyIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
@@ -49,12 +56,12 @@ class NotificationService : JobIntentService() {
                         // Set the intent that will fire when the user taps the notification
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.alarm_clock_old)
-                        .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.clock_notify2))
+                        .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.alarm_clock_old))
                         .setAutoCancel(true)
-                        .setContentTitle(title)
+                        .setContentTitle(header)
                         .setStyle(Notification.BigTextStyle()
-                                .bigText(message))
-                        .setContentText(message).build()
+                                .bigText(description))
+                        .setContentText(description).build()
             } else {
 
                 mNotification = Notification.Builder(this)
@@ -64,11 +71,11 @@ class NotificationService : JobIntentService() {
                         .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
                         .setAutoCancel(true)
                         .setPriority(Notification.PRIORITY_MAX)
-                        .setContentTitle(title)
+                        .setContentTitle(header)
                         .setStyle(Notification.BigTextStyle()
-                                .bigText(message))
+                                .bigText(description))
                         .setSound(uri)
-                        .setContentText(message).build()
+                        .setContentText(description).build()
 
             }
 
@@ -107,10 +114,5 @@ class NotificationService : JobIntentService() {
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
-    }
-
-    companion object {
-        const val CHANNEL_ID = "samples.notification.devdeeds.com.CHANNEL_ID"
-        const val CHANNEL_NAME = "Sample Notification"
     }
 }
