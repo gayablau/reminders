@@ -4,7 +4,7 @@ import com.example.androidgaya.repositories.models.Reminder
 import java.util.*
 
 interface ReminderInterface {
-    fun getReminderByID(id: String, username: String): Reminder?
+    fun getReminderByID(id: Int, username: String): Reminder?
     fun getRemindersMap(): Map<String, ArrayList<Reminder>>?
     fun getRemindersByUsername(username: String): ArrayList<Reminder>?
     fun isUsernameExists(username: String): Boolean
@@ -12,5 +12,5 @@ interface ReminderInterface {
     fun editUsername(oldUsername: String, newUsername: String)
     fun addReminder(reminder: Reminder, username: String)
     fun editReminder(updatedReminder: Reminder, username: String)
-    fun deleteReminderById(id: String?, username: String)
+    fun deleteReminderById(id: Int, username: String)
 }

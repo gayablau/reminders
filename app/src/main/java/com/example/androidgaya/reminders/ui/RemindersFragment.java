@@ -32,7 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class RemindersFragment extends Fragment {
 
-    private String id = "";
+    private int id = 0;
     String username;
     FloatingActionButton addFab;
     RecyclerView recyclerViewReminders;

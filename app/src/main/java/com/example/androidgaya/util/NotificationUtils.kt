@@ -28,7 +28,9 @@ class NotificationUtils {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMilliSeconds
             calendar.add(Calendar.MONTH, -1)
-            calendar.add(Calendar.MINUTE, -1)
+            if (android.os.Build.VERSION.SDK_INT == 19) {
+                calendar.add(Calendar.MINUTE, -1)
+            }
 
             val pendingIntent = PendingIntent.getBroadcast(activity, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)

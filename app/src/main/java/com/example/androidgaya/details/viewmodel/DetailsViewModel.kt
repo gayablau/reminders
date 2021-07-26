@@ -22,7 +22,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
         return userRepo.getUsername(getApplication())
     }
 
-    fun getReminderByID(id : String, username: String) : Reminder? {
+    fun getReminderByID(id : Int, username: String) : Reminder? {
         return remindersRepo.getReminderByID(id, username)
     }
 }

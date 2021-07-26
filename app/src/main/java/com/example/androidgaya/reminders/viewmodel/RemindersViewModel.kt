@@ -11,7 +11,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
     private var userRepo : UserRepo = UserRepo(application)
 
-    fun deleteReminderById(id : String, username : String) {
+    fun deleteReminderById(id : Int, username : String) {
         return remindersRepo.deleteReminderById(id, username)
     }
 
