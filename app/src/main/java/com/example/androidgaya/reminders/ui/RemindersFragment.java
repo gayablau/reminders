@@ -127,7 +127,7 @@ public class RemindersFragment extends Fragment {
             id = reminder.getId();
             nav.toDetailsFragment(id);
         },
-                reminder -> viewModel.deleteReminderById(reminder.getId(), username));
+                reminder -> viewModel.deleteReminderById(reminder.getId(), username, getActivity()));
         recyclerViewReminders.setAdapter(reminderAdapter);
         recyclerViewReminders.setLayoutManager(new LinearLayoutManager(RemindersFragment.this.getContext()));
 

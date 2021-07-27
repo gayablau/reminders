@@ -12,10 +12,7 @@ import java.util.*
 class NotificationUtils {
     fun setNotification(timeInMilliSeconds: Long, activity: Activity, header: String, description: String, id : Int) {
 
-        //------------  alarm settings start  -----------------//
-
         if (timeInMilliSeconds > 0) {
-
 
             val alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
             val alarmIntent = Intent(activity.applicationContext, ReminderReceiver::class.java) // AlarmReceiver1 = broadcast receiver
@@ -29,17 +26,23 @@ class NotificationUtils {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMilliSeconds
             calendar.add(Calendar.MONTH, -1)
-            if (android.os.Build.VERSION.SDK_INT == 19) {
+            /*if (android.os.Build.VERSION.SDK_INT == 19) {
                 calendar.add(Calendar.MINUTE, -1)
-            }
+            }*/
 
             val pendingIntent = PendingIntent.getBroadcast(activity, id, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 
         }
+    }
 
-        //------------ end of alarm settings  -----------------//
+    fun deleteNotification(activity: Activity, id : Int) {
+        val alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(activity.applicationContext, ReminderReceiver::class.java) // AlarmReceiver1 = broadcast receiver
 
+        alarmIntent.putExtra(activity.getString(R.string.id), id)
 
+        val pendingIntent = PendingIntent.getBroadcast(activity, id, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent)
     }
 }

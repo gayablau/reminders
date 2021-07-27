@@ -24,8 +24,10 @@
             android:name=".main.notify.ReminderReceiver" />
 
         <service
-            android:name=".main.notify.NotificationService" />
+            android:name=".main.notify.NotificationService"
+            />
 
     </application>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 </manifest>

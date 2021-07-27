@@ -7,7 +7,6 @@ import com.example.androidgaya.R
 
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-
         val service = Intent(context, NotificationService::class.java)
         service.putExtra(context.getString(R.string.reason), intent.getStringExtra(context.getString(R.string.reason)))
         service.putExtra(context.getString(R.string.timestamp), intent.getLongExtra(context.getString(R.string.timestamp), 0))
