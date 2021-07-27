@@ -25,10 +25,12 @@ class NotificationService : IntentService("NotificationService") {
         var timestamp: Long = 0
         var header: String = ""
         var description: String = ""
+
         if (intent != null && intent.extras != null) {
             timestamp = intent.extras!!.getLong(getString(R.string.timestamp))
             header = intent?.extras!!.getString(getString(R.string.header)).toString()
             description = intent?.extras!!.getString(getString(R.string.description)).toString()
+            id = intent?.extras!!.getInt(getString(R.string.id))
         }
         if (timestamp > 0) {
             val context = this.applicationContext
@@ -37,6 +39,7 @@ class NotificationService : IntentService("NotificationService") {
 
             notifyIntent.putExtra(getString(R.string.header), header)
             notifyIntent.putExtra(getString(R.string.description), description)
+            notifyIntent.putExtra(getString(R.string.id), id)
             notifyIntent.putExtra(getString(R.string.notification), true)
 
             notifyIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -83,13 +86,14 @@ class NotificationService : IntentService("NotificationService") {
 
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             // mNotificationId is a unique int for each notification that you must define
-            notificationManager.notify(mNotificationId, mNotification)
+            notificationManager.notify(id, mNotification)
         }
 
     }
 
     private lateinit var mNotification: Notification
-    private val mNotificationId: Int = 1000
+   // private val mNotificationId: Int = 1000
+   var id: Int = 0
 
     @SuppressLint("NewApi")
     private fun createChannel() {

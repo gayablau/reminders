@@ -10,7 +10,7 @@ import com.example.androidgaya.main.notify.ReminderReceiver
 import java.util.*
 
 class NotificationUtils {
-    fun setNotification(timeInMilliSeconds: Long, activity: Activity, header: String, description: String) {
+    fun setNotification(timeInMilliSeconds: Long, activity: Activity, header: String, description: String, id : Int) {
 
         //------------  alarm settings start  -----------------//
 
@@ -24,6 +24,7 @@ class NotificationUtils {
             alarmIntent.putExtra(activity.getString(R.string.timestamp), timeInMilliSeconds)
             alarmIntent.putExtra(activity.getString(R.string.header), header)
             alarmIntent.putExtra(activity.getString(R.string.description), description)
+            alarmIntent.putExtra(activity.getString(R.string.id), id)
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMilliSeconds
@@ -32,7 +33,7 @@ class NotificationUtils {
                 calendar.add(Calendar.MINUTE, -1)
             }
 
-            val pendingIntent = PendingIntent.getBroadcast(activity, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getBroadcast(activity, id, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 
         }
