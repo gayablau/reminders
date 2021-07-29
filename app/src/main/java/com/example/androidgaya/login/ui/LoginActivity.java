@@ -19,7 +19,7 @@ import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.util.LoginNavigator;
 
-public class LoginActivityActivity extends AppCompatActivity implements LoginActivityInterface {
+public class LoginActivity extends AppCompatActivity implements LoginActivityInterface {
 
     EditText usernameEditText;
     EditText passwordEditText;
@@ -56,7 +56,7 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
     }
 
     public static Intent getIntent(Context context){
-        return new Intent(context, LoginActivityActivity.class);
+        return new Intent(context, LoginActivity.class);
     }
 
     @Override
