@@ -26,16 +26,20 @@ import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
 import com.example.androidgaya.repositories.models.Reminder;
+import com.example.androidgaya.util.NotificationUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 public class DetailsFragment extends Fragment {
     private static final String ID_KEY = "id";
+    private static final int ADD_KEY = 1;
+    private static final int EDIT_KEY = 2;
     private TextView dateTV;
     private Button dateButton;
     private TimePicker timePicker;
@@ -52,21 +56,22 @@ public class DetailsFragment extends Fragment {
     private String chosenDateWords;
     private String todayDateNum;
     private String username = "";
-    private String reminderId = "";
+    private int reminderId = 0;
     private boolean isNewFlag = true;
     private DetailsViewModel viewModel;
     private MainNavigator nav;
     private SimpleDateFormat fullFormat;
     private DateFormat wordsFormat;
     private DateFormat dayFormat;
+    private boolean isNotified = false;
 
     public DetailsFragment() {
     }
 
-    public static DetailsFragment getInstance(String id) {
+    public static DetailsFragment getInstance(int id) {
         DetailsFragment fragment = new DetailsFragment();
         Bundle arguments = new Bundle();
-        arguments.putString(ID_KEY, id);
+        arguments.putInt(ID_KEY, id);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -188,6 +193,9 @@ public class DetailsFragment extends Fragment {
 
     public Reminder createReminderFromInput() {
         setUpdatedDetails();
+        if (isNewFlag) {
+            reminderId = new Random(System.currentTimeMillis()).nextInt(10000);
+        }
         return new Reminder(reminderId, chosenReminderHeader, chosenReminderDescription, chosenTime);
     }
 
@@ -200,14 +208,20 @@ public class DetailsFragment extends Fragment {
     public void save() {
         if (isInputValid()) {
             if (isTimeValid()) {
+                resetSeconds();
                 if (isNewFlag) {
-                    setNewID();
+                    //setNewID();
                     viewModel.addReminder(createReminderFromInput(), username);
+                    if (!isNotified) {
+                        //new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity(), chosenReminderHeader, chosenReminderDescription, reminderId);
+                        isNotified = true;
+                    }
                     makeToast(getString(R.string.add_msg));
                 } else {
                     viewModel.editReminder(createReminderFromInput(), username);
                     makeToast(getString(R.string.update_msg));
                 }
+                new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity(), chosenReminderHeader, chosenReminderDescription, reminderId);
                 nav.toRemindersFragment();
             } else {
                 makeToast(getString(R.string.select_valid_time_msg));
@@ -217,13 +231,18 @@ public class DetailsFragment extends Fragment {
         }
     }
 
+    private void resetSeconds() {
+        chosenTime.set(chosenTime.get(Calendar.YEAR), chosenTime.get(Calendar.MONTH),
+                chosenTime.get(Calendar.DATE), chosenTime.get(Calendar.HOUR_OF_DAY), chosenTime.get(Calendar.MINUTE), 0);
+    }
+
     public void setDetailsOnScreen() {
         todayDateNum = getDateString(currentTime);
         Bundle arguments = getArguments();
         if (arguments != null) {
             isNewFlag = false;
             ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.edit_rem), true);
-            reminderId = arguments.getString(ID_KEY, "");
+            reminderId = arguments.getInt(ID_KEY, 0);
             Reminder reminder = viewModel.getReminderByID(reminderId, username);
             chosenReminderHeader = reminder.getHeader();
             chosenReminderDescription = reminder.getDescription();
@@ -270,11 +289,6 @@ public class DetailsFragment extends Fragment {
 
     public void makeToast(String msg) {
         Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public void setNewID() {
-        UUID uuid = UUID.randomUUID();
-        reminderId = uuid.toString();
     }
 
     public void setNewTime(int hourOfDay, int minute) {

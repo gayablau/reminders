@@ -55,4 +55,7 @@
     <string name="hour">HH:mm</string>
     <string name="allUsersSP">allUsersSP</string>
     <string name="wrong_login">wrong password</string>
+    <string name="timestamp">timestamp</string>
+    <string name="notification">notification</string>
+    <string name="reason">reason</string>
 </resources>

@@ -1,15 +1,25 @@
 package com.example.androidgaya.repositories.models;
 
 import java.util.Calendar;
+import java.util.Random;
 
 public class Reminder {
 
-    private String id;
+    private int id;
     private String header;
     private String description;
     private Calendar calendar;
 
-    public Reminder(String id,
+    public Reminder(String header,
+                    String description,
+                    Calendar calendar) {
+        this.id = new Random(System.currentTimeMillis()).nextInt(10000);
+        this.header = header;
+        this.description = description;
+        this.calendar = calendar;
+    }
+
+    public Reminder(int id,
                     String header,
                     String description,
                     Calendar calendar) {
@@ -31,7 +41,7 @@ public class Reminder {
         return calendar.get(Calendar.DATE);
     }
 
-    public String getId() { return id; }
+    public int getId() { return id; }
 
     public String getHeader() { return header; }
 
@@ -47,7 +57,7 @@ public class Reminder {
         return calendar.get(Calendar.MINUTE);
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

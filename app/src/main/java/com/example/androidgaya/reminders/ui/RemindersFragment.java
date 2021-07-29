@@ -32,7 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class RemindersFragment extends Fragment {
 
-    private String id = "";
+    private int id = 0;
     String username;
     FloatingActionButton addFab;
     RecyclerView recyclerViewReminders;
@@ -127,7 +127,7 @@ public class RemindersFragment extends Fragment {
             id = reminder.getId();
             nav.toDetailsFragment(id);
         },
-                reminder -> viewModel.deleteReminderById(reminder.getId(), username));
+                reminder -> viewModel.deleteReminderById(reminder.getId(), username, getActivity()));
         recyclerViewReminders.setAdapter(reminderAdapter);
         recyclerViewReminders.setLayoutManager(new LinearLayoutManager(RemindersFragment.this.getContext()));
 

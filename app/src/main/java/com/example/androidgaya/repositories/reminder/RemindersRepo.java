@@ -23,9 +23,9 @@ public class RemindersRepo implements ReminderInterface {
         return INSTANCE;
     }
 
-    public Reminder getReminderByID(String id, String username) {
+    public Reminder getReminderByID(int id, String username) {
         for(Reminder reminder : remindersMap.get(username)) {
-            if(reminder.getId().equals(id)){
+            if(reminder.getId() == id){
                 return reminder;
             }
         }
@@ -64,7 +64,7 @@ public class RemindersRepo implements ReminderInterface {
 
     public void editReminder(Reminder updatedReminder, String username) {
         for(Reminder reminder : remindersMap.get(username)) {
-            if(reminder.getId().contains(updatedReminder.getId())){
+            if(reminder.getId() == updatedReminder.getId()){
                 reminder.setHeader(updatedReminder.getHeader());
                 reminder.setDescription(updatedReminder.getDescription());
                 reminder.setCalendar(updatedReminder.getCalendar());
@@ -72,9 +72,9 @@ public class RemindersRepo implements ReminderInterface {
         }
     }
 
-    public void deleteReminderById(String id, String username) {
+    public void deleteReminderById(int id, String username) {
         for(Reminder reminder : remindersMap.get(username)) {
-            if(reminder.getId().contains(id)){
+            if(reminder.getId() == id){
                 remindersMap.get(username).remove(reminder);
             }
         }

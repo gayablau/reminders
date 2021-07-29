@@ -20,7 +20,7 @@ public class MainNavigator {
         this.activity = activity;
     }
 
-    public void toDetailsFragment(String id) {
+    public void toDetailsFragment(int id) {
         DetailsFragment fragment = DetailsFragment.getInstance(id);
         changeFragment(fragment);
     }
