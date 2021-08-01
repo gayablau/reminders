@@ -17,7 +17,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
+import com.example.androidgaya.repositories.di.AppComponent;
+import com.example.androidgaya.repositories.di.AppModule;
+import com.example.androidgaya.repositories.di.DaggerAppComponent;
+import com.example.androidgaya.repositories.models.UserEntity;
 import com.example.androidgaya.util.LoginNavigator;
+import com.example.androidgaya.util.MainNavigator;
+//import dagger.android.DaggerApplication;
+
 
 public class LoginActivity extends AppCompatActivity implements LoginActivityInterface {
 
@@ -26,8 +33,10 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     Button loginButton;
     ImageView imageView;
     String username = "";
+    String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
+    private AppComponent appComponent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +62,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             @Override
             public void afterTextChanged(Editable s) { }
         });
+
+        //appComponent = DaggerAppComponent.builder().appModule(new AppModule(getApplication())).build();
     }
 
     public static Intent getIntent(Context context){
@@ -91,18 +102,21 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     }
 
     public void login() {
-        if (viewModel.areDetailesOK(usernameEditText.getText().toString(), passwordEditText.getText().toString())) {
-            viewModel.setUsername(usernameEditText.getText().toString());
+        username = usernameEditText.getText().toString();
+        password = passwordEditText.getText().toString();
+        if (viewModel.areDetailesOK(username, password)) {
+            viewModel.setUsername(username);
             goToMainActivity();
         }
         else {
-            if (viewModel.isUserExists(usernameEditText.getText().toString())) {
+            if (viewModel.isUserExists(username)) {
                 Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
             }
             else {
-                viewModel.createUser(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-                viewModel.addUsername(usernameEditText.getText().toString());
-                viewModel.setUsername(usernameEditText.getText().toString());
+                UserEntity userEntity = new UserEntity(username, password);
+                viewModel.createUser(username, password);
+                viewModel.addUsername(username);
+                viewModel.setUsername(username);
                 goToMainActivity();
             }
         }
@@ -112,4 +126,9 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     public LoginNavigator getNavigator() {
         return nav;
     }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
+    }
+
 }

@@ -17,14 +17,12 @@ import com.example.androidgaya.util.MainNavigator;
 
 import java.util.Objects;
 
-import dagger.android.DaggerApplication;
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
     String username = "";
     Toolbar toolbar;
     MainViewModel viewModel;
     MainNavigator nav;
-    private AppComponent appComponent;
 
     public static Intent getIntent(Context context){
         return new Intent(context, MainActivity.class);
@@ -35,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         super.onCreate(savedInstanceState);
         init();
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
-        appComponent = new DaggerAppComponent.builder().appModule(new AppModule(getApplication())).build();
     }
 
     @Override
