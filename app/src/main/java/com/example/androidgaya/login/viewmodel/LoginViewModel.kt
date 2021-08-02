@@ -3,6 +3,8 @@ package com.example.androidgaya.login.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.androidgaya.login.ui.AppDataGetter
+import com.example.androidgaya.login.ui.LoginActivity
 import com.example.androidgaya.repositories.interfaces.UserDao
 import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
@@ -17,7 +19,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
     private var userRepo : UserRepo = UserRepo(application)
 
-    /*init {
+    init {
+
+        (application as AppDataGetter).getAppComponent()?.inject(this)
+
         allusersList = MutableLiveData()
         getAllRecords()
     }
@@ -34,9 +39,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun insertRecord(userEntity: UserEntity) {
         userDao.insertRecord(userEntity)
     }
-*/
 
-    fun setUsername(username : String) {
+    fun setUsername(username: String) {
         userRepo.setUsername(getApplication(), username)
         remindersRepo.addUsername(username)
     }
@@ -59,6 +63,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun createUser(username: String, password: String) {
         userRepo.createUser(username, password)
+        insertRecord(UserEntity(username, password))
     }
 
     fun addUsername(username: String) {

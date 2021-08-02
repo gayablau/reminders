@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.login.interfaces.LoginActivityInterface;
@@ -23,6 +25,8 @@ import com.example.androidgaya.repositories.di.DaggerAppComponent;
 import com.example.androidgaya.repositories.models.UserEntity;
 import com.example.androidgaya.util.LoginNavigator;
 import com.example.androidgaya.util.MainNavigator;
+
+import java.util.List;
 //import dagger.android.DaggerApplication;
 
 
@@ -36,7 +40,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
-    private AppComponent appComponent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             public void afterTextChanged(Editable s) { }
         });
 
-        //appComponent = DaggerAppComponent.builder().appModule(new AppModule(getApplication())).build();
     }
 
     public static Intent getIntent(Context context){
@@ -88,7 +90,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
 
     public void init() {
         setContentView(R.layout.activity_login);
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
+        initViewModel();
         username = viewModel.getUsername();
         nav = new LoginNavigator(this);
         if (viewModel.isUserLoggedIn()) { nav.toMainActivity(); }
@@ -99,6 +102,21 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
 
+    }
+
+    private void initViewModel() {
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        viewModel.getRecordsObserver().observe(this, new Observer<List<UserEntity>>(){
+            @Override
+            public void onChanged(List<UserEntity> userEntities) {
+                if (!userEntities.isEmpty()) {
+                    for (UserEntity user : userEntities) {
+                        //TODO something idk
+                    }
+                }
+
+            }
+        });
     }
 
     public void login() {
@@ -113,8 +131,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
                 Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
             }
             else {
-                UserEntity userEntity = new UserEntity(username, password);
                 viewModel.createUser(username, password);
+                Log.i("login","user created with details: " + username + ", " + password);
                 viewModel.addUsername(username);
                 viewModel.setUsername(username);
                 goToMainActivity();
@@ -126,9 +144,4 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     public LoginNavigator getNavigator() {
         return nav;
     }
-
-    public AppComponent getAppComponent() {
-        return appComponent;
-    }
-
 }

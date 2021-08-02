@@ -8,15 +8,15 @@ import com.example.androidgaya.repositories.interfaces.UserDao
 import com.example.androidgaya.repositories.models.UserEntity
 
 @Database(entities = [UserEntity::class], version = 1)
-abstract class AppDatebase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract fun getUsersDao(): UserDao
     companion object {
-        private var dbINSTANCE: AppDatebase? = null
+        private var dbINSTANCE: AppDatabase? = null
 
-        fun getAppDBInstance(context: Context): AppDatebase {
+        fun getAppDBInstance(context: Context): AppDatabase {
             if(dbINSTANCE == null) {
-                dbINSTANCE = Room.databaseBuilder<AppDatebase>(
-                        context.applicationContext, AppDatebase::class.java, "RemindersDatebase"
+                dbINSTANCE = Room.databaseBuilder<AppDatabase>(
+                        context.applicationContext, AppDatabase::class.java, "RemindersDatebase"
                 ).allowMainThreadQueries().build()
 
             }

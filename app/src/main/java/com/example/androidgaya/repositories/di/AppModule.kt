@@ -2,7 +2,7 @@ package com.example.androidgaya.repositories.di
 
 import android.app.Application
 import android.content.Context
-import com.example.androidgaya.repositories.db.AppDatebase
+import com.example.androidgaya.repositories.db.AppDatabase
 import com.example.androidgaya.repositories.interfaces.UserDao
 import dagger.Module
 import dagger.Provides
@@ -13,14 +13,14 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun getUserDao(appDatebase: AppDatebase) : UserDao {
-        return appDatebase.getUsersDao()
+    fun getUserDao(appDatabase: AppDatabase) : UserDao {
+        return appDatabase.getUsersDao()
     }
 
     @Singleton
     @Provides
-    fun getRoomDBInstance(): AppDatebase {
-        return AppDatebase.getAppDBInstance(provideAppContext())
+    fun getRoomDBInstance(): AppDatabase {
+        return AppDatabase.getAppDBInstance(provideAppContext())
     }
 
     @Singleton
