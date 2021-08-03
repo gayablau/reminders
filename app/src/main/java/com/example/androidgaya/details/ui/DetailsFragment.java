@@ -240,13 +240,18 @@ public class DetailsFragment extends Fragment {
             isNewFlag = false;
             ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.edit_rem), true);
             reminderId = arguments.getInt(ID_KEY, 0);
-            ReminderEntity reminderEntity = viewModel.getReminderByID(reminderId);
-            chosenReminderHeader = reminderEntity.getHeader();
-            chosenReminderDescription = reminderEntity.getDescription();
-            chosenTime.set(reminderEntity.getYear(), reminderEntity.getMonth(), reminderEntity.getDayOfMonth(),
-                    reminderEntity.getHour(), reminderEntity.getMinutes());
-            reminderHeaderET.setText(chosenReminderHeader);
-            reminderDescriptionET.setText(chosenReminderDescription);
+            try {
+                ReminderEntity reminderEntity = viewModel.getReminderByID(reminderId);
+                chosenReminderHeader = reminderEntity.getHeader();
+                chosenReminderDescription = reminderEntity.getDescription();
+                chosenTime.set(reminderEntity.getYear(), reminderEntity.getMonth(), reminderEntity.getDayOfMonth(),
+                        reminderEntity.getHour(), reminderEntity.getMinutes());
+                reminderHeaderET.setText(chosenReminderHeader);
+                reminderDescriptionET.setText(chosenReminderDescription);
+            } catch (Exception ex) {
+                makeToast(getString(R.string.msg_rem_not_found));
+                nav.toRemindersFragment();
+            }
         } else {
             ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.add_rem), true);
             chosenTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),

@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -41,9 +43,11 @@ public class RemindersFragment extends Fragment {
     String username;
     FloatingActionButton addFab;
     RecyclerView recyclerViewReminders;
+    //MutableLiveData<ArrayList<ReminderEntity>> remindersList;
     List<ReminderEntity> remindersList;
     MainNavigator nav;
     RemindersViewModel viewModel;
+    ReminderAdapter reminderAdapter;
 
     public RemindersFragment() {
     }
@@ -128,11 +132,14 @@ public class RemindersFragment extends Fragment {
     }
 
     public void setAdapter() {
-        ReminderAdapter reminderAdapter = new ReminderAdapter(remindersList, reminder -> {
+        reminderAdapter = new ReminderAdapter((List<ReminderEntity>) remindersList, reminder -> {
             id = reminder.getId();
             nav.toDetailsFragment(id);
         },
-                reminder -> viewModel.deleteReminderById(reminder.getId(), getActivity()));
+                reminder -> {
+            viewModel.deleteReminderById(reminder.getId(), getActivity());
+        });
+
         recyclerViewReminders.setAdapter(reminderAdapter);
         recyclerViewReminders.setLayoutManager(new LinearLayoutManager(RemindersFragment.this.getContext()));
 
@@ -148,7 +155,9 @@ public class RemindersFragment extends Fragment {
 
             @Override
             public void onChanged(List<ReminderEntity> reminderEntities) {
-
+                if (reminderAdapter != null) {
+                    //remindersList = viewModel.getRemindersObserver();
+                }
             }
         });
     }

@@ -10,7 +10,6 @@ import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.user.LoggedInLoggedInUserRepo
 import com.example.androidgaya.util.NotificationUtils
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class RemindersViewModel(application: Application) : AndroidViewModel(application) {
     @Inject
@@ -27,12 +26,18 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun deleteReminderById(id: Int, activity: Activity) {
+  /*      var reminder =  ReminderEntity(id, "", "", "", 0)
+        remindersDao.deleteReminder(reminder)*/
         remindersDao.deleteReminderById(id)
         NotificationUtils().deleteNotification(activity, id)
     }
 
+//    fun getRemindersByUsername(username: String) : MutableLiveData<ArrayList<ReminderEntity>>? {
+//        return remindersDao.getRemindersByUsername(username) as MutableLiveData<ArrayList<ReminderEntity>>?
+//    }
+
     fun getRemindersByUsername(username: String) : ArrayList<ReminderEntity>? {
-        return remindersDao.getRemindersByUsername(username) as ArrayList<ReminderEntity>
+        return remindersDao.getRemindersByUsername(username) as ArrayList<ReminderEntity>?
     }
 
     fun getUsername() : String? {
@@ -41,7 +46,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getMyReminders(username: String?) {
         if (username != null) {
-            val list = remindersDao.getRemindersByUsername(username) as ArrayList<ReminderEntity>
+            val list = getRemindersByUsername(username)
             remindersList.postValue(list)
         }
     }

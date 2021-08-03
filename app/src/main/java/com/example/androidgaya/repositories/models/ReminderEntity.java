@@ -26,6 +26,9 @@ public class ReminderEntity {
     @ColumnInfo(name = "time")
     private long time;
 
+    @ColumnInfo(name = "createdAt")
+    private long createdAt;
+
 
 /*    public ReminderEntity(String header,
                           String description,
@@ -48,6 +51,8 @@ public class ReminderEntity {
         this.description = description;
         this.username = username;
         this.time = time;
+        Calendar helperCalendar = Calendar.getInstance();
+        this.createdAt = helperCalendar.getTimeInMillis();
     }
 
     public int getYear() {
@@ -121,5 +126,13 @@ public class ReminderEntity {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
     }
 }
