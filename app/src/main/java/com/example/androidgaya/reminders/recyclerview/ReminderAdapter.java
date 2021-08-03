@@ -6,17 +6,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidgaya.R;
-import com.example.androidgaya.repositories.models.Reminder;
+import com.example.androidgaya.repositories.models.ReminderEntity;
+
 import java.util.List;
 
  public class ReminderAdapter extends RecyclerView.Adapter<ReminderViewHolder> {
 
-    private final List<Reminder> reminders;
+    private final List<ReminderEntity> reminderEntities;
     private final OnReminderClicked onclick;
     private final OnReminderDelete onDelete;
 
-    public ReminderAdapter(List<Reminder> reminders, OnReminderClicked onclick, OnReminderDelete onDelete) {
-        this.reminders = reminders;
+    public ReminderAdapter(List<ReminderEntity> reminderEntities, OnReminderClicked onclick, OnReminderDelete onDelete) {
+        this.reminderEntities = reminderEntities;
         this.onclick = onclick;
         this.onDelete = onDelete;
     }
@@ -31,19 +32,19 @@ import java.util.List;
 
     @Override
     public void onBindViewHolder(ReminderViewHolder holder, int position) {
-        Reminder reminder = reminders.get(position);
-        holder.bind(reminder);
+        ReminderEntity reminderEntity = reminderEntities.get(position);
+        holder.bind(reminderEntity);
     }
 
     @Override
     public int getItemCount() {
-        if (reminders != null) {
-            return reminders.size();
+        if (reminderEntities != null) {
+            return reminderEntities.size();
         }
         return 0;
     }
 
     public interface OnReminderClicked {
-        void click(Reminder reminder);
+        void click(ReminderEntity reminderEntity);
     }
 }

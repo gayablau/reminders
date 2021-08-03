@@ -2,27 +2,40 @@ package com.example.androidgaya.details.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.androidgaya.repositories.models.Reminder
-import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.repositories.interfaces.RemindersDao
+import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.user.LoggedInLoggedInUserRepo
+import javax.inject.Inject
 
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
-    private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
+    @Inject
+    lateinit var remindersDao: RemindersDao
     private var loggedInUserRepo : LoggedInLoggedInUserRepo = LoggedInLoggedInUserRepo(application)
 
-    fun addReminder(reminder : Reminder, username: String) {
-        remindersRepo.addReminder(reminder, username)
+    init {
+        (application as AppDataGetter).getAppComponent()?.injectDetails(this)
     }
 
-    fun editReminder(reminder : Reminder, username: String) {
-        remindersRepo.editReminder(reminder, username)
+    fun addReminder(reminderEntity : ReminderEntity) {
+        remindersDao.addReminder(reminderEntity)
+    }
+
+    fun editReminder(reminderEntity : ReminderEntity) {
+        //remindersDao.editReminder(id, reminderEntity.header, reminderEntity.description, reminderEntity.time)
+        remindersDao.updateReminder(reminderEntity)
     }
 
     fun getUsername() : String? {
         return loggedInUserRepo.getUsername(getApplication())
     }
 
-    fun getReminderByID(id : Int, username: String) : Reminder? {
-        return remindersRepo.getReminderByID(id, username)
+    fun getReminderByID(id : Int) : ReminderEntity? {
+        return remindersDao.getReminderByID(id)
     }
+
+/*    fun getLiveDetails(username: String?) {
+        val list = remindersDao.getRemindersByUsername(username)
+        remindersList.postValue(list)
+    }*/
 }

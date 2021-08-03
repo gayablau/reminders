@@ -129,7 +129,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             else {
                 viewModel.createUser(username, password);
                 Log.i("login","user created with details: " + username + ", " + password);
-                viewModel.addUsername(username);
                 viewModel.setUsername(username);
                 goToMainActivity();
             }

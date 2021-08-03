@@ -21,6 +21,6 @@ class LoggedInLoggedInUserRepo(context: Context) : LoggedInUserInterface {
     }
 
     override fun setUsername(context: Context, username: String) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username), username)?.apply()
+        loggedInUserPref.edit().putString(context.getString(R.string.username), username).apply()
     }
 }

@@ -1,4 +1,4 @@
-package com.example.androidgaya.login.ui
+package com.example.androidgaya.repositories.di
 
 import android.app.Application
 import com.example.androidgaya.repositories.di.AppComponent

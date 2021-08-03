@@ -3,18 +3,16 @@ package com.example.androidgaya.login.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.androidgaya.login.ui.AppDataGetter
+import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.UserDao
 import com.example.androidgaya.repositories.models.UserEntity
-import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInLoggedInUserRepo
 import javax.inject.Inject
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     @Inject
     lateinit var userDao: UserDao
-    private var allusersList: MutableLiveData<List<UserEntity>>
-    private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
+    private var allusersList: MutableLiveData<ArrayList<UserEntity>>
     private var loggedInUserRepo : LoggedInLoggedInUserRepo = LoggedInLoggedInUserRepo(application)
 
     init {
@@ -23,13 +21,13 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         getAllUsers()
     }
 
-    fun getUsersObserver(): MutableLiveData<List<UserEntity>> {
+    fun getUsersObserver(): MutableLiveData<ArrayList<UserEntity>> {
         return allusersList
     }
 
     fun getAllUsers() {
         val list = userDao.getAllUsersFromDB()
-        allusersList.postValue(list)
+        allusersList.postValue(list as ArrayList<UserEntity>?)
     }
 
     fun insertUser(userEntity: UserEntity) {
@@ -38,7 +36,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setUsername(username: String) {
         loggedInUserRepo.setUsername(getApplication(), username)
-        remindersRepo.addUsername(username)
     }
 
     fun isUserLoggedIn() : Boolean {
@@ -60,12 +57,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createUser(username: String, password: String) {
-        //userRepo.createUser(username, password)
         insertUser(UserEntity(username, password))
-    }
-
-    fun addUsername(username: String) {
-        remindersRepo.addUsername(username)
-        loggedInUserRepo.setUsername(getApplication(), username)
     }
 }

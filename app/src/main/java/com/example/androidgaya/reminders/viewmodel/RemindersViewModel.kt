@@ -3,28 +3,50 @@ package com.example.androidgaya.reminders.viewmodel
 import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.androidgaya.repositories.models.Reminder
-import com.example.androidgaya.repositories.reminder.RemindersRepo
+import androidx.lifecycle.MutableLiveData
+import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.repositories.interfaces.RemindersDao
+import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.user.LoggedInLoggedInUserRepo
 import com.example.androidgaya.util.NotificationUtils
-import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class RemindersViewModel(application: Application) : AndroidViewModel(application) {
-    private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
+    @Inject
+    lateinit var remindersDao: RemindersDao
     private var loggedInUserRepo : LoggedInLoggedInUserRepo = LoggedInLoggedInUserRepo(application)
+    private var remindersList: MutableLiveData<ArrayList<ReminderEntity>?>
+    private var username: String?
 
-    fun deleteReminderById(id: Int, username: String, activity: Activity) {
-        remindersRepo.deleteReminderById(id, username)
+    init {
+        (application as AppDataGetter).getAppComponent()?.injectReminders(this)
+        remindersList = MutableLiveData()
+        username = getUsername()
+        getMyReminders(username)
+    }
+
+    fun deleteReminderById(id: Int, activity: Activity) {
+        remindersDao.deleteReminderById(id)
         NotificationUtils().deleteNotification(activity, id)
     }
 
-    fun getRemindersByUsername(username: String) : ArrayList<Reminder>? {
-        return remindersRepo.getRemindersByUsername(username)
+    fun getRemindersByUsername(username: String) : ArrayList<ReminderEntity>? {
+        return remindersDao.getRemindersByUsername(username) as ArrayList<ReminderEntity>
     }
 
     fun getUsername() : String? {
         return loggedInUserRepo.getUsername(getApplication())
     }
 
+    fun getMyReminders(username: String?) {
+        if (username != null) {
+            val list = remindersDao.getRemindersByUsername(username) as ArrayList<ReminderEntity>
+            remindersList.postValue(list)
+        }
+    }
 
+    fun getRemindersObserver(): MutableLiveData<ArrayList<ReminderEntity>?> {
+        return remindersList
+    }
 }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,18 +18,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.reminders.recyclerview.ReminderAdapter;
 import com.example.androidgaya.reminders.recyclerview.SwipeToDeleteCallback;
+import com.example.androidgaya.repositories.models.ReminderEntity;
+import com.example.androidgaya.repositories.models.UserEntity;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.ui.MainActivity;
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel;
-import com.example.androidgaya.repositories.models.Reminder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class RemindersFragment extends Fragment {
@@ -36,7 +41,7 @@ public class RemindersFragment extends Fragment {
     String username;
     FloatingActionButton addFab;
     RecyclerView recyclerViewReminders;
-    ArrayList<Reminder> remindersList;
+    List<ReminderEntity> remindersList;
     MainNavigator nav;
     RemindersViewModel viewModel;
 
@@ -106,7 +111,7 @@ public class RemindersFragment extends Fragment {
     }
 
     public void init(View view) {
-        viewModel = new ViewModelProvider(this).get(RemindersViewModel.class);
+        initViewModel();
         recyclerViewReminders = view.findViewById(R.id.recycler_view_reminders);
         addFab = view.findViewById(R.id.add_fab);
         recyclerViewReminders.setHasFixedSize(true);
@@ -127,7 +132,7 @@ public class RemindersFragment extends Fragment {
             id = reminder.getId();
             nav.toDetailsFragment(id);
         },
-                reminder -> viewModel.deleteReminderById(reminder.getId(), username, getActivity()));
+                reminder -> viewModel.deleteReminderById(reminder.getId(), getActivity()));
         recyclerViewReminders.setAdapter(reminderAdapter);
         recyclerViewReminders.setLayoutManager(new LinearLayoutManager(RemindersFragment.this.getContext()));
 
@@ -135,5 +140,16 @@ public class RemindersFragment extends Fragment {
                 new SwipeToDeleteCallback(reminderAdapter, username)
         );
         itemTouchHelper.attachToRecyclerView(recyclerViewReminders);
+    }
+
+    private void initViewModel() {
+        viewModel = new ViewModelProvider(this).get(RemindersViewModel.class);
+        viewModel.getRemindersObserver().observe((LifecycleOwner) RemindersFragment.this.getContext(), new Observer<List<ReminderEntity>>(){
+
+            @Override
+            public void onChanged(List<ReminderEntity> reminderEntities) {
+
+            }
+        });
     }
 }

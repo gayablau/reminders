@@ -6,7 +6,7 @@
     android:id="@+id/fragment_reminders"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".reminders.ui.RemindersFragment">
+    tools:context=".reminderEntities.ui.RemindersFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_reminders"
