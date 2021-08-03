@@ -19,12 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
-import com.example.androidgaya.repositories.di.AppComponent;
-import com.example.androidgaya.repositories.di.AppModule;
-import com.example.androidgaya.repositories.di.DaggerAppComponent;
 import com.example.androidgaya.repositories.models.UserEntity;
 import com.example.androidgaya.util.LoginNavigator;
-import com.example.androidgaya.util.MainNavigator;
 
 import java.util.List;
 //import dagger.android.DaggerApplication;
@@ -106,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        viewModel.getRecordsObserver().observe(this, new Observer<List<UserEntity>>(){
+        viewModel.getUsersObserver().observe(this, new Observer<List<UserEntity>>(){
             @Override
             public void onChanged(List<UserEntity> userEntities) {
                 if (!userEntities.isEmpty()) {
@@ -122,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     public void login() {
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
-        if (viewModel.areDetailesOK(username, password)) {
+        if (viewModel.areDetailsOK(username, password)) {
             viewModel.setUsername(username);
             goToMainActivity();
         }

@@ -5,13 +5,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.androidgaya.repositories.models.Reminder
 import com.example.androidgaya.repositories.reminder.RemindersRepo
-import com.example.androidgaya.repositories.user.UserRepo
+import com.example.androidgaya.repositories.user.LoggedInLoggedInUserRepo
 import com.example.androidgaya.util.NotificationUtils
 import java.util.*
 
 class RemindersViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
-    private var userRepo : UserRepo = UserRepo(application)
+    private var loggedInUserRepo : LoggedInLoggedInUserRepo = LoggedInLoggedInUserRepo(application)
 
     fun deleteReminderById(id: Int, username: String, activity: Activity) {
         remindersRepo.deleteReminderById(id, username)
@@ -23,7 +23,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getUsername() : String? {
-        return userRepo.getUsername(getApplication())
+        return loggedInUserRepo.getUsername(getApplication())
     }
 
 
