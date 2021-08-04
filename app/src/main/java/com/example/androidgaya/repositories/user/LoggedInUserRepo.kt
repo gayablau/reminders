@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import com.example.androidgaya.R
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
 
-class LoggedInLoggedInUserRepo(context: Context) : LoggedInUserInterface {
+class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     companion object {
         val EMPTY = ""
     }

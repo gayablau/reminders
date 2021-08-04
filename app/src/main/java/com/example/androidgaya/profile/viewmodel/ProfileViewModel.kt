@@ -5,23 +5,24 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.RemindersDao
 import com.example.androidgaya.repositories.interfaces.UserDao
-import com.example.androidgaya.repositories.user.LoggedInLoggedInUserRepo
+import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import com.example.androidgaya.repositories.user.UserRepo
 import javax.inject.Inject
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
-    @Inject
-    lateinit var userDao: UserDao
-    @Inject
-    lateinit var remindersDao: RemindersDao
-    private var loggedInUserRepo : LoggedInLoggedInUserRepo = LoggedInLoggedInUserRepo(application)
+
+    private var remindersRepo : RemindersRepo = RemindersRepo(application)
+    private var userRepo : UserRepo = UserRepo(application)
+    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectProfile(this)
     }
 
     fun editUsername(oldUsername: String, newUsername: String) {
-        remindersDao.editUsername(oldUsername, newUsername)
-        userDao.editUsername(oldUsername, newUsername)
+        remindersRepo.editUsername(oldUsername, newUsername)
+        userRepo.editUsername(oldUsername, newUsername)
         loggedInUserRepo.setUsername(getApplication(), newUsername)
     }
 
@@ -34,7 +35,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun isUsernameExists(username: String) : Boolean {
-        if (userDao.findUserByUsername(username) == null) {return false}
-        return true
+       return userRepo.isUsernameExists(username)
     }
 }

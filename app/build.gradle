@@ -71,6 +71,7 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.38.1'
     kapt 'com.google.dagger:dagger-compiler:2.38.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32"
+    implementation 'com.android.support:multidex:1.0.3'
 
 
 }

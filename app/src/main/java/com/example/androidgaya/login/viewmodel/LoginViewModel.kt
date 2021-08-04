@@ -6,14 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.UserDao
 import com.example.androidgaya.repositories.models.UserEntity
-import com.example.androidgaya.repositories.user.LoggedInLoggedInUserRepo
+import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import com.example.androidgaya.repositories.user.UserRepo
 import javax.inject.Inject
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
-    @Inject
-    lateinit var userDao: UserDao
+
+    private var userRepo : UserRepo = UserRepo(application)
     private var allusersList: MutableLiveData<ArrayList<UserEntity>>
-    private var loggedInUserRepo : LoggedInLoggedInUserRepo = LoggedInLoggedInUserRepo(application)
+    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectLogin(this)
@@ -26,12 +28,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getAllUsers() {
-        val list = userDao.getAllUsersFromDB()
+        val list = userRepo.getAllUsers()
         allusersList.postValue(list as ArrayList<UserEntity>?)
     }
 
     fun insertUser(userEntity: UserEntity) {
-        userDao.insertUser(userEntity)
+        userRepo.insertUser(userEntity)
     }
 
     fun setUsername(username: String) {
@@ -47,13 +49,11 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun areDetailsOK(username: String, password: String) : Boolean {
-        if (userDao.areDetailsOK(username,password) == null) {return false}
-        return true
+        return userRepo.areDetailsOK(username, password)
     }
 
     fun isUserExists(username: String): Boolean {
-        if (userDao.findUserByUsername(username) == null) {return false}
-        return true
+        return userRepo.isUserExists(username)
     }
 
     fun createUser(username: String, password: String) {
