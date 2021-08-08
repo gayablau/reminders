@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidgaya.R;
@@ -14,11 +15,11 @@ import java.util.List;
 
  public class ReminderAdapter extends RecyclerView.Adapter<ReminderViewHolder> {
 
-    private final MutableLiveData<ArrayList<ReminderEntity>> reminderEntities;
+    private final LiveData<List<ReminderEntity>> reminderEntities;
     private final OnReminderClicked onclick;
     private final OnReminderDelete onDelete;
 
-    public ReminderAdapter(MutableLiveData<ArrayList<ReminderEntity>> reminderEntities, OnReminderClicked onclick, OnReminderDelete onDelete) {
+    public ReminderAdapter(LiveData<List<ReminderEntity>> reminderEntities, OnReminderClicked onclick, OnReminderDelete onDelete) {
         this.reminderEntities = reminderEntities;
         this.onclick = onclick;
         this.onDelete = onDelete;

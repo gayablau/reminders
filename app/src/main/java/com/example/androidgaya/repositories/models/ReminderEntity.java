@@ -45,14 +45,20 @@ public class ReminderEntity {
                           String header,
                           String description,
                           String username,
-                          long time) {
+                          long time,
+                          long createdAt) {
         this.id = id;
         this.header = header;
         this.description = description;
         this.username = username;
         this.time = time;
-        Calendar helperCalendar = Calendar.getInstance();
-        this.createdAt = helperCalendar.getTimeInMillis();
+        if (createdAt == 0) {
+            Calendar helperCalendar = Calendar.getInstance();
+            this.createdAt = helperCalendar.getTimeInMillis();
+        }
+        else {
+            this.createdAt = createdAt;
+        }
     }
 
     public int getYear() {

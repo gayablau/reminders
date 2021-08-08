@@ -1,5 +1,6 @@
 package com.example.androidgaya.repositories.interfaces
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.models.UserEntity
@@ -20,8 +21,8 @@ interface RemindersDao {
     @Delete
     fun deleteReminder(reminderEntity: ReminderEntity)
 
-    @Query("SELECT * FROM reminders WHERE username LIKE :username")
-    fun getRemindersByUsername(username: String): List<ReminderEntity>?
+    @Query("SELECT * FROM reminders WHERE username LIKE :username ORDER BY createdAt ASC")
+    fun getRemindersByUsername(username: String): LiveData<List<ReminderEntity>>
 
     @Query("SELECT * FROM reminders WHERE id LIKE :id")
     fun getReminderByID(id: Int): ReminderEntity?

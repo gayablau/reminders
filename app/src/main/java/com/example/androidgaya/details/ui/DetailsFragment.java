@@ -56,6 +56,7 @@ public class DetailsFragment extends Fragment {
     private String todayDateNum;
     private String username = "";
     private int reminderId = 0;
+    private long createdAt = 0;
     private boolean isNewFlag = true;
     private DetailsViewModel viewModel;
     private MainNavigator nav;
@@ -195,7 +196,7 @@ public class DetailsFragment extends Fragment {
         if (isNewFlag) {
             reminderId = new Random(System.currentTimeMillis()).nextInt(10000);
         }
-        return new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis());
+        return new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis(), createdAt);
     }
 
     public void setUpdatedDetails() {
@@ -244,6 +245,7 @@ public class DetailsFragment extends Fragment {
                 ReminderEntity reminderEntity = viewModel.getReminderByID(reminderId);
                 chosenReminderHeader = reminderEntity.getHeader();
                 chosenReminderDescription = reminderEntity.getDescription();
+                createdAt = reminderEntity.getCreatedAt();
                 chosenTime.set(reminderEntity.getYear(), reminderEntity.getMonth(), reminderEntity.getDayOfMonth(),
                         reminderEntity.getHour(), reminderEntity.getMinutes());
                 reminderHeaderET.setText(chosenReminderHeader);

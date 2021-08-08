@@ -38,6 +38,7 @@ import com.example.androidgaya.main.ui.MainActivity;
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+/*
 public class RemindersFragment extends Fragment {
 
     private int id = 0;
@@ -57,6 +58,7 @@ public class RemindersFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        initViewModel();
     }
 
     @SuppressLint("RestrictedApi")
@@ -116,7 +118,7 @@ public class RemindersFragment extends Fragment {
     }
 
     public void init(View view) {
-        initViewModel();
+
         recyclerViewReminders = view.findViewById(R.id.recycler_view_reminders);
         addFab = view.findViewById(R.id.add_fab);
         recyclerViewReminders.setHasFixedSize(true);
@@ -140,7 +142,7 @@ public class RemindersFragment extends Fragment {
         }, reminder -> {
 
             viewModel.deleteReminder(reminder);
-             
+
             //remindersList.clear();
             //remindersList = viewModel.getRemindersObserver();
             //reminderAdapter.notifyDataSetChanged();
@@ -168,4 +170,4 @@ public class RemindersFragment extends Fragment {
             //viewModel.postMyReminders(username);
         });
     }
-}
+}*/

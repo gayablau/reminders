@@ -3,6 +3,7 @@ package com.example.androidgaya.repositories.reminder
 import android.app.Activity
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.multidex.MultiDexApplication
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.ReminderInterface
@@ -23,8 +24,8 @@ class RemindersRepo(application: Application) : ReminderInterface {
         remindersDao.deleteReminder(reminderEntity)
     }
 
-    fun getRemindersByUsername(username: String) : ArrayList<ReminderEntity>? {
-        return remindersDao.getRemindersByUsername(username) as ArrayList<ReminderEntity>?
+    fun getRemindersByUsername(username: String) : LiveData<List<ReminderEntity>> {
+        return remindersDao.getRemindersByUsername(username)
     }
 
     fun editUsername(oldUsername: String, newUsername: String) {
