@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.androidgaya.details.ui.DetailsFragment;
-import com.example.androidgaya.login.ui.LoginActivityActivity;
+import com.example.androidgaya.login.ui.LoginActivity;
 import com.example.androidgaya.profile.ui.ProfileFragment;
 import com.example.androidgaya.reminders.ui.RemindersFragment;
 
@@ -41,7 +41,7 @@ public class MainNavigator {
     }
 
     public void toLoginActivity() {
-        Intent intent = LoginActivityActivity.getIntent(activity);
+        Intent intent = LoginActivity.getIntent(activity);
         changeActivity(intent);
     }
 

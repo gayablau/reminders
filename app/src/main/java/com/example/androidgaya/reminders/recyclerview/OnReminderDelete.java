@@ -1,7 +1,7 @@
 package com.example.androidgaya.reminders.recyclerview;
 
-import com.example.androidgaya.repositories.models.Reminder;
+import com.example.androidgaya.repositories.models.ReminderEntity;
 
 public interface OnReminderDelete {
-    void delete(Reminder rem);
+    void delete(ReminderEntity rem);
 }

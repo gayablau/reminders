@@ -1,50 +1,44 @@
 package com.example.androidgaya.repositories.user
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
-import com.example.androidgaya.R
-import com.example.androidgaya.repositories.interfaces.UserInterface
+import android.app.Application
+import androidx.multidex.MultiDexApplication
+import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.repositories.interfaces.UserDao
+import com.example.androidgaya.repositories.models.UserEntity
+import javax.inject.Inject
 
-class UserRepo(context: Context) : UserInterface {
-    companion object {
-        val EMPTY = ""
-    }
-    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
-    private var allUsersPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.allUsersSP), MODE_PRIVATE)
+class UserRepo(application: Application) {
+    @Inject
+    lateinit var userDao: UserDao
 
-    override fun isUserLoggedIn(context: Context): Boolean {
-        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY) != EMPTY
+    init {
+        (application as AppDataGetter).getAppComponent()?.injectUserRepo(this)
     }
 
-    override fun getUsername(context: Context): String? {
-        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY)
+    fun editUsername(oldUsername: String, newUsername: String) {
+        userDao.editUsername(oldUsername, newUsername)
     }
 
-    override fun setUsername(context: Context, username: String) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username), username)?.apply()
+    fun isUsernameExists(username: String) : Boolean {
+        if (userDao.findUserByUsername(username) == null) {return false}
+        return true
     }
 
-    override fun editUsername(oldUsername: String, newUsername: String) {
-        val password = allUsersPref.getString(oldUsername, EMPTY)
-        allUsersPref.edit().remove(oldUsername).apply()
-        allUsersPref.edit().putString(newUsername, password).apply()
+    fun getAllUsers(): List<UserEntity>? {
+        return userDao.getAllUsersFromDB()
     }
 
-    override fun areDetailsOK(username: String, password: String): Boolean {
-        if (allUsersPref.getString(username, EMPTY) == password) {
-            return true
-        }
-        return false
+    fun insertUser(userEntity: UserEntity) {
+        userDao.insertUser(userEntity)
     }
 
-    override fun isUserExists(username: String): Boolean {
-        return allUsersPref.contains(username)
+    fun areDetailsOK(username: String, password: String) : Boolean {
+        if (userDao.areDetailsOK(username,password) == null) {return false}
+        return true
     }
 
-    override fun createUser(username: String, password: String) {
-        if (!isUserExists(username)) {
-            allUsersPref.edit().putString(username,password).apply()
-        }
+    fun isUserExists(username: String): Boolean {
+        if (userDao.findUserByUsername(username) == null) {return false}
+        return true
     }
 }

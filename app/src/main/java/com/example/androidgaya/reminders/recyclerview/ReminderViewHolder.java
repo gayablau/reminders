@@ -4,7 +4,8 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidgaya.R;
-import com.example.androidgaya.repositories.models.Reminder;
+import com.example.androidgaya.repositories.models.ReminderEntity;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,7 +18,7 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
     TextView time_tv;
     TextView date_tv;
     TextView day_tv;
-    Reminder reminder;
+    ReminderEntity reminderEntity;
     ReminderAdapter.OnReminderClicked onclick;
     OnReminderDelete onDelete;
 
@@ -33,12 +34,12 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
         itemView.setOnClickListener(this);
     }
 
-    public void bind(Reminder reminder) {
-        this.reminder = reminder;
-        Calendar calendar = reminder.getCalendar();
+    public void bind(ReminderEntity reminderEntity) {
+        this.reminderEntity = reminderEntity;
+        Calendar calendar = reminderEntity.getCalendar();
         setTimeText(calendar);
-        header_tv.setText(reminder.getHeader());
-        description_tv.setText(reminder.getDescription());
+        header_tv.setText(reminderEntity.getHeader());
+        description_tv.setText(reminderEntity.getDescription());
 
     }
 
@@ -61,10 +62,10 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View view) {
-        onclick.click(reminder);
+        onclick.click(reminderEntity);
     }
 
     public void onSwipe() {
-        onDelete.delete(reminder);
+        onDelete.delete(reminderEntity);
     }
 }

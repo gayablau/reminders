@@ -11,9 +11,12 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.main.viewmodel.MainViewModel;
+import com.example.androidgaya.repositories.di.AppComponent;
+import com.example.androidgaya.repositories.di.AppModule;
 import com.example.androidgaya.util.MainNavigator;
 
 import java.util.Objects;
+
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
     String username = "";
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         invalidateOptionsMenu();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         username = viewModel.getUsername();
-        viewModel.addUsername(username);
+        //viewModel.addUsername(username);
         nav = new MainNavigator(R.id.fragment_container, this);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
     }
@@ -70,5 +73,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         }
         invalidateOptionsMenu();
     }
+
+    
 }
 

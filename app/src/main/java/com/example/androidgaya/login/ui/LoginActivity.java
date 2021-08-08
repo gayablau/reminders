@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,20 +13,27 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
+import com.example.androidgaya.repositories.models.UserEntity;
 import com.example.androidgaya.util.LoginNavigator;
 
-public class LoginActivityActivity extends AppCompatActivity implements LoginActivityInterface {
+import java.util.List;
+//import dagger.android.DaggerApplication;
+
+
+public class LoginActivity extends AppCompatActivity implements LoginActivityInterface {
 
     EditText usernameEditText;
     EditText passwordEditText;
     Button loginButton;
     ImageView imageView;
     String username = "";
+    String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
 
@@ -53,10 +61,11 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
             @Override
             public void afterTextChanged(Editable s) { }
         });
+
     }
 
     public static Intent getIntent(Context context){
-        return new Intent(context, LoginActivityActivity.class);
+        return new Intent(context, LoginActivity.class);
     }
 
     @Override
@@ -77,7 +86,8 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
 
     public void init() {
         setContentView(R.layout.activity_login);
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
+        initViewModel();
         username = viewModel.getUsername();
         nav = new LoginNavigator(this);
         if (viewModel.isUserLoggedIn()) { nav.toMainActivity(); }
@@ -90,19 +100,36 @@ public class LoginActivityActivity extends AppCompatActivity implements LoginAct
 
     }
 
+    private void initViewModel() {
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        viewModel.getUsersObserver().observe(this, new Observer<List<UserEntity>>(){
+            @Override
+            public void onChanged(List<UserEntity> userEntities) {
+                if (!userEntities.isEmpty()) {
+                    for (UserEntity user : userEntities) {
+                        //TODO something idk
+                    }
+                }
+
+            }
+        });
+    }
+
     public void login() {
-        if (viewModel.areDetailesOK(usernameEditText.getText().toString(), passwordEditText.getText().toString())) {
-            viewModel.setUsername(usernameEditText.getText().toString());
+        username = usernameEditText.getText().toString();
+        password = passwordEditText.getText().toString();
+        if (viewModel.areDetailsOK(username, password)) {
+            viewModel.setUsername(username);
             goToMainActivity();
         }
         else {
-            if (viewModel.isUserExists(usernameEditText.getText().toString())) {
+            if (viewModel.isUserExists(username)) {
                 Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
             }
             else {
-                viewModel.createUser(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-                viewModel.addUsername(usernameEditText.getText().toString());
-                viewModel.setUsername(usernameEditText.getText().toString());
+                viewModel.createUser(username, password);
+                Log.i("login","user created with details: " + username + ", " + password);
+                viewModel.setUsername(username);
                 goToMainActivity();
             }
         }

@@ -2,27 +2,53 @@ package com.example.androidgaya.login.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.repositories.interfaces.UserDao
+import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
+import javax.inject.Inject
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
-    private var remindersRepo : RemindersRepo = RemindersRepo.getInstance()
-    private var userRepo : UserRepo = UserRepo(application)
 
-    fun setUsername(username : String) {
-        userRepo.setUsername(getApplication(), username)
-        remindersRepo.addUsername(username)
+    private var userRepo : UserRepo = UserRepo(application)
+    private var allusersList: MutableLiveData<ArrayList<UserEntity>>
+    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
+
+    init {
+        (application as AppDataGetter).getAppComponent()?.injectLogin(this)
+        allusersList = MutableLiveData()
+        getAllUsers()
+    }
+
+    fun getUsersObserver(): MutableLiveData<ArrayList<UserEntity>> {
+        return allusersList
+    }
+
+    fun getAllUsers() {
+        val list = userRepo.getAllUsers()
+        allusersList.postValue(list as ArrayList<UserEntity>?)
+    }
+
+    fun insertUser(userEntity: UserEntity) {
+        userRepo.insertUser(userEntity)
+    }
+
+    fun setUsername(username: String) {
+        loggedInUserRepo.setUsername(getApplication(), username)
     }
 
     fun isUserLoggedIn() : Boolean {
-        return userRepo.isUserLoggedIn(getApplication())
+        return loggedInUserRepo.isUserLoggedIn(getApplication())
     }
 
     fun getUsername() : String? {
-        return userRepo.getUsername(getApplication())
+        return loggedInUserRepo.getUsername(getApplication())
     }
 
-    fun areDetailesOK(username: String, password: String) : Boolean {
+    fun areDetailsOK(username: String, password: String) : Boolean {
         return userRepo.areDetailsOK(username, password)
     }
 
@@ -31,11 +57,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createUser(username: String, password: String) {
-        userRepo.createUser(username, password)
-    }
-
-    fun addUsername(username: String) {
-        remindersRepo.addUsername(username)
-        userRepo.setUsername(getApplication(), username)
+        insertUser(UserEntity(username, password))
     }
 }

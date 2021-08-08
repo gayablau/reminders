@@ -32,7 +32,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         ((ReminderViewHolder) viewHolder).onSwipe();
-        reminderAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+        reminderAdapter.notifyItemRemoved(viewHolder.getAbsoluteAdapterPosition());
     }
 
     @Override

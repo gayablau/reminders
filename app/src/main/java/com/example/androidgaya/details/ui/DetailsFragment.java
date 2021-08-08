@@ -22,10 +22,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.repositories.models.ReminderEntity;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
-import com.example.androidgaya.repositories.models.Reminder;
 import com.example.androidgaya.util.NotificationUtils;
 
 import java.text.DateFormat;
@@ -34,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.UUID;
 
 public class DetailsFragment extends Fragment {
     private static final String ID_KEY = "id";
@@ -57,6 +56,7 @@ public class DetailsFragment extends Fragment {
     private String todayDateNum;
     private String username = "";
     private int reminderId = 0;
+    private long createdAt = 0;
     private boolean isNewFlag = true;
     private DetailsViewModel viewModel;
     private MainNavigator nav;
@@ -191,12 +191,12 @@ public class DetailsFragment extends Fragment {
         return reminderHeaderET.getText().toString().trim().length() != 0;
     }
 
-    public Reminder createReminderFromInput() {
+    public ReminderEntity createReminderFromInput() {
         setUpdatedDetails();
         if (isNewFlag) {
             reminderId = new Random(System.currentTimeMillis()).nextInt(10000);
         }
-        return new Reminder(reminderId, chosenReminderHeader, chosenReminderDescription, chosenTime);
+        return new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis(), createdAt);
     }
 
     public void setUpdatedDetails() {
@@ -210,15 +210,13 @@ public class DetailsFragment extends Fragment {
             if (isTimeValid()) {
                 resetSeconds();
                 if (isNewFlag) {
-                    //setNewID();
-                    viewModel.addReminder(createReminderFromInput(), username);
+                    viewModel.addReminder(createReminderFromInput());
                     if (!isNotified) {
-                        //new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity(), chosenReminderHeader, chosenReminderDescription, reminderId);
                         isNotified = true;
                     }
                     makeToast(getString(R.string.add_msg));
                 } else {
-                    viewModel.editReminder(createReminderFromInput(), username);
+                    viewModel.editReminder(createReminderFromInput());
                     makeToast(getString(R.string.update_msg));
                 }
                 new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity(), chosenReminderHeader, chosenReminderDescription, reminderId);
@@ -243,13 +241,19 @@ public class DetailsFragment extends Fragment {
             isNewFlag = false;
             ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.edit_rem), true);
             reminderId = arguments.getInt(ID_KEY, 0);
-            Reminder reminder = viewModel.getReminderByID(reminderId, username);
-            chosenReminderHeader = reminder.getHeader();
-            chosenReminderDescription = reminder.getDescription();
-            chosenTime.set(reminder.getYear(), reminder.getMonth(), reminder.getDayOfMonth(),
-                    reminder.getHour(), reminder.getMinutes());
-            reminderHeaderET.setText(chosenReminderHeader);
-            reminderDescriptionET.setText(chosenReminderDescription);
+            try {
+                ReminderEntity reminderEntity = viewModel.getReminderByID(reminderId);
+                chosenReminderHeader = reminderEntity.getHeader();
+                chosenReminderDescription = reminderEntity.getDescription();
+                createdAt = reminderEntity.getCreatedAt();
+                chosenTime.set(reminderEntity.getYear(), reminderEntity.getMonth(), reminderEntity.getDayOfMonth(),
+                        reminderEntity.getHour(), reminderEntity.getMinutes());
+                reminderHeaderET.setText(chosenReminderHeader);
+                reminderDescriptionET.setText(chosenReminderDescription);
+            } catch (Exception ex) {
+                makeToast(getString(R.string.msg_rem_not_found));
+                nav.toRemindersFragment();
+            }
         } else {
             ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.add_rem), true);
             chosenTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
