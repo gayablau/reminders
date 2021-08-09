@@ -14,6 +14,7 @@ import com.example.androidgaya.main.viewmodel.MainViewModel;
 import com.example.androidgaya.repositories.di.AppComponent;
 import com.example.androidgaya.repositories.di.AppModule;
 import com.example.androidgaya.util.MainNavigator;
+import com.example.androidgaya.util.NotificationUtils;
 
 import java.util.Objects;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     public void logout() {
         viewModel.setUsername("");
         nav.toLoginActivity();
+        new NotificationUtils().cancelAll(this, viewModel.getMyRemindersIds(username));
     }
 
     public void init() {
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         //viewModel.addUsername(username);
         nav = new MainNavigator(R.id.fragment_container, this);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
+        new NotificationUtils().createAll(this, viewModel.getRemindersByUsernameList(username));
     }
 
 
