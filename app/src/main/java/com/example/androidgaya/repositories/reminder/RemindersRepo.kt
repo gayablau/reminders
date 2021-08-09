@@ -28,6 +28,10 @@ class RemindersRepo(application: Application) : ReminderInterface {
         return remindersDao.getRemindersByUsername(username)
     }
 
+    fun getRemindersByUsernameList(username: String) : List<ReminderEntity> {
+        return remindersDao.getRemindersByUsernameList(username)
+    }
+
     fun editUsername(oldUsername: String, newUsername: String) {
         remindersDao.editUsername(oldUsername, newUsername)
     }
@@ -42,5 +46,9 @@ class RemindersRepo(application: Application) : ReminderInterface {
 
     fun getReminderByID(id : Int) : ReminderEntity? {
         return remindersDao.getReminderByID(id)
+    }
+
+    fun getMyRemindersIds(username: String) : List<Int> {
+        return  remindersDao.getMyRemindersIds(username)
     }
 }

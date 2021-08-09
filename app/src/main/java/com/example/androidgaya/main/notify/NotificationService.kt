@@ -28,9 +28,9 @@ class NotificationService : IntentService("NotificationService") {
 
         if (intent != null && intent.extras != null) {
             timestamp = intent.extras!!.getLong(getString(R.string.timestamp))
-            header = intent?.extras!!.getString(getString(R.string.header)).toString()
-            description = intent?.extras!!.getString(getString(R.string.description)).toString()
-            id = intent?.extras!!.getInt(getString(R.string.id))
+            header = intent.extras!!.getString(getString(R.string.header)).toString()
+            description = intent.extras!!.getString(getString(R.string.description)).toString()
+            id = intent.extras!!.getInt(getString(R.string.id))
         }
         if (timestamp > 0) {
             val context = this.applicationContext
