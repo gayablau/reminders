@@ -64,6 +64,7 @@ public class DetailsFragment extends Fragment {
     private DateFormat wordsFormat;
     private DateFormat dayFormat;
     private boolean isNotified = false;
+    ReminderEntity reminderEntity;
 
     public DetailsFragment() {
     }
@@ -196,7 +197,8 @@ public class DetailsFragment extends Fragment {
         if (isNewFlag) {
             reminderId = new Random(System.currentTimeMillis()).nextInt(10000);
         }
-        return new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis(), createdAt);
+        reminderEntity = new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis(), createdAt);
+        return reminderEntity;
     }
 
     public void setUpdatedDetails() {
@@ -211,6 +213,7 @@ public class DetailsFragment extends Fragment {
                 resetSeconds();
                 if (isNewFlag) {
                     viewModel.addReminder(createReminderFromInput());
+                    //((MainActivityInterface) getActivity()).getSocket().emit("createReminder", reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis(), createdAt);
                     if (!isNotified) {
                         isNotified = true;
                     }

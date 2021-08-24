@@ -19,10 +19,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
+import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.repositories.models.UserEntity;
+import com.example.androidgaya.repositories.socket.SocketHandler;
 import com.example.androidgaya.util.LoginNavigator;
 
 import java.util.List;
+
+import io.socket.client.Socket;
 //import dagger.android.DaggerApplication;
 
 
@@ -36,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,16 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             @Override
             public void afterTextChanged(Editable s) { }
         });
+
+
+        //socket.connect();
+
+/*        socket.on("test", args -> {
+            if(args[0] != null) {
+                Log.i("socket111", args[0].toString());
+            }
+        });*/
+
 
     }
 
@@ -98,28 +113,24 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
 
+        startService(new Intent(this, SocketService.class));
+
+        /*val reminderObserver = Observer<List<ReminderEntity>?> { }
+
+        remindersList = viewModel.remindersList
+        remindersList.observe(this, reminderObserver)*/
     }
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        viewModel.getUsersObserver().observe(this, new Observer<List<UserEntity>>(){
-            @Override
-            public void onChanged(List<UserEntity> userEntities) {
-                if (!userEntities.isEmpty()) {
-                    for (UserEntity user : userEntities) {
-                        //TODO something idk
-                    }
-                }
-
-            }
-        });
     }
 
     public void login() {
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {
-            viewModel.setUsername(username);
+            viewModel.connectUser(username);
+            //socket.emit("connectUser", username);
             goToMainActivity();
         }
         else {
@@ -128,8 +139,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             }
             else {
                 viewModel.createUser(username, password);
-                Log.i("login","user created with details: " + username + ", " + password);
-                viewModel.setUsername(username);
+               // socket.emit("createUser", username, password);
+               // viewModel.setUsername(username);
                 goToMainActivity();
             }
         }

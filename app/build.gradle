@@ -32,6 +32,9 @@ android {
         //noinspection DataBindingWithoutKapt
         enabled = true
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -72,6 +75,9 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.38.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32"
     implementation 'com.android.support:multidex:1.0.3'
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 
 
 }

@@ -30,17 +30,6 @@ public class ReminderEntity {
     private long createdAt;
 
 
-/*    public ReminderEntity(String header,
-                          String description,
-                          String username,
-                          long time) {
-        this.id = new Random(System.currentTimeMillis()).nextInt(10000);
-        this.header = header;
-        this.description = description;
-        this.username = username;
-        this.time = time;
-    }*/
-
     public ReminderEntity(int id,
                           String header,
                           String description,

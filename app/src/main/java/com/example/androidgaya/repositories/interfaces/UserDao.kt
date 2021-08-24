@@ -1,5 +1,6 @@
 package com.example.androidgaya.repositories.interfaces
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,7 +10,7 @@ import com.example.androidgaya.repositories.models.UserEntity
 @Dao
 interface UserDao {
     @Query("SELECT * FROM users ORDER BY id DESC")
-    fun getAllUsersFromDB(): List<UserEntity>?
+    fun getAllUsersFromDB(): LiveData<List<UserEntity>?>
 
     @Insert
     fun insertUser(userEntity: UserEntity)

@@ -3,10 +3,19 @@ package com.example.androidgaya.repositories.user
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
 import com.example.androidgaya.R
+import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.repositories.interfaces.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
+import com.example.androidgaya.repositories.interfaces.UserDao
+import com.example.androidgaya.repositories.models.LoggedInUserEntity
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
+
     companion object {
         val EMPTY = ""
     }

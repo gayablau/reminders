@@ -10,6 +10,8 @@ import com.example.androidgaya.repositories.interfaces.ReminderInterface
 import com.example.androidgaya.repositories.interfaces.RemindersDao
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.util.NotificationUtils
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class RemindersRepo(application: Application) : ReminderInterface {
@@ -20,8 +22,8 @@ class RemindersRepo(application: Application) : ReminderInterface {
         (application as AppDataGetter).getAppComponent()?.injectRemindersRepo(this)
     }
 
-    fun deleteReminder(reminderEntity: ReminderEntity) {
-        remindersDao.deleteReminder(reminderEntity)
+    fun deleteReminder(reminderEntity: ReminderEntity) = runBlocking {
+        launch {  remindersDao.deleteReminder(reminderEntity) }
     }
 
     fun getRemindersByUsername(username: String) : LiveData<List<ReminderEntity>> {
@@ -32,16 +34,16 @@ class RemindersRepo(application: Application) : ReminderInterface {
         return remindersDao.getRemindersByUsernameList(username)
     }
 
-    fun editUsername(oldUsername: String, newUsername: String) {
-        remindersDao.editUsername(oldUsername, newUsername)
+    fun editUsername(oldUsername: String, newUsername: String) = runBlocking {
+        launch {remindersDao.editUsername(oldUsername, newUsername) }
     }
 
-    fun addReminder(reminderEntity : ReminderEntity) {
-        remindersDao.addReminder(reminderEntity)
+    fun addReminder(reminderEntity : ReminderEntity) = runBlocking {
+        launch { remindersDao.addReminder(reminderEntity) }
     }
 
-    fun editReminder(reminderEntity : ReminderEntity) {
-        remindersDao.updateReminder(reminderEntity)
+    fun editReminder(reminderEntity : ReminderEntity) = runBlocking {
+        launch { remindersDao.updateReminder(reminderEntity) }
     }
 
     fun getReminderByID(id : Int) : ReminderEntity? {
