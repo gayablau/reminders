@@ -7,12 +7,14 @@ import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.main.viewmodel.MainViewModel;
+import com.example.androidgaya.reminders.ui.RemindersFragment;
 import com.example.androidgaya.repositories.di.AppComponent;
 import com.example.androidgaya.repositories.di.AppModule;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
@@ -28,7 +30,7 @@ import io.socket.client.Socket;
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
     String username;
-    LiveData<List<LoggedInUserEntity>> loggedInList;
+    LiveData<List<LoggedInUserEntity>> loggedInUserList;
     Toolbar toolbar;
     MainViewModel viewModel;
     MainNavigator nav;
@@ -96,16 +98,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        /*Observer<List<LoggedInUserEntity>> loggedInObserver = new Observer<List<LoggedInUserEntity>>() {
+        Observer<List<LoggedInUserEntity>> loggedInObserver = new Observer<List<LoggedInUserEntity>>() {
             @Override
             public void onChanged(List<LoggedInUserEntity> loggedInUserEntities) {
-                username = viewModel.getUsernameStr();
-                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
+                if (!loggedInUserEntities.isEmpty()) {
+                    username = loggedInUserEntities.get(0).getUsername();
+                }
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                if (currentFragment instanceof RemindersFragment) {
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
+                }
             }
         };
-        viewModel.updateUsernameLive();
-        loggedInList = viewModel.loggedInList;
-        loggedInList.observe(this, loggedInObserver);*/
+
+        loggedInUserList = viewModel.loggedInUserList;
+        loggedInUserList.observe(this, loggedInObserver);
     }
 }
 

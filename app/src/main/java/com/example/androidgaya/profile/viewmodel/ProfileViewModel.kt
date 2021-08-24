@@ -34,11 +34,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getUsername() : String? {
-        return loggedInUserRepo.getUsername(getApplication())
+        return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
     fun setUsername(username : String) {
-        loggedInUserRepo.setUsername(getApplication(), username)
+        loggedInUserRepo.setLoggedInUsername(getApplication(), username)
     }
 
     fun isUsernameExists(username: String) : Boolean {

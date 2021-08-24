@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,6 +21,7 @@ import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.socket.SocketService;
+import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.repositories.models.UserEntity;
 import com.example.androidgaya.repositories.socket.SocketHandler;
 import com.example.androidgaya.util.LoginNavigator;
@@ -40,7 +42,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
-
+    LiveData<List<LoggedInUserEntity>> loggedInUserList;
+    Intent socketIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,18 +69,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             @Override
             public void afterTextChanged(Editable s) { }
         });
-
-
-        //socket.connect();
-
-/*        socket.on("test", args -> {
-            if(args[0] != null) {
-                Log.i("socket111", args[0].toString());
-            }
-        });*/
-
-
     }
+
 
     public static Intent getIntent(Context context){
         return new Intent(context, LoginActivity.class);
@@ -105,7 +98,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         initViewModel();
         username = viewModel.getUsername();
         nav = new LoginNavigator(this);
-        if (viewModel.isUserLoggedIn()) { nav.toMainActivity(); }
+        if (viewModel.isUserLoggedIn() && viewModel.isUserExists(username)) { nav.toMainActivity();
+            viewModel.connectUser(username);}
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);
@@ -113,24 +107,23 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
 
-        startService(new Intent(this, SocketService.class));
-
-        /*val reminderObserver = Observer<List<ReminderEntity>?> { }
-
-        remindersList = viewModel.remindersList
-        remindersList.observe(this, reminderObserver)*/
+        socketIntent = new Intent(this, SocketService.class);
+        if (socketIntent != null) {
+            startService(socketIntent);
+        }
     }
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
     }
 
+
+
     public void login() {
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {
             viewModel.connectUser(username);
-            //socket.emit("connectUser", username);
             goToMainActivity();
         }
         else {
@@ -139,8 +132,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             }
             else {
                 viewModel.createUser(username, password);
-               // socket.emit("createUser", username, password);
-               // viewModel.setUsername(username);
+               // socket.emit("createUser", username, password)
                 goToMainActivity();
             }
         }

@@ -16,6 +16,7 @@ import javax.inject.Singleton
 @Component(modules = [AppModule::class])
 interface AppComponent {
     fun injectLogin(loginViewModel: LoginViewModel)
+    fun injectMain(mainViewModel: MainViewModel)
     fun injectProfile(profileViewModel: ProfileViewModel)
     fun injectDetails(detailsViewModel: DetailsViewModel)
     fun injectReminders(remindersViewModel: RemindersViewModel)

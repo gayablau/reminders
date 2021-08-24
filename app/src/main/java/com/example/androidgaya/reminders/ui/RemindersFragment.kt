@@ -2,6 +2,7 @@ package com.example.androidgaya.reminders.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -123,6 +124,8 @@ class RemindersFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(RemindersViewModel::class.java)
 
         val reminderObserver = Observer<List<ReminderEntity>?> { newRem ->
+            Log.i("wtf", newRem.toString())
+            //newRem.filter { entity -> entity.username == username }
             reminderAdapter.notifyDataSetChanged()
         }
 

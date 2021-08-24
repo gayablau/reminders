@@ -3,6 +3,7 @@ package com.example.androidgaya.reminders.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
@@ -23,8 +24,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectReminders(this)
-        username = getUsername()
-        getMyReminders(username)
+        getMyReminders()
     }
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
@@ -38,15 +38,19 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
                 reminderEntity.createdAt)
     }
 
-    fun getRemindersByUsername(username: String) : LiveData<List<ReminderEntity>> {
-        return remindersRepo.getRemindersByUsername(username)
+    private fun getRemindersByUsername() : LiveData<List<ReminderEntity>> {
+        username = getUsername()
+        //return remindersRepo.getReminders()
+        return Transformations.map(remindersRepo.getReminders()) {
+            it.filter { rem -> rem.username == username }
+        }
     }
 
     fun getUsername() : String {
-        return loggedInUserRepo.getUsername(getApplication()) ?: ""
+        return loggedInUserRepo.getLoggedInUsername(getApplication()) ?: ""
     }
 
-    fun getMyReminders(username: String) {
-        remindersList = getRemindersByUsername(username)
+    fun getMyReminders() {
+        remindersList = getRemindersByUsername()
     }
 }

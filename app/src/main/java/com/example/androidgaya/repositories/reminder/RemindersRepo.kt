@@ -26,8 +26,8 @@ class RemindersRepo(application: Application) : ReminderInterface {
         launch {  remindersDao.deleteReminder(reminderEntity) }
     }
 
-    fun getRemindersByUsername(username: String) : LiveData<List<ReminderEntity>> {
-        return remindersDao.getRemindersByUsername(username)
+    fun getReminders() : LiveData<List<ReminderEntity>> {
+        return remindersDao.getAllRemindersFromDB()
     }
 
     fun getRemindersByUsernameList(username: String) : List<ReminderEntity> {

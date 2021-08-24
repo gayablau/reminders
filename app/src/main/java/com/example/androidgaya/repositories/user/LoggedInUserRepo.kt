@@ -19,17 +19,31 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     companion object {
         val EMPTY = ""
     }
+
+    @Inject
+    lateinit var loggedInUserDao: LoggedInUserDao
+
     private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
+
+    init {
+        (context as AppDataGetter).getAppComponent()?.injectLoggedInUserRepo(this)
+    }
 
     override fun isUserLoggedIn(context: Context): Boolean {
         return loggedInUserPref.getString(context.getString(R.string.username), EMPTY) != EMPTY
     }
 
-    override fun getUsername(context: Context): String? {
+    override fun getLoggedInUsername(context: Context): String? {
         return loggedInUserPref.getString(context.getString(R.string.username), EMPTY)
     }
 
-    override fun setUsername(context: Context, username: String) {
+    override fun setLoggedInUsername(context: Context, username: String) {
         loggedInUserPref.edit().putString(context.getString(R.string.username), username).apply()
+        loggedInUserDao.deleteOldLogins()
+        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(username))
+    }
+
+    override fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?> {
+        return loggedInUserDao.getLoggedInUserFromDBLive()
     }
 }

@@ -3,34 +3,40 @@ package com.example.androidgaya.main.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import io.socket.client.Socket
+import javax.inject.Inject
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
     private var remindersRepo : RemindersRepo = RemindersRepo(application)
-    //lateinit var loggedInList : LiveData<List<LoggedInUserEntity>?>
+    lateinit var loggedInUserList : LiveData<List<LoggedInUserEntity>?>
 
-    //var username : String = ""
+    @set:Inject
+    var mSocket: Socket? = null
 
-/*    init {
-        updateUsernameLive()
-    }*/
+    init {
+        (application as AppDataGetter).getAppComponent()?.injectMain(this)
+        updateLoggedInUser()
+        getAllReminders()
+    }
+
 
 /*    fun logout() {
         loggedInUserRepo.logout(username)
     }*/
 
     fun setUsername(username : String) {
-        loggedInUserRepo.setUsername(getApplication(), username)
+        loggedInUserRepo.setLoggedInUsername(getApplication(), username)
     }
 
     fun getUsernameStr() : String? {
-
-        return loggedInUserRepo.getUsername(getApplication()).toString()
+        return loggedInUserRepo.getLoggedInUsername(getApplication()).toString()
     }
 
     fun getMyRemindersIds(username: String) : List<Int> {
@@ -41,8 +47,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return remindersRepo.getRemindersByUsernameList(username)
     }
 
-/*    fun updateUsernameLive() {
-        loggedInList = loggedInUserRepo.loggedInList
-        username = loggedInUserRepo.getUsernameStr() ?: ""
-    }*/
+    fun getLoggedInUser() : LiveData<List<LoggedInUserEntity>?> {
+        return loggedInUserRepo.getLoggedInUserFromDB()
+    }
+
+    fun updateLoggedInUser() {
+        loggedInUserList = getLoggedInUser()
+    }
+
+    fun getAllReminders() {
+        mSocket!!.emit("getAllReminders")
+    }
 }

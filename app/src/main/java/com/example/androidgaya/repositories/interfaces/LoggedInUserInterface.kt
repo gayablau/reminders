@@ -5,6 +5,7 @@ import com.example.androidgaya.repositories.models.LoggedInUserEntity
 
 interface LoggedInUserInterface {
     fun isUserLoggedIn(context: Context): Boolean
-    fun getUsername(context: Context): String?
-    fun setUsername(context: Context, username: String)
+    fun getLoggedInUsername(context: Context): String?
+    fun setLoggedInUsername(context: Context, username: String)
+    fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?>
 }

@@ -9,8 +9,8 @@ import kotlin.collections.ArrayList
 
 @Dao
 interface RemindersDao {
-    @Query("SELECT * FROM reminders")
-    fun getAllRemindersFromDB(): List<ReminderEntity>?
+    @Query("SELECT * FROM reminders ORDER BY createdAt ASC")
+    fun getAllRemindersFromDB(): LiveData<List<ReminderEntity>>
 
     @Insert
     fun addReminder(reminderEntity: ReminderEntity)
