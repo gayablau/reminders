@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     Button loginButton;
     ImageView imageView;
     String username = "";
+    int userId = 1;
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
@@ -97,9 +98,10 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
 
         initViewModel();
         username = viewModel.getUsername();
+        userId = viewModel.getUserId();
         nav = new LoginNavigator(this);
         if (viewModel.isUserLoggedIn() && viewModel.isUserExists(username)) { nav.toMainActivity();
-            viewModel.connectUser(username);}
+            viewModel.connectUser(userId, username);}
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);
@@ -107,10 +109,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
 
-        socketIntent = new Intent(this, SocketService.class);
-        if (socketIntent != null) {
-            startService(socketIntent);
-        }
+        startService(new Intent(this, SocketService.class));
     }
 
     private void initViewModel() {
@@ -123,7 +122,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {
-            viewModel.connectUser(username);
+            viewModel.connectUser(userId, username);
             goToMainActivity();
         }
         else {
@@ -131,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
                 Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
             }
             else {
-                viewModel.createUser(username, password);
+                viewModel.createNewUser(username, password);
                // socket.emit("createUser", username, password)
                 goToMainActivity();
             }

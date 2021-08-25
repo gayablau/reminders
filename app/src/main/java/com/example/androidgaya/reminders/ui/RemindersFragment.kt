@@ -27,7 +27,7 @@ class RemindersFragment : Fragment() {
     var username: String? = ""
     lateinit var addFab: FloatingActionButton
     lateinit var recyclerViewReminders: RecyclerView
-    lateinit var remindersList: LiveData<List<ReminderEntity>>
+    lateinit var remindersList: LiveData<List<ReminderEntity>?>
     lateinit var nav: MainNavigator
     lateinit var viewModel: RemindersViewModel
     lateinit var reminderAdapter: ReminderAdapter

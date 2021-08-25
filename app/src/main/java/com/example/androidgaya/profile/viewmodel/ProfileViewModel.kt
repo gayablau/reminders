@@ -25,11 +25,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun editUsername(oldUsername: String, newUsername: String) {
-        remindersRepo.editUsername(oldUsername, newUsername)
         userRepo.editUsername(oldUsername, newUsername)
         setUsername(newUsername)
         mSocket!!.emit("changeUsername",
                 oldUsername,
+                newUsername)
+        mSocket!!.emit("changeUsernameOnly",
                 newUsername)
     }
 

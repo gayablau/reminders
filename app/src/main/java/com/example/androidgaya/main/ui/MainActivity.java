@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.main.viewmodel.MainViewModel;
 import com.example.androidgaya.reminders.ui.RemindersFragment;
 import com.example.androidgaya.repositories.di.AppComponent;
@@ -55,9 +56,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     }
 
     public void logout() {
-        viewModel.setUsername("");
+        viewModel.logout();
+        stopService(new Intent(this, SocketService.class));
         nav.toLoginActivity();
-        new NotificationUtils().cancelAll(this, viewModel.getMyRemindersIds(username));
+        new NotificationUtils().cancelAll(this, viewModel.getMyRemindersIds());
     }
 
     public void init() {
@@ -65,16 +67,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
-        /*SocketHandler.INSTANCE.setSocket();
-        SocketHandler.INSTANCE.establishConnection();
-        socket = SocketHandler.INSTANCE.getSocket();
-        socket.connect();
-        socket.emit("connectUser", username);*/
         initViewModel();
         username = viewModel.getUsernameStr();
         nav = new MainNavigator(R.id.fragment_container, this);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
-        new NotificationUtils().createAll(this, viewModel.getRemindersByUsernameList(username));
+        new NotificationUtils().createAll(this, viewModel.getRemindersByUsernameList());
 
     }
 

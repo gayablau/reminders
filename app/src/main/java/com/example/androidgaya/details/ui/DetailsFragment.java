@@ -55,6 +55,7 @@ public class DetailsFragment extends Fragment {
     private String chosenDateWords;
     private String todayDateNum;
     private String username = "";
+    private int userId = 1;
     private int reminderId = 0;
     private long createdAt = 0;
     private boolean isNewFlag = true;
@@ -197,7 +198,7 @@ public class DetailsFragment extends Fragment {
         if (isNewFlag) {
             reminderId = new Random(System.currentTimeMillis()).nextInt(10000);
         }
-        reminderEntity = new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis(), createdAt);
+        reminderEntity = new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, userId, chosenTime.getTimeInMillis(), createdAt);
         return reminderEntity;
     }
 
@@ -292,6 +293,7 @@ public class DetailsFragment extends Fragment {
 
     public void getUsername() {
         username = viewModel.getUsername();
+        userId = viewModel.getUserId();
     }
 
     public void makeToast(String msg) {

@@ -59,4 +59,5 @@
     <string name="notification">notification</string>
     <string name="reason">reason</string>
     <string name="msg_rem_not_found">Error reminder doesn\'t exist</string>
+    <string name="UserId">UserId</string>
 </resources>

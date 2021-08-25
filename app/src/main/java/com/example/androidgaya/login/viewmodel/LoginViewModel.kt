@@ -3,17 +3,13 @@ package com.example.androidgaya.login.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.models.UserEntity
-import com.example.androidgaya.repositories.socket.SocketHandler.establishConnection
-import com.example.androidgaya.repositories.socket.SocketHandler.getSocket
-import com.example.androidgaya.repositories.socket.SocketHandler.setSocket
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import io.socket.client.Socket
+import java.util.*
 import javax.inject.Inject
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
@@ -46,7 +42,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         userRepo.insertUser(userEntity)
     }
 
-    fun setUsername(username: String) {
+    fun setUsername(userId: Int, username: String) {
         loggedInUserRepo.setLoggedInUsername(getApplication(), username)
     }
 
@@ -54,8 +50,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         return loggedInUserRepo.isUserLoggedIn(getApplication())
     }
 
-    fun getUsername() : String? {
-        return loggedInUserRepo.getLoggedInUsername(getApplication())
+    fun getUsername() : String {
+        return loggedInUserRepo.getLoggedInUsername(getApplication()) ?: ""
+    }
+
+    fun getUserId() : Int {
+        return userRepo.findUserIdByUsername(getUsername())
     }
 
     fun areDetailsOK(username: String, password: String) : Boolean {
@@ -67,15 +67,22 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         return userRepo.isUserExists(username)
     }
 
-    fun createUser(username: String, password: String) {
-        insertUser(UserEntity(username, password))
-        setUsername(username)
-        mSocket!!.emit("createUser", username, password)
+    fun createUser(userId: Int, username: String, password: String) {
+        insertUser(UserEntity(userId, username, password))
+        setUsername(userId, username)
+        mSocket!!.emit("createUser", userId, username, password)
     }
 
-    fun connectUser(username: String) {
-        setUsername(username)
-        mSocket!!.emit("connectUser", username)
+    fun createNewUser(username: String, password: String) {
+        val userId = Random(System.currentTimeMillis()).nextInt(10000)
+        insertUser(UserEntity(userId, username, password))
+        setUsername(userId, username)
+        mSocket!!.emit("createUser", userId, username, password)
+    }
+
+    fun connectUser(userId: Int, username: String) {
+        setUsername(userId, username)
+        mSocket!!.emit("connectUser", userId, username)
     }
 
     fun getAllUsers() {

@@ -37,6 +37,10 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         return loggedInUserPref.getString(context.getString(R.string.username), EMPTY)
     }
 
+    override fun getLoggedInUserId(context: Context): Int? {
+        return loggedInUserPref.getInt(context.getString(R.string.UserId), 0)
+    }
+
     override fun setLoggedInUsername(context: Context, username: String) {
         loggedInUserPref.edit().putString(context.getString(R.string.username), username).apply()
         loggedInUserDao.deleteOldLogins()

@@ -26,16 +26,12 @@ class RemindersRepo(application: Application) : ReminderInterface {
         launch {  remindersDao.deleteReminder(reminderEntity) }
     }
 
-    fun getReminders() : LiveData<List<ReminderEntity>> {
-        return remindersDao.getAllRemindersFromDB()
+    fun getReminders(userId: Int) : LiveData<List<ReminderEntity>?> {
+        return remindersDao.getRemindersByUserId(userId)
     }
 
-    fun getRemindersByUsernameList(username: String) : List<ReminderEntity> {
-        return remindersDao.getRemindersByUsernameList(username)
-    }
-
-    fun editUsername(oldUsername: String, newUsername: String) = runBlocking {
-        launch {remindersDao.editUsername(oldUsername, newUsername) }
+    fun getRemindersByUsernameList(userId : Int) : List<ReminderEntity> {
+        return remindersDao.getRemindersByUserIdList(userId)
     }
 
     fun addReminder(reminderEntity : ReminderEntity) = runBlocking {
@@ -50,7 +46,7 @@ class RemindersRepo(application: Application) : ReminderInterface {
         return remindersDao.getReminderByID(id)
     }
 
-    fun getMyRemindersIds(username: String) : List<Int> {
-        return  remindersDao.getMyRemindersIds(username)
+    fun getMyRemindersIds(userId : Int) : List<Int> {
+        return  remindersDao.getMyRemindersIds(userId)
     }
 }

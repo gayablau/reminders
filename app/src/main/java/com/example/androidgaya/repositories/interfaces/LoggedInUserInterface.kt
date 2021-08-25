@@ -8,4 +8,5 @@ interface LoggedInUserInterface {
     fun getLoggedInUsername(context: Context): String?
     fun setLoggedInUsername(context: Context, username: String)
     fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?>
+    fun getLoggedInUserId(context: Context): Int?
 }

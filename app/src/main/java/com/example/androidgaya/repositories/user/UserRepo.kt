@@ -48,4 +48,8 @@ class UserRepo(application: Application) {
         if (userDao.findUserByUsername(username) == null) {return false}
         return true
     }
+
+    fun findUserIdByUsername(username: String): Int {
+        return userDao.findUserIdByUsername(username)
+    }
 }

@@ -21,17 +21,18 @@ interface RemindersDao {
     @Delete
     fun deleteReminder(reminderEntity: ReminderEntity)
 
-    @Query("SELECT * FROM reminders WHERE username LIKE :username ORDER BY createdAt ASC")
-    fun getRemindersByUsername(username: String): LiveData<List<ReminderEntity>>
+    @Query("SELECT * FROM reminders WHERE user LIKE :userId ORDER BY createdAt ASC")
+    fun getRemindersByUserId(userId : Int): LiveData<List<ReminderEntity>?>
 
-    @Query("SELECT * FROM reminders WHERE username LIKE :username ORDER BY createdAt ASC")
+    @Query("SELECT * FROM reminders WHERE user LIKE :userId ORDER BY createdAt ASC")
+    fun getRemindersByUserIdList(userId : Int): List<ReminderEntity>
+
+    @Query("SELECT * FROM reminders WHERE user LIKE :username ORDER BY createdAt ASC")
     fun getRemindersByUsernameList(username: String): List<ReminderEntity>
 
     @Query("SELECT * FROM reminders WHERE id LIKE :id")
     fun getReminderByID(id: Int): ReminderEntity?
 
-    @Query("UPDATE reminders SET username = :newUsername WHERE username = :oldUsername")
-    fun editUsername(oldUsername: String, newUsername: String)
 
     @Query("UPDATE reminders SET header = :header AND description = :description AND time = :time WHERE id = :id")
     fun editReminder(id: Int, header: String, description: String, time: Long)
@@ -39,6 +40,7 @@ interface RemindersDao {
     @Query("DELETE FROM reminders WHERE id = :id")
     fun deleteReminderById(id: Int)
 
-    @Query("SELECT id FROM reminders WHERE username LIKE :username ORDER BY createdAt ASC")
-    fun getMyRemindersIds(username: String): List<Int>
+    @Query("SELECT id FROM reminders WHERE user LIKE :userId ORDER BY createdAt ASC")
+    fun getMyRemindersIds(userId : Int): List<Int>
+
 }
