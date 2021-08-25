@@ -1,13 +1,16 @@
 package com.example.androidgaya.details.viewmodel
 
+import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.RemindersDao
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
+import com.example.androidgaya.util.NotificationUtils
 import io.socket.client.Socket
 import javax.inject.Inject
 

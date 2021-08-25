@@ -42,7 +42,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         userRepo.insertUser(userEntity)
     }
 
-    fun setUsername(userId: Int, username: String) {
+    fun setUsername(username: String) {
         loggedInUserRepo.setLoggedInUsername(getApplication(), username)
     }
 
@@ -69,19 +69,19 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun createUser(userId: Int, username: String, password: String) {
         insertUser(UserEntity(userId, username, password))
-        setUsername(userId, username)
+        setUsername(username)
         mSocket!!.emit("createUser", userId, username, password)
     }
 
     fun createNewUser(username: String, password: String) {
         val userId = Random(System.currentTimeMillis()).nextInt(10000)
         insertUser(UserEntity(userId, username, password))
-        setUsername(userId, username)
+        setUsername(username)
         mSocket!!.emit("createUser", userId, username, password)
     }
 
     fun connectUser(userId: Int, username: String) {
-        setUsername(userId, username)
+        setUsername(username)
         mSocket!!.emit("connectUser", userId, username)
     }
 

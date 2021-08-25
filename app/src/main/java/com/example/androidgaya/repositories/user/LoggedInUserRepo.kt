@@ -33,11 +33,11 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         return loggedInUserPref.getString(context.getString(R.string.username), EMPTY) != EMPTY
     }
 
-    override fun getLoggedInUsername(context: Context): String? {
-        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY)
+    override fun getLoggedInUsername(context: Context): String {
+        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY) ?: EMPTY
     }
 
-    override fun getLoggedInUserId(context: Context): Int? {
+    override fun getLoggedInUserId(context: Context): Int {
         return loggedInUserPref.getInt(context.getString(R.string.UserId), 0)
     }
 
@@ -45,6 +45,11 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         loggedInUserPref.edit().putString(context.getString(R.string.username), username).apply()
         loggedInUserDao.deleteOldLogins()
         loggedInUserDao.addLoggedInUser(LoggedInUserEntity(username))
+    }
+
+    override fun logout(context: Context) {
+        loggedInUserPref.edit().putString(context.getString(R.string.username), EMPTY).apply()
+        loggedInUserDao.deleteOldLogins()
     }
 
     override fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?> {

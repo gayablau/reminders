@@ -31,6 +31,7 @@ import io.socket.client.Socket;
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
     String username;
+    int userId;
     LiveData<List<LoggedInUserEntity>> loggedInUserList;
     Toolbar toolbar;
     MainViewModel viewModel;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         viewModel.logout();
         stopService(new Intent(this, SocketService.class));
         nav.toLoginActivity();
-        new NotificationUtils().cancelAll(this, viewModel.getMyRemindersIds());
+        new NotificationUtils().cancelAll(this, viewModel.getMyRemindersIds(userId));
     }
 
     public void init() {
@@ -69,9 +70,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         invalidateOptionsMenu();
         initViewModel();
         username = viewModel.getUsernameStr();
+        userId = viewModel.getUserId(username);
         nav = new MainNavigator(R.id.fragment_container, this);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
-        new NotificationUtils().createAll(this, viewModel.getRemindersByUsernameList());
+        new NotificationUtils().createAll(this, viewModel.getRemindersByUserIdList(userId));
 
     }
 

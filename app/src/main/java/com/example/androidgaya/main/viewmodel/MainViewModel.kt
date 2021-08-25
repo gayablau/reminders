@@ -18,7 +18,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo : RemindersRepo = RemindersRepo(application)
     private var userRepo : UserRepo = UserRepo(application)
     lateinit var loggedInUserList : LiveData<List<LoggedInUserEntity>?>
-    var userId : Int = 0
 
     @set:Inject
     var mSocket: Socket? = null
@@ -27,12 +26,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         (application as AppDataGetter).getAppComponent()?.injectMain(this)
         updateLoggedInUser()
         getAllReminders()
-        userId = loggedInUserRepo.getLoggedInUsername(application)?.let { userRepo.findUserIdByUsername(it) }!!
     }
 
 
     fun logout() {
-        loggedInUserRepo.setLoggedInUsername(getApplication(), "")
+        loggedInUserRepo.logout(getApplication())
         mSocket!!.emit("logout")
     }
 
@@ -40,15 +38,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         loggedInUserRepo.setLoggedInUsername(getApplication(), username)
     }
 
-    fun getUsernameStr() : String? {
-        return loggedInUserRepo.getLoggedInUsername(getApplication()).toString()
+    fun getUsernameStr() : String {
+        return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
-    fun getMyRemindersIds() : List<Int> {
+    fun getMyRemindersIds(userId : Int) : List<Int> {
         return remindersRepo.getMyRemindersIds(userId)
     }
 
-    fun getRemindersByUsernameList() : List<ReminderEntity> {
+    fun getRemindersByUserIdList(userId : Int) : List<ReminderEntity> {
         return remindersRepo.getRemindersByUsernameList(userId)
     }
 
@@ -62,5 +60,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getAllReminders() {
         mSocket!!.emit("getAllReminders")
+    }
+
+    fun getUserId(username : String) : Int {
+        return userRepo.findUserIdByUsername(username)
     }
 }
