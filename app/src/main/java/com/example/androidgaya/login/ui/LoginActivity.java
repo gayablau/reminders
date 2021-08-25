@@ -3,10 +3,8 @@ package com.example.androidgaya.login.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.login.interfaces.LoginActivityInterface;
@@ -23,13 +20,9 @@ import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
-import com.example.androidgaya.repositories.models.UserEntity;
-import com.example.androidgaya.repositories.socket.SocketHandler;
 import com.example.androidgaya.util.LoginNavigator;
 
 import java.util.List;
-
-import io.socket.client.Socket;
 //import dagger.android.DaggerApplication;
 
 
@@ -52,8 +45,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         super.onCreate(savedInstanceState);
         init();
         if (savedInstanceState != null) {
-            usernameEditText.setText(savedInstanceState.getString(getString(R.string.username), ""));
-            passwordEditText.setText(savedInstanceState.getString(getString(R.string.password), ""));
+            usernameEditText.setText(savedInstanceState.getString(getString(R.string.username_uppercase), ""));
+            passwordEditText.setText(savedInstanceState.getString(getString(R.string.password_uppercase), ""));
         }
 
         loginButton.setOnClickListener(v -> login());
@@ -81,8 +74,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(getString(R.string.username), usernameEditText.getText().toString());
-        outState.putString(getString(R.string.password), passwordEditText.getText().toString());
+        outState.putString(getString(R.string.username_uppercase), usernameEditText.getText().toString());
+        outState.putString(getString(R.string.password_uppercase), passwordEditText.getText().toString());
     }
 
     @Override

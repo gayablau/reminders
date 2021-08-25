@@ -31,8 +31,8 @@
     <string name="header">Header</string>
     <string name="add">add</string>
     <string name="picture">picture</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
+    <string name="username_uppercase">Username</string>
+    <string name="password_uppercase">Password</string>
     <string name="login">Login</string>
     <string name="isLoggedIn">isLoggedIn</string>
     <string name="user_details_sp" translatable="false">userDetailsSP</string>
@@ -60,4 +60,15 @@
     <string name="reason">reason</string>
     <string name="msg_rem_not_found">Error reminder doesn\'t exist</string>
     <string name="UserId">UserId</string>
+    <string name="create_reminder">createReminder</string>
+    <string name="edit_reminder">editReminder</string>
+    <string name="delete_reminder">deleteReminder</string>
+    <string name="create_user">createUser</string>
+    <string name="change_username">changeUsername</string>
+    <string name="change_username_only">changeUsernameOnly</string>
+    <string name="get_all_users">getAllUsers</string>
+    <string name="username">username</string>
+    <string name="userid">userId</string>
+    <string name="password">password</string>
+
 </resources>

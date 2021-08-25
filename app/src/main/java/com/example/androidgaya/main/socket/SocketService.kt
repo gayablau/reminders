@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.*
 import android.widget.Toast
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.models.UserEntity
@@ -25,7 +26,6 @@ class SocketService : Service() {
     @set:Inject
     var mSocket: Socket? = null
 
-    // Handler that receives messages from the thread
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
 
         override fun handleMessage(msg: Message) {
@@ -33,7 +33,7 @@ class SocketService : Service() {
 
             } catch (ex: Exception) {}
 
-            mSocket?.on("createReminder") { args ->
+            mSocket?.on(getString(R.string.create_reminder)) { args ->
                 if (args[0] != null)
                 {
                     val rem  = ReminderEntity(args[0] as Int,
@@ -44,11 +44,11 @@ class SocketService : Service() {
                             args[5] as Long)
                     if (remindersRepo.getReminderByID(args[0] as Int) == null) {
                         remindersRepo.addReminder(rem)
+                        NotificationUtils().setNotification(rem.time, this@SocketService, rem.header, rem.description, rem.id)
                     }
-                    NotificationUtils().setNotification(rem.time, this@SocketService, rem.header, rem.description, rem.id)
                 }
             }
-            mSocket?.on("editReminder") { args ->
+            mSocket?.on(getString(R.string.edit_reminder)) { args ->
                 if (args[0] != null)
                 {
                     val rem  = ReminderEntity(args[0] as Int,
@@ -59,14 +59,15 @@ class SocketService : Service() {
                             args[5] as Long)
                     if (remindersRepo.getReminderByID(args[0] as Int) != null) {
                         remindersRepo.editReminder(rem)
+                        NotificationUtils().setExistNotification(rem.time, this@SocketService, rem.header, rem.description, rem.id)
                     }
                     else {
                         remindersRepo.addReminder(rem)
+                        NotificationUtils().setNotification(rem.time, this@SocketService, rem.header, rem.description, rem.id)
                     }
-                    NotificationUtils().setExistNotification(rem.time, this@SocketService, rem.header, rem.description, rem.id)
                 }
             }
-            mSocket?.on("deleteReminder") { args ->
+            mSocket?.on(getString(R.string.delete_reminder)) { args ->
                 if (args[0] != null)
                 {
                     val rem  = ReminderEntity(args[0] as Int,
@@ -76,31 +77,32 @@ class SocketService : Service() {
                             args[4] as Long,
                             args[5] as Long)
                     remindersRepo.deleteReminder(rem)
-
                     NotificationUtils().deleteNotification(this@SocketService, rem.id)
                 }
             }
-            mSocket?.on("createUser") { args ->
+            mSocket?.on(getString(R.string.create_user)) { args ->
                 if (args[0] != null) {
                     val user = UserEntity(args[0] as Int, args[1] as String, args[2] as String)
                     userRepo.insertUser(user)
                 }
             }
-            mSocket?.on("changeUsername") { args ->
+            mSocket?.on(getString(R.string.change_username)) { args ->
                 if (args[0] != null) {
-                    mSocket!!.emit("changeUsernameOnly", args[1] as String)
+                    mSocket!!.emit(getString(R.string.change_username_only), args[1] as String)
                     userRepo.editUsername(args[0] as String, args[1] as String)
                     if (loggedInUserRepo.getLoggedInUsername(application).equals(args[0] as String)) {
                         loggedInUserRepo.setLoggedInUsername(application, args[1] as String)
                     }
                 }
             }
-            mSocket?.on("getAllUsers") { args ->
+            mSocket?.on(getString(R.string.get_all_users)) { args ->
                 if (args[0] != null) {
                     val data = args[0] as JSONArray
                     for (i in 0 until data.length()) {
-                        if (!userRepo.isUserExists(data.getJSONObject(i).get("username") as String)) {
-                            val userEntity = UserEntity(data.getJSONObject(i).get("userId") as Int, data.getJSONObject(i).get("username") as String, data.getJSONObject(i).get("password") as String)
+                        if (!userRepo.isUserExists(data.getJSONObject(i).get(getString(R.string.username)) as String)) {
+                            val userEntity = UserEntity(data.getJSONObject(i).get(getString(R.string.userid)) as Int,
+                                    data.getJSONObject(i).get(getString(R.string.username)) as String,
+                                    data.getJSONObject(i).get(getString(R.string.password)) as String)
                             userRepo.insertUser(userEntity)
                         }
                     }
@@ -123,6 +125,7 @@ class SocketService : Service() {
                                             reminder.getLong("time"),
                                             reminder.getLong("createdAt"))
                                     remindersRepo.addReminder(remToAdd)
+                                    NotificationUtils().setNotification(remToAdd.time, this@SocketService, remToAdd.header, remToAdd.description, remToAdd.id)
                                 }
                             }
                         }

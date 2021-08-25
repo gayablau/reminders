@@ -8,10 +8,7 @@ import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
-import com.example.androidgaya.repositories.interfaces.UserDao
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
@@ -30,11 +27,11 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     }
 
     override fun isUserLoggedIn(context: Context): Boolean {
-        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY) != EMPTY
+        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY) != EMPTY
     }
 
     override fun getLoggedInUsername(context: Context): String {
-        return loggedInUserPref.getString(context.getString(R.string.username), EMPTY) ?: EMPTY
+        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY) ?: EMPTY
     }
 
     override fun getLoggedInUserId(context: Context): Int {
@@ -42,13 +39,13 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     }
 
     override fun setLoggedInUsername(context: Context, username: String) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username), username).apply()
+        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), username).apply()
         loggedInUserDao.deleteOldLogins()
         loggedInUserDao.addLoggedInUser(LoggedInUserEntity(username))
     }
 
     override fun logout(context: Context) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username), EMPTY).apply()
+        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), EMPTY).apply()
         loggedInUserDao.deleteOldLogins()
     }
 
