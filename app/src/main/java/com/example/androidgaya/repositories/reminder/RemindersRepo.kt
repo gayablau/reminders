@@ -10,6 +10,7 @@ import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.ReminderInterface
 import com.example.androidgaya.repositories.interfaces.RemindersDao
 import com.example.androidgaya.repositories.models.ReminderEntity
+import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.util.NotificationUtils
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -49,5 +50,11 @@ class RemindersRepo(application: Application) : ReminderInterface {
 
     fun getMyRemindersIds(userId : Int) : List<Int> {
         return  remindersDao.getMyRemindersIds(userId)
+    }
+
+    fun deleteAllReminders() = runBlocking {
+        launch {
+            remindersDao.deleteAllReminders()
+        }
     }
 }

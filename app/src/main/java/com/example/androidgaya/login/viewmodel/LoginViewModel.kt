@@ -54,8 +54,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         return loggedInUserRepo.getLoggedInUsername(getApplication()) ?: ""
     }
 
-    fun getUserId() : Int {
-        return userRepo.findUserIdByUsername(getUsername())
+    fun getUserId(username: String) : Int {
+        return userRepo.findUserIdByUsername(username)
     }
 
     fun areDetailsOK(username: String, password: String) : Boolean {

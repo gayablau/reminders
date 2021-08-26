@@ -110,6 +110,7 @@ class SocketService : Service() {
             }
             mSocket?.on("getAllReminders") { args ->
                 if (args[0] != null) {
+                    remindersRepo.deleteAllReminders()
                     val data = args[0] as JSONArray
                     for (i in 0 until data.length()) {
                         if (data.getJSONObject(i).get("username") as String == loggedInUserRepo.getLoggedInUsername(application)) {
@@ -125,7 +126,7 @@ class SocketService : Service() {
                                             reminder.getLong("time"),
                                             reminder.getLong("createdAt"))
                                     remindersRepo.addReminder(remToAdd)
-                                    NotificationUtils().setNotification(remToAdd.time, this@SocketService, remToAdd.header, remToAdd.description, remToAdd.id)
+                                    NotificationUtils().setExistNotification(remToAdd.time, this@SocketService, remToAdd.header, remToAdd.description, remToAdd.id)
                                 }
                             }
                         }

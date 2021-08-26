@@ -43,4 +43,6 @@ interface RemindersDao {
     @Query("SELECT id FROM reminders WHERE user LIKE :userId ORDER BY createdAt ASC")
     fun getMyRemindersIds(userId : Int): List<Int>
 
+    @Query("DELETE FROM reminders")
+    fun deleteAllReminders()
 }

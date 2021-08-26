@@ -1,12 +1,8 @@
 package com.example.androidgaya.reminders.viewmodel
 
 import android.app.Application
-import android.graphics.ColorSpace.Model
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
@@ -44,10 +40,9 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
                 reminderEntity.createdAt)
     }
 
-    private fun getRemindersByUsername() : LiveData<List<ReminderEntity>?> {
+    private fun getRemindersByUserId() : LiveData<List<ReminderEntity>?> {
         username = getUsername()
         userId = userRepo.findUserIdByUsername(username)
-        Log.i("wtf 2", remindersRepo.getReminders(userId).value.toString())
         return remindersRepo.getReminders(userId)
     }
 
@@ -56,6 +51,6 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getMyReminders() {
-        remindersList = getRemindersByUsername()
+        remindersList = getRemindersByUserId()
     }
 }
