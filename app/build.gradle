@@ -61,23 +61,15 @@ dependencies {
     implementation 'com.android.support:multidex:2.0.1'
     implementation 'androidx.room:room-runtime:2.3.0'
     kapt 'androidx.room:room-compiler:2.3.0'
-    /*
-    implementation "com.google.dagger:dagger:2.38.1"
-    kapt  "com.google.dagger:dagger-compiler:2.38.1"
-    implementation "com.google.dagger:dagger-android:2.38.1"
-    kapt  "com.google.dagger:dagger-android-processor:2.38.1"
-    implementation "com.google.dagger:dagger-android-support:2.38.1"
-    kapt  "com.google.dagger:dagger-android-support:2.38.1"
-
-*/
     compileOnly 'javax.annotation:jsr250-api:1.0'
     implementation 'com.google.dagger:dagger:2.38.1'
     kapt 'com.google.dagger:dagger-compiler:2.38.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.20"
     implementation 'com.android.support:multidex:1.0.3'
     implementation ('io.socket:socket.io-client:2.0.0') {
         exclude group: 'org.json', module: 'json'
     }
-
+    implementation 'com.squareup.moshi:moshi:1.8.0'
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.8.0'
 
 }

@@ -27,7 +27,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         (application as AppDataGetter).getAppComponent()?.injectMain(this)
         updateLoggedInUser()
-        getAllReminders()
+        getAllReminders(userRepo.findUserIdByUsername(loggedInUserRepo.getLoggedInUsername(application)))
     }
 
     fun logout() {
@@ -55,8 +55,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         loggedInUserList = getLoggedInUser()
     }
 
-    fun getAllReminders() {
-        mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_reminders))
+    fun getAllReminders(userId: Int) {
+        mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_reminders), userId)
     }
 
     fun getUserId(username : String) : Int {

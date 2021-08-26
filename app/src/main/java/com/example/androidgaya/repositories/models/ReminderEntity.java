@@ -130,4 +130,5 @@ public class ReminderEntity {
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
+
 }

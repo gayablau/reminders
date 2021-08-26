@@ -3,18 +3,20 @@ package com.example.androidgaya.main.socket
 import android.app.Service
 import android.content.Intent
 import android.os.*
-import android.widget.Toast
 import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
+import com.example.androidgaya.repositories.types.ReminderJson
 import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.types.UserJson
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import com.example.androidgaya.util.NotificationUtils
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import io.socket.client.Socket
 import org.json.JSONArray
-import org.json.JSONObject
 import javax.inject.Inject
 
 class SocketService : Service() {
@@ -97,41 +99,41 @@ class SocketService : Service() {
             }
             mSocket?.on(getString(R.string.get_all_users)) { args ->
                 if (args[0] != null) {
-                    val data = args[0] as JSONArray
-                    for (i in 0 until data.length()) {
-                        if (!userRepo.isUserExists(data.getJSONObject(i).get(getString(R.string.username)) as String)) {
-                            val userEntity = UserEntity(data.getJSONObject(i).get(getString(R.string.userid)) as Int,
-                                    data.getJSONObject(i).get(getString(R.string.username)) as String,
-                                    data.getJSONObject(i).get(getString(R.string.password)) as String)
-                            userRepo.insertUser(userEntity)
+                    val users = args[0] as JSONArray
+                    val moshi : Moshi = Moshi.Builder().build()
+                    val listMyData = Types.newParameterizedType(List::class.java, UserJson::class.java)
+                    val jsonAdapter = moshi.adapter<List<UserJson>>(listMyData)
+                    val usersList = jsonAdapter.fromJson(users.toString())
+                    if (usersList != null) {
+                        for(user in usersList) {
+                            if (!userRepo.isUserExists(user.username)) {
+                                val userToAdd = jsonToUserEntity(user)
+                                userRepo.insertUser(userToAdd)
+                            }
                         }
                     }
+
                 }
             }
+
             mSocket?.on(getString(R.string.get_all_reminders)) { args ->
                 if (args[0] != null) {
                     remindersRepo.deleteAllReminders()
-                    val data = args[0] as JSONArray
-                    for (i in 0 until data.length()) {
-                        if (data.getJSONObject(i).get(getString(R.string.username)) as String == loggedInUserRepo.getLoggedInUsername(application)) {
-                            val reminders = data.getJSONObject(i).get(getString(R.string.reminders)) as JSONArray
-                            val userId = data.getJSONObject(i).get(getString(R.string.userid)) as Int
-                            for (i in 0 until reminders.length()) {
-                                val reminder = reminders[i] as JSONObject
-                                if (remindersRepo.getReminderByID(reminder.getInt(getString(R.string.id))) == null) {
-                                    val remToAdd = ReminderEntity(reminder.getInt(getString(R.string.id)),
-                                            reminder.getString(getString(R.string.header)),
-                                            reminder.getString(getString(R.string.description)),
-                                            userId,
-                                            reminder.getLong(getString(R.string.time)),
-                                            reminder.getLong(getString(R.string.created_at)))
-                                    remindersRepo.addReminder(remToAdd)
-                                    NotificationUtils().setExistNotification(remToAdd.time,
-                                            this@SocketService,
-                                            remToAdd.header,
-                                            remToAdd.description,
-                                            remToAdd.id)
-                                }
+                    val reminders = args[0] as JSONArray
+                    val moshi : Moshi = Moshi.Builder().build()
+                    val listMyData = Types.newParameterizedType(List::class.java, ReminderJson::class.java)
+                    val jsonAdapter = moshi.adapter<List<ReminderJson>>(listMyData)
+                    val remindersList = jsonAdapter.fromJson(reminders.toString())
+                    if (remindersList != null) {
+                        for(rem in remindersList) {
+                            if (remindersRepo.getReminderByID(rem.id) == null) {
+                                val remToAdd = jsonToRemEntity(rem)
+                                remindersRepo.addReminder(remToAdd)
+                                NotificationUtils().setExistNotification(remToAdd.time,
+                                        this@SocketService,
+                                        remToAdd.header,
+                                        remToAdd.description,
+                                        remToAdd.id)
                             }
                         }
                     }
@@ -163,5 +165,20 @@ class SocketService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+    fun jsonToRemEntity(reminderJson: ReminderJson): ReminderEntity {
+        return ReminderEntity(reminderJson.id,
+                reminderJson.header,
+                reminderJson.description,
+                reminderJson.user,
+                reminderJson.time,
+                reminderJson.createdAt)
+    }
+
+    fun jsonToUserEntity(userJson: UserJson): UserEntity {
+        return UserEntity(userJson.sharedId,
+                userJson.username,
+                userJson.password)
     }
 }
