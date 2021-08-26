@@ -21,7 +21,6 @@ import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
-import com.example.androidgaya.repositories.reminder.RemindersRepo;
 
 public class ProfileFragment extends Fragment {
 

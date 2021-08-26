@@ -1,8 +1,10 @@
 package com.example.androidgaya.main.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
@@ -28,14 +30,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         getAllReminders()
     }
 
-
     fun logout() {
         loggedInUserRepo.logout(getApplication())
-        mSocket!!.emit("logout")
-    }
-
-    fun setUsername(username : String) {
-        loggedInUserRepo.setLoggedInUsername(getApplication(), username)
+        mSocket!!.emit((getApplication() as Context).getString(R.string.logout))
     }
 
     fun getUsernameStr() : String {
@@ -59,7 +56,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getAllReminders() {
-        mSocket!!.emit("getAllReminders")
+        mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_reminders))
     }
 
     fun getUserId(username : String) : Int {

@@ -12,21 +12,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.socket.SocketService;
-import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.LoginNavigator;
 
-import java.util.List;
-//import dagger.android.DaggerApplication;
-
-
-public class LoginActivity extends AppCompatActivity implements LoginActivityInterface {
+public class LoginActivity extends AppCompatActivity {
 
     EditText usernameEditText;
     EditText passwordEditText;
@@ -37,8 +30,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
-    LiveData<List<LoggedInUserEntity>> loggedInUserList;
-    Intent socketIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,13 +80,15 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
 
     public void init() {
         setContentView(R.layout.activity_login);
-
         initViewModel();
         username = viewModel.getUsername();
         userId = viewModel.getUserId(username);
         nav = new LoginNavigator(this);
-        if (viewModel.isUserLoggedIn() && viewModel.isUserExists(username)) { nav.toMainActivity();
-            viewModel.connectUser(userId, username);}
+        if (viewModel.isUserLoggedIn() &&
+                viewModel.isUserExists(username)) { nav.toMainActivity();
+            viewModel.connectUser(userId, username);
+        }
+
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);
@@ -109,8 +102,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
     }
-
-
 
     public void login() {
         username = usernameEditText.getText().toString();
@@ -126,14 +117,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             }
             else {
                 viewModel.createNewUser(username, password);
-               // socket.emit("createUser", username, password)
                 goToMainActivity();
             }
         }
-    }
-
-    @Override
-    public LoginNavigator getNavigator() {
-        return nav;
     }
 }

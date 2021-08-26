@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
-import com.example.androidgaya.repositories.interfaces.LoggedInUserDao
+import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import javax.inject.Inject

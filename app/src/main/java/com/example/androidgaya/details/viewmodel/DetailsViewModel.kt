@@ -1,16 +1,14 @@
 package com.example.androidgaya.details.viewmodel
 
-import android.app.Activity
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import com.example.androidgaya.main.ui.MainActivity
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
-import com.example.androidgaya.repositories.interfaces.RemindersDao
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
-import com.example.androidgaya.util.NotificationUtils
 import io.socket.client.Socket
 import javax.inject.Inject
 
@@ -28,7 +26,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
 
     fun addReminder(reminderEntity : ReminderEntity) {
         remindersRepo.addReminder(reminderEntity)
-        mSocket!!.emit("createReminder",
+        mSocket!!.emit((getApplication() as Context).getString(R.string.create_reminder),
                 reminderEntity.id,
                 reminderEntity.header,
                 reminderEntity.description,
@@ -39,7 +37,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
 
     fun editReminder(reminderEntity : ReminderEntity) {
         remindersRepo.editReminder(reminderEntity)
-        mSocket!!.emit("editReminder",
+        mSocket!!.emit((getApplication() as Context).getString(R.string.edit_reminder),
                 reminderEntity.id,
                 reminderEntity.header,
                 reminderEntity.description,
@@ -49,7 +47,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getUsername() : String {
-        return loggedInUserRepo.getLoggedInUsername(getApplication()) ?: ""
+        return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
     fun getUserId() : Int {

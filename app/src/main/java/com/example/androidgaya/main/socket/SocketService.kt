@@ -108,25 +108,29 @@ class SocketService : Service() {
                     }
                 }
             }
-            mSocket?.on("getAllReminders") { args ->
+            mSocket?.on(getString(R.string.get_all_reminders)) { args ->
                 if (args[0] != null) {
                     remindersRepo.deleteAllReminders()
                     val data = args[0] as JSONArray
                     for (i in 0 until data.length()) {
-                        if (data.getJSONObject(i).get("username") as String == loggedInUserRepo.getLoggedInUsername(application)) {
-                            val reminders = data.getJSONObject(i).get("reminders") as JSONArray
-                            val userId = data.getJSONObject(i).get("userId") as Int
+                        if (data.getJSONObject(i).get(getString(R.string.username)) as String == loggedInUserRepo.getLoggedInUsername(application)) {
+                            val reminders = data.getJSONObject(i).get(getString(R.string.reminders)) as JSONArray
+                            val userId = data.getJSONObject(i).get(getString(R.string.userid)) as Int
                             for (i in 0 until reminders.length()) {
                                 val reminder = reminders[i] as JSONObject
-                                if (remindersRepo.getReminderByID(reminder.getInt("id")) == null) {
-                                    val remToAdd = ReminderEntity(reminder.getInt("id"),
-                                            reminder.getString("header"),
-                                            reminder.getString("description"),
+                                if (remindersRepo.getReminderByID(reminder.getInt(getString(R.string.id))) == null) {
+                                    val remToAdd = ReminderEntity(reminder.getInt(getString(R.string.id)),
+                                            reminder.getString(getString(R.string.header)),
+                                            reminder.getString(getString(R.string.description)),
                                             userId,
-                                            reminder.getLong("time"),
-                                            reminder.getLong("createdAt"))
+                                            reminder.getLong(getString(R.string.time)),
+                                            reminder.getLong(getString(R.string.created_at)))
                                     remindersRepo.addReminder(remToAdd)
-                                    NotificationUtils().setExistNotification(remToAdd.time, this@SocketService, remToAdd.header, remToAdd.description, remToAdd.id)
+                                    NotificationUtils().setExistNotification(remToAdd.time,
+                                            this@SocketService,
+                                            remToAdd.header,
+                                            remToAdd.description,
+                                            remToAdd.id)
                                 }
                             }
                         }
@@ -141,40 +145,23 @@ class SocketService : Service() {
         remindersRepo = RemindersRepo(application)
         loggedInUserRepo = LoggedInUserRepo(application)
         userRepo = UserRepo(application)
-        // Start up the thread running the service.  Note that we create a
-        // separate thread because the service normally runs in the process's
-        // main thread, which we don't want to block.  We also make it
-        // background priority so CPU-intensive work will not disrupt our UI.
-        HandlerThread("ServiceStartArguments").apply {
 
-
+        HandlerThread(getString(R.string.Service_start_arguments)).apply {
             start()
-
-            // Get the HandlerThread's Looper and use it for our Handler
             serviceLooper = looper
             serviceHandler = ServiceHandler(looper)
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show()
-        // For each start request, send a message to start a job and deliver the
-        // start ID so we know which request we're stopping when we finish the job
         serviceHandler.obtainMessage().also { msg ->
             msg.arg1 = startId
             serviceHandler.sendMessage(msg)
         }
-
-        // If we get killed, after returning from here, restart
         return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        // We don't provide binding, so return null
         return null
-    }
-
-    override fun onDestroy() {
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show()
     }
 }

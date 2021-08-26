@@ -20,9 +20,9 @@ class NotificationUtils {
 
             alarmIntent.putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
             alarmIntent.putExtra(context.getString(R.string.timestamp), timeInMilliSeconds)
-            alarmIntent.putExtra(context.getString(R.string.header), header)
-            alarmIntent.putExtra(context.getString(R.string.description), description)
-            alarmIntent.putExtra(context.getString(R.string.id), id)
+            alarmIntent.putExtra(context.getString(R.string.header_uppercase), header)
+            alarmIntent.putExtra(context.getString(R.string.description_uppercase), description)
+            alarmIntent.putExtra(context.getString(R.string.id_uppercase), id)
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMilliSeconds
@@ -45,9 +45,9 @@ class NotificationUtils {
 
             alarmIntent.putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
             alarmIntent.putExtra(context.getString(R.string.timestamp), timeInMilliSeconds)
-            alarmIntent.putExtra(context.getString(R.string.header), header)
-            alarmIntent.putExtra(context.getString(R.string.description), description)
-            alarmIntent.putExtra(context.getString(R.string.id), id)
+            alarmIntent.putExtra(context.getString(R.string.header_uppercase), header)
+            alarmIntent.putExtra(context.getString(R.string.description_uppercase), description)
+            alarmIntent.putExtra(context.getString(R.string.id_uppercase), id)
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMilliSeconds
@@ -62,7 +62,7 @@ class NotificationUtils {
         val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
-        alarmIntent.putExtra(context.getString(R.string.id), id)
+        alarmIntent.putExtra(context.getString(R.string.id_uppercase), id)
 
         val pendingIntent = PendingIntent.getBroadcast(context, id, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent)

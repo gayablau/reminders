@@ -1,11 +1,10 @@
 package com.example.androidgaya.profile.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
-import com.example.androidgaya.repositories.interfaces.RemindersDao
-import com.example.androidgaya.repositories.interfaces.UserDao
-import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import io.socket.client.Socket
@@ -13,7 +12,6 @@ import javax.inject.Inject
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var remindersRepo : RemindersRepo = RemindersRepo(application)
     private var userRepo : UserRepo = UserRepo(application)
     private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
 
@@ -27,14 +25,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun editUsername(oldUsername: String, newUsername: String) {
         userRepo.editUsername(oldUsername, newUsername)
         setUsername(newUsername)
-        mSocket!!.emit("changeUsername",
+        mSocket!!.emit((getApplication() as Context).getString(R.string.change_username),
                 oldUsername,
-                newUsername)
-        mSocket!!.emit("changeUsernameOnly",
                 newUsername)
     }
 
-    fun getUsername() : String? {
+    fun getUsername() : String {
         return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 

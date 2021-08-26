@@ -72,9 +72,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         username = viewModel.getUsernameStr();
         userId = viewModel.getUserId(username);
         nav = new MainNavigator(R.id.fragment_container, this);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
+        changeToolbar(getString(R.string.toolbar_main, username), false);
         new NotificationUtils().createAll(this, viewModel.getRemindersByUserIdList(userId));
-
     }
 
 
@@ -97,16 +96,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        Observer<List<LoggedInUserEntity>> loggedInObserver = new Observer<List<LoggedInUserEntity>>() {
-            @Override
-            public void onChanged(List<LoggedInUserEntity> loggedInUserEntities) {
-                if (!loggedInUserEntities.isEmpty()) {
-                    username = loggedInUserEntities.get(0).getUsername();
-                }
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if (currentFragment instanceof RemindersFragment) {
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.toolbar_main, username));
-                }
+        Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
+            if (!loggedInUserEntities.isEmpty()) {
+                username = loggedInUserEntities.get(0).getUsername();
+            }
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof RemindersFragment) {
+                changeToolbar(getString(R.string.toolbar_main, username), false);
             }
         };
 

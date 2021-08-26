@@ -3,9 +3,9 @@ package com.example.androidgaya.repositories.di
 import android.app.Application
 import android.content.Context
 import com.example.androidgaya.repositories.db.AppDatabase
-import com.example.androidgaya.repositories.interfaces.LoggedInUserDao
-import com.example.androidgaya.repositories.interfaces.RemindersDao
-import com.example.androidgaya.repositories.interfaces.UserDao
+import com.example.androidgaya.repositories.dao.LoggedInUserDao
+import com.example.androidgaya.repositories.dao.RemindersDao
+import com.example.androidgaya.repositories.dao.UserDao
 import com.example.androidgaya.repositories.socket.SocketHandler
 import dagger.Module
 import dagger.Provides

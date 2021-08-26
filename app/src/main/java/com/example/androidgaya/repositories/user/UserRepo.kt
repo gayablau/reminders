@@ -1,16 +1,15 @@
 package com.example.androidgaya.repositories.user
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.multidex.MultiDexApplication
 import com.example.androidgaya.repositories.di.AppDataGetter
-import com.example.androidgaya.repositories.interfaces.UserDao
+import com.example.androidgaya.repositories.dao.UserDao
+import com.example.androidgaya.repositories.interfaces.UserInterface
 import com.example.androidgaya.repositories.models.UserEntity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-class UserRepo(application: Application) {
+class UserRepo(application: Application) : UserInterface {
     @Inject
     lateinit var userDao: UserDao
 
@@ -18,20 +17,11 @@ class UserRepo(application: Application) {
         (application as AppDataGetter).getAppComponent()?.injectUserRepo(this)
     }
 
-    fun editUsername(oldUsername: String, newUsername: String) = runBlocking {
+    override fun editUsername(oldUsername: String, newUsername: String): Unit = runBlocking {
         launch { userDao.editUsername(oldUsername, newUsername) }
     }
 
-/*    fun isUsernameExists(username: String) : Boolean {
-        if (userDao.findUserByUsername(username) == null) {return false}
-        return true
-    }*/
-
-    fun getAllUsers(): LiveData<List<UserEntity>?> {
-        return userDao.getAllUsersFromDB()
-    }
-
-    fun insertUser(userEntity: UserEntity) = runBlocking {
+    override fun insertUser(userEntity: UserEntity): Unit = runBlocking {
         launch {
             if(!isUserExists(userEntity.username)) {
                 userDao.insertUser(userEntity)
@@ -39,17 +29,17 @@ class UserRepo(application: Application) {
         }
     }
 
-    fun areDetailsOK(username: String, password: String) : Boolean {
+    override fun areDetailsOK(username: String, password: String) : Boolean {
         if (userDao.areDetailsOK(username,password) == null) {return false}
         return true
     }
 
-    fun isUserExists(username: String): Boolean {
+    override fun isUserExists(username: String): Boolean {
         if (userDao.findUserByUsername(username) == null) {return false}
         return true
     }
 
-    fun findUserIdByUsername(username: String): Int {
+    override fun findUserIdByUsername(username: String): Int {
         return userDao.findUserIdByUsername(username)
     }
 }

@@ -32,8 +32,6 @@ class RemindersFragment : Fragment() {
     lateinit var viewModel: RemindersViewModel
     lateinit var reminderAdapter: ReminderAdapter
 
-    fun RemindersFragment() {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -111,11 +109,10 @@ class RemindersFragment : Fragment() {
         }) { reminder: ReminderEntity? -> viewModel.deleteReminder(reminder!!)
             activity?.let { NotificationUtils().deleteNotification(it, reminder.id) }
         }
-
         recyclerViewReminders.adapter = reminderAdapter
         recyclerViewReminders.layoutManager = LinearLayoutManager(this@RemindersFragment.context)
         val itemTouchHelper = ItemTouchHelper(
-                SwipeToDeleteCallback(reminderAdapter, username)
+                SwipeToDeleteCallback(reminderAdapter)
         )
         itemTouchHelper.attachToRecyclerView(recyclerViewReminders)
     }
@@ -124,8 +121,6 @@ class RemindersFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(RemindersViewModel::class.java)
 
         val reminderObserver = Observer<List<ReminderEntity>?> { newRem ->
-            Log.i("wtf", newRem.toString())
-            //newRem.filter { entity -> entity.username == username }
             reminderAdapter.notifyDataSetChanged()
         }
 

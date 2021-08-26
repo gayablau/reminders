@@ -1,8 +1,10 @@
 package com.example.androidgaya.reminders.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
@@ -31,7 +33,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
         remindersRepo.deleteReminder(reminderEntity)
-        mSocket!!.emit("deleteReminder",
+        mSocket!!.emit((getApplication() as Context).getString(R.string.delete_reminder),
                 reminderEntity.id,
                 reminderEntity.header,
                 reminderEntity.description,
@@ -47,7 +49,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getUsername() : String {
-        return loggedInUserRepo.getLoggedInUsername(getApplication()) ?: ""
+        return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
     fun getMyReminders() {

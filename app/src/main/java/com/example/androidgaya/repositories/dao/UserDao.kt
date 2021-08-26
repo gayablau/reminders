@@ -1,4 +1,4 @@
-package com.example.androidgaya.repositories.interfaces
+package com.example.androidgaya.repositories.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

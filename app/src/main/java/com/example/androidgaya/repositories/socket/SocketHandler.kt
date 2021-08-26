@@ -42,7 +42,6 @@ object SocketHandler {
     fun updateClient(event: String, data: Any, onUpdate: OnUpdate ) {
         mSocket.on(event, Emitter.Listener { args: Array<Any?> ->
             if (args[0] != null) {
-                Log.i("socket111", args[0].toString())
             }
         })
     }
