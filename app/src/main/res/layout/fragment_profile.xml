@@ -11,12 +11,12 @@ tools:context=".profile.ui.view.ProfileFragment">
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="@string/name"
+        android:text="@string/name_uppercase"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:hint="@string/name"
-        android:autofillHints="@string/name" />
+        android:hint="@string/name_uppercase"
+        android:autofillHints="@string/name_uppercase" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

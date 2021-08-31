@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,26 +12,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.androidgaya.login.interfaces.LoginActivityInterface;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
-import com.example.androidgaya.repositories.models.UserEntity;
+import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.util.LoginNavigator;
 
-import java.util.List;
-//import dagger.android.DaggerApplication;
-
-
-public class LoginActivity extends AppCompatActivity implements LoginActivityInterface {
+public class LoginActivity extends AppCompatActivity {
 
     EditText usernameEditText;
     EditText passwordEditText;
     Button loginButton;
     ImageView imageView;
     String username = "";
+    int userId = 1;
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
@@ -42,8 +36,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         super.onCreate(savedInstanceState);
         init();
         if (savedInstanceState != null) {
-            usernameEditText.setText(savedInstanceState.getString(getString(R.string.username), ""));
-            passwordEditText.setText(savedInstanceState.getString(getString(R.string.password), ""));
+            usernameEditText.setText(savedInstanceState.getString(getString(R.string.username_uppercase), ""));
+            passwordEditText.setText(savedInstanceState.getString(getString(R.string.password_uppercase), ""));
         }
 
         loginButton.setOnClickListener(v -> login());
@@ -61,8 +55,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
             @Override
             public void afterTextChanged(Editable s) { }
         });
-
     }
+
 
     public static Intent getIntent(Context context){
         return new Intent(context, LoginActivity.class);
@@ -71,8 +65,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(getString(R.string.username), usernameEditText.getText().toString());
-        outState.putString(getString(R.string.password), passwordEditText.getText().toString());
+        outState.putString(getString(R.string.username_uppercase), usernameEditText.getText().toString());
+        outState.putString(getString(R.string.password_uppercase), passwordEditText.getText().toString());
     }
 
     @Override
@@ -86,11 +80,15 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
 
     public void init() {
         setContentView(R.layout.activity_login);
-
         initViewModel();
         username = viewModel.getUsername();
+        userId = viewModel.getUserId(username);
         nav = new LoginNavigator(this);
-        if (viewModel.isUserLoggedIn()) { nav.toMainActivity(); }
+        if (viewModel.isUserLoggedIn() &&
+                viewModel.isUserExists(username)) { nav.toMainActivity();
+            viewModel.connectUser(userId, username);
+        }
+
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);
@@ -98,28 +96,19 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
 
+        startService(new Intent(this, SocketService.class));
     }
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        viewModel.getUsersObserver().observe(this, new Observer<List<UserEntity>>(){
-            @Override
-            public void onChanged(List<UserEntity> userEntities) {
-                if (!userEntities.isEmpty()) {
-                    for (UserEntity user : userEntities) {
-                        //TODO something idk
-                    }
-                }
-
-            }
-        });
     }
 
     public void login() {
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {
-            viewModel.setUsername(username);
+            userId = viewModel.getUserId(username);
+            viewModel.connectUser(userId, username);
             goToMainActivity();
         }
         else {
@@ -127,16 +116,9 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityInt
                 Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
             }
             else {
-                viewModel.createUser(username, password);
-                Log.i("login","user created with details: " + username + ", " + password);
-                viewModel.setUsername(username);
+                viewModel.createNewUser(username, password);
                 goToMainActivity();
             }
         }
-    }
-
-    @Override
-    public LoginNavigator getNavigator() {
-        return nav;
     }
 }

@@ -74,12 +74,12 @@
             android:id="@+id/rem_description_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/description"
+            android:hint="@string/description_uppercase"
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/rem_name_et"
             app:layout_constraintTop_toBottomOf="@id/rem_name_et"
-            android:autofillHints="@string/description" />
+            android:autofillHints="@string/description_uppercase" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -10,9 +10,9 @@ class ReminderReceiver : BroadcastReceiver() {
         val service = Intent(context, NotificationService::class.java)
         service.putExtra(context.getString(R.string.reason), intent.getStringExtra(context.getString(R.string.reason)))
         service.putExtra(context.getString(R.string.timestamp), intent.getLongExtra(context.getString(R.string.timestamp), 0))
-        service.putExtra(context.getString(R.string.header), intent.getStringExtra(context.getString(R.string.header)))
-        service.putExtra(context.getString(R.string.description), intent.getStringExtra(context.getString(R.string.description)))
-        service.putExtra(context.getString(R.string.id), intent.getIntExtra(context.getString(R.string.id), 0))
+        service.putExtra(context.getString(R.string.header_uppercase), intent.getStringExtra(context.getString(R.string.header_uppercase)))
+        service.putExtra(context.getString(R.string.description_uppercase), intent.getStringExtra(context.getString(R.string.description_uppercase)))
+        service.putExtra(context.getString(R.string.id_uppercase), intent.getIntExtra(context.getString(R.string.id_uppercase), 0))
         context.startService(service)
     }
 }

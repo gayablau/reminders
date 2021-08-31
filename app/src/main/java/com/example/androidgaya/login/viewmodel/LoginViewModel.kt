@@ -1,35 +1,32 @@
 package com.example.androidgaya.login.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
-import com.example.androidgaya.repositories.interfaces.UserDao
+import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.UserEntity
-import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
+import io.socket.client.Socket
+import java.util.*
 import javax.inject.Inject
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private var userRepo : UserRepo = UserRepo(application)
-    private var allusersList: MutableLiveData<ArrayList<UserEntity>>
+    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
     private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
+
+    @set:Inject
+    var mSocket: Socket? = null
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectLogin(this)
-        allusersList = MutableLiveData()
+        updateLoggedInUser()
         getAllUsers()
-    }
-
-    fun getUsersObserver(): MutableLiveData<ArrayList<UserEntity>> {
-        return allusersList
-    }
-
-    fun getAllUsers() {
-        val list = userRepo.getAllUsers()
-        allusersList.postValue(list as ArrayList<UserEntity>?)
     }
 
     fun insertUser(userEntity: UserEntity) {
@@ -37,15 +34,19 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun setUsername(username: String) {
-        loggedInUserRepo.setUsername(getApplication(), username)
+        loggedInUserRepo.setLoggedInUsername(getApplication(), username)
     }
 
     fun isUserLoggedIn() : Boolean {
         return loggedInUserRepo.isUserLoggedIn(getApplication())
     }
 
-    fun getUsername() : String? {
-        return loggedInUserRepo.getUsername(getApplication())
+    fun getUsername() : String {
+        return loggedInUserRepo.getLoggedInUsername(getApplication())
+    }
+
+    fun getUserId(username: String) : Int {
+        return userRepo.findUserIdByUsername(username)
     }
 
     fun areDetailsOK(username: String, password: String) : Boolean {
@@ -53,10 +54,31 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun isUserExists(username: String): Boolean {
+        mSocket!!.emit((getApplication() as Context).getString(R.string.update_users))
         return userRepo.isUserExists(username)
     }
 
-    fun createUser(username: String, password: String) {
-        insertUser(UserEntity(username, password))
+    fun createNewUser(username: String, password: String) {
+        val userId = Random(System.currentTimeMillis()).nextInt(10000)
+        insertUser(UserEntity(userId, username, password))
+        setUsername(username)
+        mSocket!!.emit((getApplication() as Context).getString(R.string.create_user), userId, username, password)
+    }
+
+    fun connectUser(userId: Int, username: String) {
+        setUsername(username)
+        mSocket!!.emit((getApplication() as Context).getString(R.string.connect_user), userId, username)
+    }
+
+    fun getAllUsers() {
+        mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_users))
+    }
+
+    fun getLoggedInUser() : LiveData<List<LoggedInUserEntity>?> {
+        return loggedInUserRepo.getLoggedInUserFromDB()
+    }
+
+    fun updateLoggedInUser() {
+        loggedInUserList = getLoggedInUser()
     }
 }

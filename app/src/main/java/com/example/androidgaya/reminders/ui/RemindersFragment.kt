@@ -2,6 +2,7 @@ package com.example.androidgaya.reminders.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -26,12 +27,10 @@ class RemindersFragment : Fragment() {
     var username: String? = ""
     lateinit var addFab: FloatingActionButton
     lateinit var recyclerViewReminders: RecyclerView
-    lateinit var remindersList: LiveData<List<ReminderEntity>>
+    lateinit var remindersList: LiveData<List<ReminderEntity>?>
     lateinit var nav: MainNavigator
     lateinit var viewModel: RemindersViewModel
     lateinit var reminderAdapter: ReminderAdapter
-
-    fun RemindersFragment() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,11 +109,10 @@ class RemindersFragment : Fragment() {
         }) { reminder: ReminderEntity? -> viewModel.deleteReminder(reminder!!)
             activity?.let { NotificationUtils().deleteNotification(it, reminder.id) }
         }
-
         recyclerViewReminders.adapter = reminderAdapter
         recyclerViewReminders.layoutManager = LinearLayoutManager(this@RemindersFragment.context)
         val itemTouchHelper = ItemTouchHelper(
-                SwipeToDeleteCallback(reminderAdapter, username)
+                SwipeToDeleteCallback(reminderAdapter)
         )
         itemTouchHelper.attachToRecyclerView(recyclerViewReminders)
     }

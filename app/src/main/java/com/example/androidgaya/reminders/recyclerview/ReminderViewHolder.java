@@ -22,7 +22,9 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
     ReminderAdapter.OnReminderClicked onclick;
     OnReminderDelete onDelete;
 
-    ReminderViewHolder(View itemView, ReminderAdapter.OnReminderClicked onclick, OnReminderDelete onDelete) {
+    ReminderViewHolder(View itemView,
+                       ReminderAdapter.OnReminderClicked onclick,
+                       OnReminderDelete onDelete) {
         super(itemView);
         header_tv = itemView.findViewById(R.id.rem_header_tv);
         description_tv = itemView.findViewById(R.id.rem_description_tv);
@@ -40,7 +42,6 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
         setTimeText(calendar);
         header_tv.setText(reminderEntity.getHeader());
         description_tv.setText(reminderEntity.getDescription());
-
     }
 
     public void setTimeText(Calendar calendar) {

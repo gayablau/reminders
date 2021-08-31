@@ -1,15 +1,13 @@
 package com.example.androidgaya.repositories.reminder
 
-import android.app.Activity
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.multidex.MultiDexApplication
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.interfaces.ReminderInterface
-import com.example.androidgaya.repositories.interfaces.RemindersDao
+import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.util.NotificationUtils
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class RemindersRepo(application: Application) : ReminderInterface {
@@ -20,35 +18,37 @@ class RemindersRepo(application: Application) : ReminderInterface {
         (application as AppDataGetter).getAppComponent()?.injectRemindersRepo(this)
     }
 
-    fun deleteReminder(reminderEntity: ReminderEntity) {
-        remindersDao.deleteReminder(reminderEntity)
+    override fun deleteReminder(reminderEntity: ReminderEntity): Unit = runBlocking {
+        launch {  remindersDao.deleteReminder(reminderEntity) }
     }
 
-    fun getRemindersByUsername(username: String) : LiveData<List<ReminderEntity>> {
-        return remindersDao.getRemindersByUsername(username)
+    override fun getReminders(userId: Int) : LiveData<List<ReminderEntity>?> {
+        return remindersDao.getRemindersByUserId(userId)
     }
 
-    fun getRemindersByUsernameList(username: String) : List<ReminderEntity> {
-        return remindersDao.getRemindersByUsernameList(username)
+    override fun getRemindersByUsernameList(userId : Int) : List<ReminderEntity> {
+        return remindersDao.getRemindersByUserIdList(userId)
     }
 
-    fun editUsername(oldUsername: String, newUsername: String) {
-        remindersDao.editUsername(oldUsername, newUsername)
+    override fun addReminder(reminderEntity : ReminderEntity): Unit = runBlocking {
+        launch { remindersDao.addReminder(reminderEntity) }
     }
 
-    fun addReminder(reminderEntity : ReminderEntity) {
-        remindersDao.addReminder(reminderEntity)
+    override fun editReminder(reminderEntity : ReminderEntity): Unit = runBlocking {
+        launch { remindersDao.updateReminder(reminderEntity) }
     }
 
-    fun editReminder(reminderEntity : ReminderEntity) {
-        remindersDao.updateReminder(reminderEntity)
-    }
-
-    fun getReminderByID(id : Int) : ReminderEntity? {
+    override fun getReminderByID(id : Int) : ReminderEntity? {
         return remindersDao.getReminderByID(id)
     }
 
-    fun getMyRemindersIds(username: String) : List<Int> {
-        return  remindersDao.getMyRemindersIds(username)
+    override fun getMyRemindersIds(userId : Int) : List<Int> {
+        return  remindersDao.getMyRemindersIds(userId)
+    }
+
+    override fun deleteAllReminders(): Unit = runBlocking {
+        launch {
+            remindersDao.deleteAllReminders()
+        }
     }
 }

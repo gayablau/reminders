@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.media.RingtoneManager
 import android.os.Build
 import com.example.androidgaya.R
 import com.example.androidgaya.main.ui.MainActivity
@@ -23,23 +22,22 @@ class NotificationService : IntentService("NotificationService") {
     override fun onHandleIntent(intent: Intent?) {
         createChannel()
         var timestamp: Long = 0
-        var header: String = ""
-        var description: String = ""
+        var header = ""
+        var description = ""
 
         if (intent != null && intent.extras != null) {
             timestamp = intent.extras!!.getLong(getString(R.string.timestamp))
-            header = intent.extras!!.getString(getString(R.string.header)).toString()
-            description = intent.extras!!.getString(getString(R.string.description)).toString()
-            id = intent.extras!!.getInt(getString(R.string.id))
+            header = intent.extras!!.getString(getString(R.string.header_uppercase)).toString()
+            description = intent.extras!!.getString(getString(R.string.description_uppercase)).toString()
+            id = intent.extras!!.getInt(getString(R.string.id_uppercase))
         }
         if (timestamp > 0) {
             val context = this.applicationContext
-            var notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val notifyIntent = Intent(this, MainActivity::class.java)
 
-            notifyIntent.putExtra(getString(R.string.header), header)
-            notifyIntent.putExtra(getString(R.string.description), description)
-            notifyIntent.putExtra(getString(R.string.id), id)
+            notifyIntent.putExtra(getString(R.string.header_uppercase), header)
+            notifyIntent.putExtra(getString(R.string.description_uppercase), description)
+            notifyIntent.putExtra(getString(R.string.id_uppercase), id)
             notifyIntent.putExtra(getString(R.string.notification), true)
 
             notifyIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -47,16 +45,13 @@ class NotificationService : IntentService("NotificationService") {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timestamp
 
-
             val pendingIntent = PendingIntent.getActivity(context, id, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             val res = this.resources
-            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
 
                 mNotification = Notification.Builder(this, CHANNEL_ID)
-                        // Set the intent that will fire when the user taps the notification
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.alarm_clock_old)
                         .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.alarm_clock_old))
@@ -68,26 +63,22 @@ class NotificationService : IntentService("NotificationService") {
             } else {
 
                 mNotification = Notification.Builder(this)
-                        // Set the intent that will fire when the user taps the notification
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.alarm_clock_old)
                         .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
                         .setAutoCancel(true)
-                        .setPriority(Notification.PRIORITY_MAX)
                         .setContentTitle(header)
                         .setStyle(Notification.BigTextStyle()
                                 .bigText(description))
-                        .setSound(uri)
                         .setContentText(description).build()
 
             }
-            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            var notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(id, mNotification)
         }
     }
 
     private lateinit var mNotification: Notification
-   // private val mNotificationId: Int = 1000
    var id: Int = 0
 
     @SuppressLint("NewApi")
@@ -104,7 +95,6 @@ class NotificationService : IntentService("NotificationService") {
             notificationChannel.setShowBadge(true)
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.parseColor("#e8334a")
-            notificationChannel.description = "test"
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             notificationManager.createNotificationChannel(notificationChannel)
         }

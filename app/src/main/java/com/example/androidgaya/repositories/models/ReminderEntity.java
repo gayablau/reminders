@@ -20,8 +20,8 @@ public class ReminderEntity {
     @ColumnInfo(name = "description")
     private String description;
 
-    @ColumnInfo(name = "username")
-    private String username;
+    @ColumnInfo(name = "user")
+    private int user;
 
     @ColumnInfo(name = "time")
     private long time;
@@ -30,27 +30,16 @@ public class ReminderEntity {
     private long createdAt;
 
 
-/*    public ReminderEntity(String header,
-                          String description,
-                          String username,
-                          long time) {
-        this.id = new Random(System.currentTimeMillis()).nextInt(10000);
-        this.header = header;
-        this.description = description;
-        this.username = username;
-        this.time = time;
-    }*/
-
     public ReminderEntity(int id,
                           String header,
                           String description,
-                          String username,
+                          int user,
                           long time,
                           long createdAt) {
         this.id = id;
         this.header = header;
         this.description = description;
-        this.username = username;
+        this.user = user;
         this.time = time;
         if (createdAt == 0) {
             Calendar helperCalendar = Calendar.getInstance();
@@ -118,12 +107,12 @@ public class ReminderEntity {
         return helperCalendar;
     }
 
-    public String getUsername() {
-        return username;
+    public int getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(int user) {
+        this.user = user;
     }
 
     public long getTime() {
@@ -141,4 +130,5 @@ public class ReminderEntity {
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
+
 }

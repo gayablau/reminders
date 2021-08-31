@@ -18,21 +18,25 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="description">Description</string>
+    <string name="description_uppercase">Description</string>
+    <string name="description">description</string>
     <string name="description_header">Description:</string>
     <string name="reminder_name">Reminder Name</string>
     <string name="reminder_name_header">Reminder Name:</string>
     <string name="date">date</string>
-    <string name="name">Name</string>
-    <string name="time">Time</string>
-    <string name="day">Day</string>
-    <string name="header">Header</string>
+    <string name="name_uppercase">Name</string>
+    <string name="name">name</string>
+    <string name="time_uppercase">Time</string>
+    <string name="time">time</string>
+    <string name="day_uppercase">Day</string>
+    <string name="day">day</string>
+    <string name="header_uppercase">Header</string>
+    <string name="header">header</string>
     <string name="add">add</string>
     <string name="picture">picture</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
+    <string name="username_uppercase">Username</string>
+    <string name="password_uppercase">Password</string>
     <string name="login">Login</string>
     <string name="isLoggedIn">isLoggedIn</string>
     <string name="user_details_sp" translatable="false">userDetailsSP</string>
@@ -41,14 +45,15 @@
     <string name="enter_name_msg">please enter a name for your reminder</string>
     <string name="add_msg">reminder added</string>
     <string name="update_msg">reminder updated</string>
-    <string name="id">Id</string>
+    <string name="id_uppercase">Id</string>
     <string name="tomorrow_msg">past time selected. setting reminder date to tomorrow</string>
     <string name="toolbar_main">Hello %1$s</string>
     <string name="add_rem">Add Reminder</string>
     <string name="edit_rem">Edit Reminder</string>
     <string name="user_exists">user exists</string>
     <string name="save">save</string>
-    <string name="logout">Logout</string>
+    <string name="logout_uppercase">Logout</string>
+    <string name="logout">logout</string>
     <string name="full_date">dd/MM/yyyy</string>
     <string name="words_date">EEE, MMM d</string>
     <string name="day_date">EEEE</string>
@@ -59,4 +64,24 @@
     <string name="notification">notification</string>
     <string name="reason">reason</string>
     <string name="msg_rem_not_found">Error reminder doesn\'t exist</string>
+    <string name="UserId">UserId</string>
+    <string name="create_reminder">createReminder</string>
+    <string name="edit_reminder">editReminder</string>
+    <string name="delete_reminder">deleteReminder</string>
+    <string name="create_user">createUser</string>
+    <string name="change_username">changeUsername</string>
+    <string name="change_username_only">changeUsernameOnly</string>
+    <string name="get_all_users">getAllUsers</string>
+    <string name="username">username</string>
+    <string name="userid">userId</string>
+    <string name="password">password</string>
+    <string name="id">id</string>
+    <string name="get_all_reminders">getAllReminders</string>
+    <string name="update_users">updateUsers</string>
+    <string name="connect_user">connectUser</string>
+    <string name="reminders">reminders</string>
+    <string name="created_at">createdAt</string>
+    <string name="Service_start_arguments">ServiceStartArguments</string>
+    <string name="Reminders_database">RemindersDatabase</string>
+
 </resources>

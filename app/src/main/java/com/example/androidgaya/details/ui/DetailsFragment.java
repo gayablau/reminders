@@ -37,8 +37,6 @@ import java.util.Random;
 
 public class DetailsFragment extends Fragment {
     private static final String ID_KEY = "id";
-    private static final int ADD_KEY = 1;
-    private static final int EDIT_KEY = 2;
     private TextView dateTV;
     private Button dateButton;
     private TimePicker timePicker;
@@ -55,6 +53,7 @@ public class DetailsFragment extends Fragment {
     private String chosenDateWords;
     private String todayDateNum;
     private String username = "";
+    private int userId = 1;
     private int reminderId = 0;
     private long createdAt = 0;
     private boolean isNewFlag = true;
@@ -64,6 +63,7 @@ public class DetailsFragment extends Fragment {
     private DateFormat wordsFormat;
     private DateFormat dayFormat;
     private boolean isNotified = false;
+    ReminderEntity reminderEntity;
 
     public DetailsFragment() {
     }
@@ -196,7 +196,13 @@ public class DetailsFragment extends Fragment {
         if (isNewFlag) {
             reminderId = new Random(System.currentTimeMillis()).nextInt(10000);
         }
-        return new ReminderEntity(reminderId, chosenReminderHeader, chosenReminderDescription, username, chosenTime.getTimeInMillis(), createdAt);
+        reminderEntity = new ReminderEntity(reminderId,
+                chosenReminderHeader,
+                chosenReminderDescription,
+                userId,
+                chosenTime.getTimeInMillis(),
+                createdAt);
+        return reminderEntity;
     }
 
     public void setUpdatedDetails() {
@@ -219,7 +225,11 @@ public class DetailsFragment extends Fragment {
                     viewModel.editReminder(createReminderFromInput());
                     makeToast(getString(R.string.update_msg));
                 }
-                new NotificationUtils().setNotification(chosenTime.getTimeInMillis(), getActivity(), chosenReminderHeader, chosenReminderDescription, reminderId);
+                new NotificationUtils().setNotification(chosenTime.getTimeInMillis(),
+                        getActivity(),
+                        chosenReminderHeader,
+                        chosenReminderDescription,
+                        reminderId);
                 nav.toRemindersFragment();
             } else {
                 makeToast(getString(R.string.select_valid_time_msg));
@@ -230,8 +240,12 @@ public class DetailsFragment extends Fragment {
     }
 
     private void resetSeconds() {
-        chosenTime.set(chosenTime.get(Calendar.YEAR), chosenTime.get(Calendar.MONTH),
-                chosenTime.get(Calendar.DATE), chosenTime.get(Calendar.HOUR_OF_DAY), chosenTime.get(Calendar.MINUTE), 0);
+        chosenTime.set(chosenTime.get(Calendar.YEAR),
+                chosenTime.get(Calendar.MONTH),
+                chosenTime.get(Calendar.DATE),
+                chosenTime.get(Calendar.HOUR_OF_DAY),
+                chosenTime.get(Calendar.MINUTE),
+                0);
     }
 
     public void setDetailsOnScreen() {
@@ -246,8 +260,11 @@ public class DetailsFragment extends Fragment {
                 chosenReminderHeader = reminderEntity.getHeader();
                 chosenReminderDescription = reminderEntity.getDescription();
                 createdAt = reminderEntity.getCreatedAt();
-                chosenTime.set(reminderEntity.getYear(), reminderEntity.getMonth(), reminderEntity.getDayOfMonth(),
-                        reminderEntity.getHour(), reminderEntity.getMinutes());
+                chosenTime.set(reminderEntity.getYear(),
+                        reminderEntity.getMonth(),
+                        reminderEntity.getDayOfMonth(),
+                        reminderEntity.getHour(),
+                        reminderEntity.getMinutes());
                 reminderHeaderET.setText(chosenReminderHeader);
                 reminderDescriptionET.setText(chosenReminderDescription);
             } catch (Exception ex) {
@@ -256,8 +273,10 @@ public class DetailsFragment extends Fragment {
             }
         } else {
             ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.add_rem), true);
-            chosenTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
-                    currentTime.get(Calendar.DATE), currentTime.get(Calendar.HOUR_OF_DAY),
+            chosenTime.set(currentTime.get(Calendar.YEAR),
+                    currentTime.get(Calendar.MONTH),
+                    currentTime.get(Calendar.DATE),
+                    currentTime.get(Calendar.HOUR_OF_DAY),
                     currentTime.get(Calendar.MINUTE));
         }
         chosenDateNum = getDateString(chosenTime);
@@ -289,6 +308,7 @@ public class DetailsFragment extends Fragment {
 
     public void getUsername() {
         username = viewModel.getUsername();
+        userId = viewModel.getUserId();
     }
 
     public void makeToast(String msg) {
@@ -301,7 +321,8 @@ public class DetailsFragment extends Fragment {
     }
 
     public void setNewDate(int year, int month, int dayOfMonth) {
-        chosenDateNum = dayOfMonth + "/" + (month + 1) + "/" + year;
+        int currentmonth = month + 1;
+        chosenDateNum = dayOfMonth + "/" + currentmonth + "/" + year;
         Date date12 = null;
         try {
             date12 = fullFormat.parse(chosenDateNum);
@@ -311,7 +332,7 @@ public class DetailsFragment extends Fragment {
         chosenDateWords = wordsFormat.format(date12);
         dateTV.setText(chosenDateWords);
         chosenDayStr = dayFormat.format(date12);
-        chosenTime.set(year, month + 1, dayOfMonth,
+        chosenTime.set(year, currentmonth, dayOfMonth,
                 chosenTime.get(Calendar.HOUR_OF_DAY), chosenTime.get(Calendar.MINUTE));
     }
 

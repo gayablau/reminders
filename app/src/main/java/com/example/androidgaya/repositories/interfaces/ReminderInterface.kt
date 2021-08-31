@@ -1,16 +1,18 @@
 package com.example.androidgaya.repositories.interfaces
 
+import androidx.lifecycle.LiveData
 import com.example.androidgaya.repositories.models.ReminderEntity
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 interface ReminderInterface {
-    /*fun getReminderByID(id: Int, username: String): ReminderEntity?
-    fun getRemindersMap(): Map<String, ArrayList<ReminderEntity>>?
-    fun getRemindersByUsername(username: String): ArrayList<ReminderEntity>?
-    fun isUsernameExists(username: String): Boolean
-    fun addUsername(username: String)
-    fun editUsername(oldUsername: String, newUsername: String)
-    fun addReminder(reminderEntity: ReminderEntity, username: String)
-    fun editReminder(updatedReminderEntity: ReminderEntity, username: String)
-    fun deleteReminderById(id: Int, username: String)*/
+    fun deleteReminder(reminderEntity: ReminderEntity)
+    fun getReminders(userId: Int) : LiveData<List<ReminderEntity>?>
+    fun getRemindersByUsernameList(userId : Int) : List<ReminderEntity>
+    fun addReminder(reminderEntity : ReminderEntity)
+    fun editReminder(reminderEntity : ReminderEntity)
+    fun getReminderByID(id : Int) : ReminderEntity?
+    fun getMyRemindersIds(userId : Int) : List<Int>
+    fun deleteAllReminders()
 }

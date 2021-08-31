@@ -13,12 +13,10 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     private final ReminderAdapter reminderAdapter;
     private final ColorDrawable background;
-    private final String username;
 
-    public SwipeToDeleteCallback(ReminderAdapter adapter, String username) {
+    public SwipeToDeleteCallback(ReminderAdapter adapter) {
         super(0, ItemTouchHelper.LEFT);
         this.reminderAdapter = adapter;
-        this.username = username;
         background = new ColorDrawable(Color.RED);
     }
 
@@ -48,10 +46,10 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
                 isCurrentlyActive);
         View itemView = viewHolder.itemView;
         int backgroundCornerOffset = 20;
-        if (dX < 0) { // Swiping to the left
+        if (dX < 0) {
             background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
                     itemView.getTop(), itemView.getRight(), itemView.getBottom());
-        } else { // view is unSwiped
+        } else {
             background.setBounds(0, 0, 0, 0);
         }
         background.draw(c);

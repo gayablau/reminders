@@ -1,5 +1,6 @@
-package com.example.androidgaya.repositories.interfaces
+package com.example.androidgaya.repositories.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,7 +10,7 @@ import com.example.androidgaya.repositories.models.UserEntity
 @Dao
 interface UserDao {
     @Query("SELECT * FROM users ORDER BY id DESC")
-    fun getAllUsersFromDB(): List<UserEntity>?
+    fun getAllUsersFromDB(): LiveData<List<UserEntity>?>
 
     @Insert
     fun insertUser(userEntity: UserEntity)
@@ -19,6 +20,9 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE username LIKE :username")
     fun findUserByUsername(username: String): UserEntity?
+
+    @Query("SELECT sharedId FROM users WHERE username LIKE :username")
+    fun findUserIdByUsername(username: String): Int
 
     @Query("UPDATE users SET username = :newUsername WHERE username = :oldUsername")
     fun editUsername(oldUsername: String, newUsername: String)
