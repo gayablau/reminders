@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void init() {
         setContentView(R.layout.activity_login);
+        startService(new Intent(this, SocketService.class));
         initViewModel();
         username = viewModel.getUsername();
         userId = viewModel.getUserId(username);
@@ -96,7 +97,6 @@ public class LoginActivity extends AppCompatActivity {
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
 
-        startService(new Intent(this, SocketService.class));
     }
 
     private void initViewModel() {

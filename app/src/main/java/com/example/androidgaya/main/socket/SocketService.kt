@@ -35,7 +35,7 @@ class SocketService : Service() {
 
             } catch (ex: Exception) {}
 
-            mSocket.on(getString(R.string.create_reminder)) { args ->
+            mSocket?.on(getString(R.string.create_reminder)) { args ->
                 if (args[0] != null) {
                     val rem  = ReminderEntity(args[0] as Int,
                             args[1] as String,
@@ -49,7 +49,7 @@ class SocketService : Service() {
                     }
                 }
             }
-            mSocket.on(getString(R.string.edit_reminder)) { args ->
+            mSocket?.on(getString(R.string.edit_reminder)) { args ->
                 if (args[0] != null) {
                     val rem  = ReminderEntity(args[0] as Int,
                             args[1] as String,
@@ -66,7 +66,7 @@ class SocketService : Service() {
                     }
                 }
             }
-            mSocket.on(getString(R.string.delete_reminder)) { args ->
+            mSocket?.on(getString(R.string.delete_reminder)) { args ->
                 if (args[0] != null) {
                     val rem  = ReminderEntity(args[0] as Int,
                             args[1] as String,
@@ -78,13 +78,13 @@ class SocketService : Service() {
                     NotificationUtils().deleteNotification(this@SocketService, rem.id)
                 }
             }
-            mSocket.on(getString(R.string.create_user)) { args ->
+            mSocket?.on(getString(R.string.create_user)) { args ->
                 if (args[0] != null) {
                     val user = UserEntity(args[0] as Int, args[1] as String, args[2] as String)
                     userRepo.insertUser(user)
                 }
             }
-            mSocket.on(getString(R.string.change_username)) { args ->
+            mSocket?.on(getString(R.string.change_username)) { args ->
                 if (args[0] != null) {
                     mSocket!!.emit(getString(R.string.change_username_only), args[1] as String)
                     userRepo.editUsername(args[0] as String, args[1] as String)
@@ -93,7 +93,7 @@ class SocketService : Service() {
                     }
                 }
             }
-            mSocket.on(getString(R.string.get_all_users)) { args ->
+            mSocket?.on(getString(R.string.get_all_users)) { args ->
                 if (args[0] != null) {
                     val data = args[0] as JSONArray
                     val moshi : Moshi = Moshi.Builder().build()
@@ -112,7 +112,7 @@ class SocketService : Service() {
                 }
             }
 
-            mSocket.on(getString(R.string.get_all_reminders)) { args ->
+            mSocket?.on(getString(R.string.get_all_reminders)) { args ->
                 if (args[0] != null) {
                     remindersRepo.deleteAllReminders()
                     val reminders = args[0] as JSONArray
