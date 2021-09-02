@@ -10,7 +10,6 @@ import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
-import com.example.androidgaya.repositories.user.UserRepo
 import io.socket.client.Socket
 import javax.inject.Inject
 
@@ -18,8 +17,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
-    private var userRepo: UserRepo = UserRepo(application)
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
+    var username: String
+    var userId: Int
 
     @set:Inject
     var mSocket: Socket? = null
@@ -27,7 +27,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         (application as AppDataGetter).getAppComponent()?.injectMain(this)
         updateLoggedInUser()
-        getAllReminders(loggedInUserRepo.getLoggedInUserId(application))
+        username = loggedInUserRepo.getLoggedInUsername(getApplication())
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
+        getAllReminders(userId)
     }
 
     fun logout() {
@@ -35,15 +37,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         mSocket!!.emit((getApplication() as Context).getString(R.string.logout))
     }
 
-    fun getUsernameStr(): String {
-        return loggedInUserRepo.getLoggedInUsername(getApplication())
-    }
-
-    fun getMyRemindersIds(userId: Int): List<Int> {
+    fun getMyRemindersIds(): List<Int> {
         return remindersRepo.getMyRemindersIds(userId)
     }
 
-    fun getRemindersByUserIdList(userId: Int): List<ReminderEntity> {
+    fun getRemindersByUserIdList(): List<ReminderEntity> {
         return remindersRepo.getRemindersByUsernameList(userId)
     }
 
@@ -57,9 +55,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getAllReminders(userId: Int) {
         mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_reminders), userId)
-    }
-
-    fun getUserId(username: String): Int {
-        return userRepo.findUserIdByUsername(username)
     }
 }

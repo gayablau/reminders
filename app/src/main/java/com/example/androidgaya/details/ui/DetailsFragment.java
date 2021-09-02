@@ -52,8 +52,6 @@ public class DetailsFragment extends Fragment {
     private String chosenReminderDescription = "";
     private String chosenDateWords;
     private String todayDateNum;
-    private String username = "";
-    private int userId = 1;
     private int reminderId = 0;
     private long createdAt = 0;
     private boolean isNewFlag = true;
@@ -92,7 +90,6 @@ public class DetailsFragment extends Fragment {
         setHasOptionsMenu(true);
         initViews(view);
         initVariables();
-        getUsername();
         updateCurrentTime();
         updateChosenTimeToCurrent();
         setDetailsOnScreen();
@@ -202,7 +199,7 @@ public class DetailsFragment extends Fragment {
         reminderEntity = new ReminderEntity(reminderId,
                 chosenReminderHeader,
                 chosenReminderDescription,
-                userId,
+                viewModel.getUserId(),
                 chosenTime.getTimeInMillis(),
                 createdAt);
         return reminderEntity;
@@ -307,11 +304,6 @@ public class DetailsFragment extends Fragment {
         timePicker = view.findViewById(R.id.time_picker);
         viewModel = new ViewModelProvider(this).get(DetailsViewModel.class);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
-    }
-
-    public void getUsername() {
-        username = viewModel.getUsername();
-        userId = viewModel.getUserId();
     }
 
     public void makeToast(String msg) {

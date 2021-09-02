@@ -26,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     ImageView imageView;
     String username = "";
-    int userId = 1;
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
@@ -84,14 +83,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         startService(new Intent(this, SocketService.class));
         initViewModel();
-        username = viewModel.getUsername();
-        userId = viewModel.getUserId(username);
         nav = new LoginNavigator(this);
 
         if (viewModel.isUserLoggedIn() &&
-                viewModel.isUserExists(username)) {
+                viewModel.isUserExists(viewModel.getUsername())) {
             nav.toMainActivity();
-            viewModel.connectUser(userId, username);
+            viewModel.connectUser(viewModel.getUsername());
         }
 
         getSupportActionBar().hide();
@@ -112,8 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {
-            userId = viewModel.getUserId(username);
-            viewModel.connectUser(userId, username);
+            viewModel.connectUser(username);
             goToMainActivity();
         } else {
             if (viewModel.isUserExists(username)) {

@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment {
         if (viewModel.isUsernameExists(getNewUsername())) {
             Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();
         } else {
-            viewModel.editUsername(username, getNewUsername());
+            viewModel.editUsername(getNewUsername());
             username = getNewUsername();
             viewModel.setUsername(username);
             nav.toRemindersFragment();

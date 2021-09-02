@@ -14,28 +14,29 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     private var userRepo: UserRepo = UserRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
+    var username: String
+    var userId: Int
 
     @set:Inject
     var mSocket: Socket? = null
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectProfile(this)
+        username = loggedInUserRepo.getLoggedInUsername(getApplication())
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
-    fun editUsername(oldUsername: String, newUsername: String) {
-        userRepo.editUsername(oldUsername, newUsername)
-        setUsername(newUsername)
+    fun editUsername(newUsername: String) {
+        userRepo.editUsername(username, newUsername)
+        setLoggedInUsername(newUsername)
         mSocket!!.emit((getApplication() as Context).getString(R.string.change_username),
-                oldUsername,
+                username,
                 newUsername)
     }
 
-    fun getUsername(): String {
-        return loggedInUserRepo.getLoggedInUsername(getApplication())
-    }
 
-    fun setUsername(username: String) {
-        loggedInUserRepo.setLoggedIn(getApplication(), loggedInUserRepo.getLoggedInUserId(getApplication()), username)
+    fun setLoggedInUsername(username: String) {
+        loggedInUserRepo.setLoggedIn(getApplication(), userId, username)
     }
 
     fun isUsernameExists(username: String): Boolean {

@@ -15,12 +15,16 @@ import javax.inject.Inject
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
+    var username: String
+    var userId: Int
 
     @set:Inject
     var mSocket: Socket? = null
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectDetails(this)
+        username = loggedInUserRepo.getLoggedInUsername(getApplication())
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
     fun addReminder(reminderEntity: ReminderEntity) {
@@ -43,14 +47,6 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
                 reminderEntity.user,
                 reminderEntity.time,
                 reminderEntity.createdAt)
-    }
-
-    fun getUsername(): String {
-        return loggedInUserRepo.getLoggedInUsername(getApplication())
-    }
-
-    fun getUserId(): Int {
-        return loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
     fun getReminderByID(id: Int): ReminderEntity? {

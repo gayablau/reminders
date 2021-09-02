@@ -31,8 +31,6 @@ import io.socket.client.Socket;
 
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
-    String username;
-    int userId;
     LiveData<List<LoggedInUserEntity>> loggedInUserList;
     Toolbar toolbar;
     MainViewModel viewModel;
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         viewModel.logout();
         stopService(new Intent(this, SocketService.class));
         nav.toLoginActivity();
-        new NotificationUtils().cancelAll(this, viewModel.getMyRemindersIds(userId));
+        new NotificationUtils().cancelAll(this, viewModel.getMyRemindersIds());
     }
 
     public void init() {
@@ -70,11 +68,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
         initViewModel();
-        username = viewModel.getUsernameStr();
-        userId = viewModel.getUserId(username);
         nav = new MainNavigator(R.id.fragment_container, this);
-        changeToolbar(getString(R.string.toolbar_main, username), false);
-        new NotificationUtils().createAll(this, viewModel.getRemindersByUserIdList(userId));
+        changeToolbar(getString(R.string.toolbar_main, viewModel.getUsername()), false);
+        new NotificationUtils().createAll(this, viewModel.getRemindersByUserIdList());
     }
 
 
@@ -101,11 +97,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
 
         Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
             if (!loggedInUserEntities.isEmpty()) {
-                username = loggedInUserEntities.get(0).getUsername();
+                viewModel.setUsername(loggedInUserEntities.get(0).getUsername());
             }
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             if (currentFragment instanceof RemindersFragment) {
-                changeToolbar(getString(R.string.toolbar_main, username), false);
+                changeToolbar(getString(R.string.toolbar_main, viewModel.getUsername()), false);
             }
         };
 
