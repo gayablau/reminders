@@ -7,25 +7,25 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
+import androidx.core.app.JobIntentService
 import com.example.androidgaya.R
 import com.example.androidgaya.main.ui.MainActivity
 import java.util.*
 
-class NotificationService : IntentService("NotificationService") {
-
+class NotificationService : JobIntentService() {
 
     companion object {
         const val CHANNEL_ID = "samples.notification.devdeeds.com.CHANNEL_ID"
         const val CHANNEL_NAME = "Sample Notification"
     }
 
-    override fun onHandleIntent(intent: Intent?) {
+    override fun onHandleWork(intent: Intent) {
         createChannel()
         var timestamp: Long = 0
         var header = ""
         var description = ""
 
-        if (intent != null && intent.extras != null) {
+        if (intent.extras != null) {
             timestamp = intent.extras!!.getLong(getString(R.string.timestamp))
             header = intent.extras!!.getString(getString(R.string.header_uppercase)).toString()
             description = intent.extras!!.getString(getString(R.string.description_uppercase)).toString()
@@ -45,7 +45,10 @@ class NotificationService : IntentService("NotificationService") {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timestamp
 
-            val pendingIntent = PendingIntent.getActivity(context, id, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getActivity(context,
+                    id,
+                    notifyIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
             val res = this.resources
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -73,7 +76,7 @@ class NotificationService : IntentService("NotificationService") {
                         .setContentText(description).build()
 
             }
-            var notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(id, mNotification)
         }
     }
@@ -98,6 +101,5 @@ class NotificationService : IntentService("NotificationService") {
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             notificationManager.createNotificationChannel(notificationChannel)
         }
-
     }
 }

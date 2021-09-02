@@ -15,7 +15,6 @@ import javax.inject.Inject
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo : RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
-    private var userRepo : UserRepo = UserRepo(application)
 
     @set:Inject
     var mSocket: Socket? = null
