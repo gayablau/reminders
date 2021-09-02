@@ -11,7 +11,7 @@ import com.example.androidgaya.repositories.models.ReminderEntity
 import java.util.*
 
 class NotificationUtils {
-    fun setExistNotification(timeInMilliSeconds: Long, context: Context, header: String, description: String, id : Int) {
+    fun setExistNotification(timeInMilliSeconds: Long, context: Context, header: String, description: String, id: Int) {
 
         if (timeInMilliSeconds > 0) {
 
@@ -36,7 +36,7 @@ class NotificationUtils {
         }
     }
 
-    fun setNotification(timeInMilliSeconds: Long, context: Context, header: String, description: String, id : Int) {
+    fun setNotification(timeInMilliSeconds: Long, context: Context, header: String, description: String, id: Int) {
 
         if (timeInMilliSeconds > 0) {
 
@@ -58,7 +58,7 @@ class NotificationUtils {
         }
     }
 
-    fun deleteNotification(context: Context, id : Int) {
+    fun deleteNotification(context: Context, id: Int) {
         val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
@@ -68,7 +68,7 @@ class NotificationUtils {
         alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent)
     }
 
-    fun cancelAll(activity: Activity, ids : List<Int>) {
+    fun cancelAll(activity: Activity, ids: List<Int>) {
         val alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(activity.applicationContext, ReminderReceiver::class.java)
         for (id in ids) {
@@ -77,7 +77,7 @@ class NotificationUtils {
         }
     }
 
-    fun createAll(activity: Activity, reminders : List<ReminderEntity>) {
+    fun createAll(activity: Activity, reminders: List<ReminderEntity>) {
         for (rem in reminders) {
             setExistNotification(rem.time, activity, rem.header, rem.description, rem.id)
         }

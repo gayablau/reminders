@@ -13,8 +13,8 @@ import io.socket.client.Socket
 import javax.inject.Inject
 
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
-    private var remindersRepo : RemindersRepo = RemindersRepo(application)
-    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
+    private var remindersRepo: RemindersRepo = RemindersRepo(application)
+    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
 
     @set:Inject
     var mSocket: Socket? = null
@@ -23,7 +23,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
         (application as AppDataGetter).getAppComponent()?.injectDetails(this)
     }
 
-    fun addReminder(reminderEntity : ReminderEntity) {
+    fun addReminder(reminderEntity: ReminderEntity) {
         remindersRepo.addReminder(reminderEntity)
         mSocket!!.emit((getApplication() as Context).getString(R.string.create_reminder),
                 reminderEntity.id,
@@ -34,7 +34,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
                 reminderEntity.createdAt)
     }
 
-    fun editReminder(reminderEntity : ReminderEntity) {
+    fun editReminder(reminderEntity: ReminderEntity) {
         remindersRepo.editReminder(reminderEntity)
         mSocket!!.emit((getApplication() as Context).getString(R.string.edit_reminder),
                 reminderEntity.id,
@@ -45,15 +45,15 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
                 reminderEntity.createdAt)
     }
 
-    fun getUsername() : String {
+    fun getUsername(): String {
         return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
-    fun getUserId() : Int {
+    fun getUserId(): Int {
         return loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
-    fun getReminderByID(id : Int) : ReminderEntity? {
+    fun getReminderByID(id: Int): ReminderEntity? {
         return remindersRepo.getReminderByID(id)
     }
 }

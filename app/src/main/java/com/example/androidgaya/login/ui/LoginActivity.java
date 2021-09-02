@@ -45,7 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -53,12 +54,13 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
 
-    public static Intent getIntent(Context context){
+    public static Intent getIntent(Context context) {
         return new Intent(context, LoginActivity.class);
     }
 
@@ -87,7 +89,8 @@ public class LoginActivity extends AppCompatActivity {
         nav = new LoginNavigator(this);
 
         if (viewModel.isUserLoggedIn() &&
-                viewModel.isUserExists(username)) { nav.toMainActivity();
+                viewModel.isUserExists(username)) {
+            nav.toMainActivity();
             viewModel.connectUser(userId, username);
         }
 
@@ -112,12 +115,10 @@ public class LoginActivity extends AppCompatActivity {
             userId = viewModel.getUserId(username);
             viewModel.connectUser(userId, username);
             goToMainActivity();
-        }
-        else {
+        } else {
             if (viewModel.isUserExists(username)) {
                 Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
-            }
-            else {
+            } else {
                 viewModel.createNewUser(username, password);
                 goToMainActivity();
             }

@@ -1,7 +1,5 @@
 package com.example.androidgaya.repositories.socket
 
-import android.util.Log
-import com.example.androidgaya.repositories.models.ReminderEntity
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -33,20 +31,5 @@ object SocketHandler {
     @Synchronized
     fun closeConnection() {
         mSocket.disconnect()
-    }
-
-    fun updateServer(event: String, data: Any) {
-        mSocket.emit(event, data);
-    }
-
-    fun updateClient(event: String, data: Any, onUpdate: OnUpdate ) {
-        mSocket.on(event, Emitter.Listener { args: Array<Any?> ->
-            if (args[0] != null) {
-            }
-        })
-    }
-
-    interface OnUpdate {
-        fun update(args: Array<Any?>)
     }
 }

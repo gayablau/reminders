@@ -28,5 +28,5 @@ interface UserDao {
     fun editUsername(oldUsername: String, newUsername: String)
 
     @Query("SELECT * FROM users WHERE username LIKE :username AND password LIKE :password")
-    fun areDetailsOK(username: String, password: String) : UserEntity?
+    fun areDetailsOK(username: String, password: String): UserEntity?
 }

@@ -31,7 +31,8 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     }
 
     override fun getLoggedInUsername(context: Context): String {
-        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY) ?: EMPTY
+        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY)
+                ?: EMPTY
     }
 
     override fun getLoggedInUserId(context: Context): Int {
@@ -42,7 +43,7 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), username).apply()
         loggedInUserPref.edit().putInt(context.getString(R.string.UserId), id).apply()
         loggedInUserDao.deleteOldLogins()
-        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id ,username))
+        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
     }
 
     override fun logout(context: Context) {

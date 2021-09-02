@@ -8,4 +8,4 @@ import java.util.*
 @Entity(tableName = "users")
 class UserEntity(@PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") var id: Int,
                  @ColumnInfo(name = "username") var username: String,
-                 @ColumnInfo(name = "password") var password: String) {}
+                 @ColumnInfo(name = "password") var password: String)

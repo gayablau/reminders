@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.main.socket.SocketService;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     MainNavigator nav;
     Socket socket;
 
-    public static Intent getIntent(Context context){
+    public static Intent getIntent(Context context) {
         return new Intent(context, MainActivity.class);
     }
 
@@ -91,7 +92,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         invalidateOptionsMenu();
     }
 
-    public Socket getSocket() {return socket;}
+    public Socket getSocket() {
+        return socket;
+    }
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);

@@ -17,19 +17,19 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun getUserDao(appDatabase: AppDatabase) : UserDao {
+    fun getUserDao(appDatabase: AppDatabase): UserDao {
         return appDatabase.getUsersDao()
     }
 
     @Singleton
     @Provides
-    fun getRemindersDao(appDatabase: AppDatabase) : RemindersDao {
+    fun getRemindersDao(appDatabase: AppDatabase): RemindersDao {
         return appDatabase.getRemindersDao()
     }
 
     @Singleton
     @Provides
-    fun getLoggedInUserDao(appDatabase: AppDatabase) : LoggedInUserDao {
+    fun getLoggedInUserDao(appDatabase: AppDatabase): LoggedInUserDao {
         return appDatabase.getLoggedInUserDao()
     }
 
@@ -41,13 +41,13 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun provideAppContext() : Context {
+    fun provideAppContext(): Context {
         return application.applicationContext
     }
 
     @Singleton
     @Provides
-    fun provideSocket() : Socket {
+    fun provideSocket(): Socket {
         SocketHandler.setSocket()
         SocketHandler.establishConnection()
         return SocketHandler.mSocket

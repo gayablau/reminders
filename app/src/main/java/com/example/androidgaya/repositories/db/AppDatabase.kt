@@ -22,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
         private var dbINSTANCE: AppDatabase? = null
 
         fun getAppDBInstance(context: Context): AppDatabase {
-            if(dbINSTANCE == null) {
+            if (dbINSTANCE == null) {
                 dbINSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,

@@ -16,9 +16,9 @@ import javax.inject.Inject
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var userRepo : UserRepo = UserRepo(application)
+    private var userRepo: UserRepo = UserRepo(application)
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
-    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
+    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
 
     @set:Inject
     var mSocket: Socket? = null
@@ -37,19 +37,19 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         loggedInUserRepo.setLoggedIn(getApplication(), userId, username)
     }
 
-    fun isUserLoggedIn() : Boolean {
+    fun isUserLoggedIn(): Boolean {
         return loggedInUserRepo.isUserLoggedIn(getApplication())
     }
 
-    fun getUsername() : String {
+    fun getUsername(): String {
         return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
-    fun getUserId(username: String) : Int {
+    fun getUserId(username: String): Int {
         return userRepo.findUserIdByUsername(username)
     }
 
-    fun areDetailsOK(username: String, password: String) : Boolean {
+    fun areDetailsOK(username: String, password: String): Boolean {
         return userRepo.areDetailsOK(username, password)
     }
 
@@ -74,7 +74,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_users))
     }
 
-    fun getLoggedInUser() : LiveData<List<LoggedInUserEntity>?> {
+    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
         return loggedInUserRepo.getLoggedInUserFromDB()
     }
 

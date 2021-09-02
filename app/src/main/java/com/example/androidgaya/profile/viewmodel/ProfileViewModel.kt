@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var userRepo : UserRepo = UserRepo(application)
-    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
+    private var userRepo: UserRepo = UserRepo(application)
+    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
 
     @set:Inject
     var mSocket: Socket? = null
@@ -30,15 +30,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 newUsername)
     }
 
-    fun getUsername() : String {
+    fun getUsername(): String {
         return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
-    fun setUsername(username : String) {
+    fun setUsername(username: String) {
         loggedInUserRepo.setLoggedIn(getApplication(), loggedInUserRepo.getLoggedInUserId(getApplication()), username)
     }
 
-    fun isUsernameExists(username: String) : Boolean {
-       return userRepo.isUserExists(username)
+    fun isUsernameExists(username: String): Boolean {
+        return userRepo.isUserExists(username)
     }
 }

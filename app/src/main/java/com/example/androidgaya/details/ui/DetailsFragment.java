@@ -100,8 +100,8 @@ public class DetailsFragment extends Fragment {
     }
 
     public void initListeners() {
-       initTimePicker();
-       initDatePickerDialog();
+        initTimePicker();
+        initDatePickerDialog();
     }
 
     public void initVariables() {
@@ -133,8 +133,11 @@ public class DetailsFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.save, menu);
         menuItem = menu.findItem(R.id.action_save);
-        if (isNewFlag) {menuItem.setTitle(R.string.add); }
-        else {menuItem.setTitle(R.string.save);}
+        if (isNewFlag) {
+            menuItem.setTitle(R.string.add);
+        } else {
+            menuItem.setTitle(R.string.save);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -16,10 +16,10 @@ import javax.inject.Inject
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
-    private var remindersRepo : RemindersRepo = RemindersRepo(application)
-    private var userRepo : UserRepo = UserRepo(application)
-    lateinit var loggedInUserList : LiveData<List<LoggedInUserEntity>?>
+    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
+    private var remindersRepo: RemindersRepo = RemindersRepo(application)
+    private var userRepo: UserRepo = UserRepo(application)
+    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
 
     @set:Inject
     var mSocket: Socket? = null
@@ -35,19 +35,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         mSocket!!.emit((getApplication() as Context).getString(R.string.logout))
     }
 
-    fun getUsernameStr() : String {
+    fun getUsernameStr(): String {
         return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 
-    fun getMyRemindersIds(userId : Int) : List<Int> {
+    fun getMyRemindersIds(userId: Int): List<Int> {
         return remindersRepo.getMyRemindersIds(userId)
     }
 
-    fun getRemindersByUserIdList(userId : Int) : List<ReminderEntity> {
+    fun getRemindersByUserIdList(userId: Int): List<ReminderEntity> {
         return remindersRepo.getRemindersByUsernameList(userId)
     }
 
-    fun getLoggedInUser() : LiveData<List<LoggedInUserEntity>?> {
+    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
         return loggedInUserRepo.getLoggedInUserFromDB()
     }
 
@@ -55,11 +55,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         loggedInUserList = getLoggedInUser()
     }
 
-    fun getAllReminders(userId : Int) {
+    fun getAllReminders(userId: Int) {
         mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_reminders), userId)
     }
 
-    fun getUserId(username : String) : Int {
+    fun getUserId(username: String): Int {
         return userRepo.findUserIdByUsername(username)
     }
 }

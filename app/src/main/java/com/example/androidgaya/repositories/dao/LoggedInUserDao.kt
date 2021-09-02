@@ -3,7 +3,6 @@ package com.example.androidgaya.repositories.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import com.example.androidgaya.repositories.models.ReminderEntity
 
 @Dao
 interface LoggedInUserDao {

@@ -13,12 +13,11 @@ import com.example.androidgaya.repositories.user.UserRepo
 import io.socket.client.Socket
 import javax.inject.Inject
 
-
 class RemindersViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var remindersRepo : RemindersRepo = RemindersRepo(application)
-    private var loggedInUserRepo : LoggedInUserRepo = LoggedInUserRepo(application)
-    private var userRepo : UserRepo = UserRepo(application)
+    private var remindersRepo: RemindersRepo = RemindersRepo(application)
+    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
+    private var userRepo: UserRepo = UserRepo(application)
     private var username: String = ""
     private var userId: Int = 0
     lateinit var remindersList: LiveData<List<ReminderEntity>?>
@@ -42,13 +41,13 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
                 reminderEntity.createdAt)
     }
 
-    private fun getRemindersByUserId() : LiveData<List<ReminderEntity>?> {
+    private fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {
         username = getUsername()
         userId = userRepo.findUserIdByUsername(username)
         return remindersRepo.getReminders(userId)
     }
 
-    fun getUsername() : String {
+    fun getUsername(): String {
         return loggedInUserRepo.getLoggedInUsername(getApplication())
     }
 

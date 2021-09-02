@@ -11,7 +11,7 @@ class LoginNavigator(private val activity: FragmentActivity) {
         changeActivity(intent)
     }
 
-    private fun changeActivity(intent : Intent) {
+    private fun changeActivity(intent: Intent) {
         activity.finishAffinity()
         activity.startActivity(intent)
     }

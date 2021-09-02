@@ -2,7 +2,6 @@ package com.example.androidgaya.reminders.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -106,7 +105,8 @@ class RemindersFragment : Fragment() {
     fun setAdapter() {
         reminderAdapter = ReminderAdapter(remindersList, { reminder: ReminderEntity ->
             nav.toDetailsFragment(reminder.id)
-        }) { reminder: ReminderEntity? -> viewModel.deleteReminder(reminder!!)
+        }) { reminder: ReminderEntity? ->
+            viewModel.deleteReminder(reminder!!)
             activity?.let { NotificationUtils().deleteNotification(it, reminder.id) }
         }
         recyclerViewReminders.adapter = reminderAdapter

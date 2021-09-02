@@ -22,22 +22,19 @@ import javax.inject.Inject
 class SocketService : Service() {
     private lateinit var serviceLooper: Looper
     private lateinit var serviceHandler: ServiceHandler
-    private lateinit var remindersRepo : RemindersRepo
-    private lateinit var loggedInUserRepo : LoggedInUserRepo
+    private lateinit var remindersRepo: RemindersRepo
+    private lateinit var loggedInUserRepo: LoggedInUserRepo
     private lateinit var userRepo: UserRepo
+
     @set:Inject
     var mSocket: Socket? = null
 
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
 
         override fun handleMessage(msg: Message) {
-            try {
-
-            } catch (ex: Exception) {}
-
             mSocket?.on(getString(R.string.create_reminder)) { args ->
                 if (args[0] != null) {
-                    val rem  = ReminderEntity(args[0] as Int,
+                    val rem = ReminderEntity(args[0] as Int,
                             args[1] as String,
                             args[2] as String?,
                             args[3] as Int,
@@ -49,9 +46,10 @@ class SocketService : Service() {
                     }
                 }
             }
+
             mSocket?.on(getString(R.string.edit_reminder)) { args ->
                 if (args[0] != null) {
-                    val rem  = ReminderEntity(args[0] as Int,
+                    val rem = ReminderEntity(args[0] as Int,
                             args[1] as String,
                             args[2] as String?,
                             args[3] as Int,
@@ -66,9 +64,10 @@ class SocketService : Service() {
                     }
                 }
             }
+
             mSocket?.on(getString(R.string.delete_reminder)) { args ->
                 if (args[0] != null) {
-                    val rem  = ReminderEntity(args[0] as Int,
+                    val rem = ReminderEntity(args[0] as Int,
                             args[1] as String,
                             args[2] as String?,
                             args[3] as Int,
@@ -78,12 +77,14 @@ class SocketService : Service() {
                     NotificationUtils().deleteNotification(this@SocketService, rem.id)
                 }
             }
+
             mSocket?.on(getString(R.string.create_user)) { args ->
                 if (args[0] != null) {
                     val user = UserEntity(args[0] as Int, args[1] as String, args[2] as String)
                     userRepo.insertUser(user)
                 }
             }
+
             mSocket?.on(getString(R.string.change_username)) { args ->
                 if (args[0] != null) {
                     userRepo.editUsername(args[0] as String, args[1] as String)
@@ -92,22 +93,22 @@ class SocketService : Service() {
                     }
                 }
             }
+
             mSocket?.on(getString(R.string.get_all_users)) { args ->
                 if (args[0] != null) {
                     val data = args[0] as JSONArray
-                    val moshi : Moshi = Moshi.Builder().build()
+                    val moshi: Moshi = Moshi.Builder().build()
                     val listMyData = Types.newParameterizedType(List::class.java, UserJson::class.java)
                     val jsonAdapter = moshi.adapter<List<UserJson>>(listMyData)
                     val usersList = jsonAdapter.fromJson(data.toString())
                     if (usersList != null) {
-                        for(user in usersList) {
+                        for (user in usersList) {
                             if (!userRepo.isUserExists(user.username)) {
                                 val userToAdd = jsonToUserEntity(user)
                                 userRepo.insertUser(userToAdd)
                             }
                         }
                     }
-
                 }
             }
 
@@ -115,12 +116,12 @@ class SocketService : Service() {
                 if (args[0] != null) {
                     remindersRepo.deleteAllReminders()
                     val reminders = args[0] as JSONArray
-                    val moshi : Moshi = Moshi.Builder().build()
+                    val moshi: Moshi = Moshi.Builder().build()
                     val listMyData = Types.newParameterizedType(List::class.java, ReminderJson::class.java)
                     val jsonAdapter = moshi.adapter<List<ReminderJson>>(listMyData)
                     val remindersList = jsonAdapter.fromJson(reminders.toString())
                     if (remindersList != null) {
-                        for(rem in remindersList) {
+                        for (rem in remindersList) {
                             if (remindersRepo.getReminderByID(rem.id) == null) {
                                 val remToAdd = jsonToRemEntity(rem)
                                 remindersRepo.addReminder(remToAdd)
@@ -172,7 +173,7 @@ class SocketService : Service() {
     }
 
     fun jsonToUserEntity(userJson: UserJson): UserEntity {
-        return UserEntity(userJson.sharedId,
+        return UserEntity(userJson.userId,
                 userJson.username,
                 userJson.password)
     }

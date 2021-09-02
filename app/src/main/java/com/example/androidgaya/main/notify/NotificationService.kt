@@ -82,7 +82,7 @@ class NotificationService : JobIntentService() {
     }
 
     private lateinit var mNotification: Notification
-   var id: Int = 0
+    var id: Int = 0
 
     @SuppressLint("NewApi")
     private fun createChannel() {

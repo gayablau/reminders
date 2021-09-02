@@ -23,19 +23,23 @@ class UserRepo(application: Application) : UserInterface {
 
     override fun insertUser(userEntity: UserEntity): Unit = runBlocking {
         launch {
-            if(!isUserExists(userEntity.username)) {
+            if (!isUserExists(userEntity.username)) {
                 userDao.insertUser(userEntity)
             }
         }
     }
 
-    override fun areDetailsOK(username: String, password: String) : Boolean {
-        if (userDao.areDetailsOK(username,password) == null) {return false}
+    override fun areDetailsOK(username: String, password: String): Boolean {
+        if (userDao.areDetailsOK(username, password) == null) {
+            return false
+        }
         return true
     }
 
     override fun isUserExists(username: String): Boolean {
-        if (userDao.findUserByUsername(username) == null) {return false}
+        if (userDao.findUserByUsername(username) == null) {
+            return false
+        }
         return true
     }
 
