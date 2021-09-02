@@ -33,8 +33,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         userRepo.insertUser(userEntity)
     }
 
-    fun setUsername(username: String) {
-        loggedInUserRepo.setLoggedInUsername(getApplication(), username)
+    fun setUsername(userId: Int, username: String) {
+        loggedInUserRepo.setLoggedIn(getApplication(), userId, username)
     }
 
     fun isUserLoggedIn() : Boolean {
@@ -61,12 +61,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun createNewUser(username: String, password: String) {
         val userId = Random(System.currentTimeMillis()).nextInt(10000)
         insertUser(UserEntity(userId, username, password))
-        setUsername(username)
+        setUsername(userId, username)
         mSocket!!.emit((getApplication() as Context).getString(R.string.create_user), userId, username, password)
     }
 
     fun connectUser(userId: Int, username: String) {
-        setUsername(username)
+        setUsername(userId, username)
         mSocket!!.emit((getApplication() as Context).getString(R.string.connect_user), userId, username)
     }
 

@@ -35,7 +35,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun setUsername(username : String) {
-        loggedInUserRepo.setLoggedInUsername(getApplication(), username)
+        loggedInUserRepo.setLoggedIn(getApplication(), loggedInUserRepo.getLoggedInUserId(getApplication()), username)
     }
 
     fun isUsernameExists(username: String) : Boolean {

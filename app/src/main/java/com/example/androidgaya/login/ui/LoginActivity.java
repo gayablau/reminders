@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         username = viewModel.getUsername();
         userId = viewModel.getUserId(username);
         nav = new LoginNavigator(this);
+
         if (viewModel.isUserLoggedIn() &&
                 viewModel.isUserExists(username)) { nav.toMainActivity();
             viewModel.connectUser(userId, username);
@@ -104,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
+        viewModel.getAllUsers();
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {

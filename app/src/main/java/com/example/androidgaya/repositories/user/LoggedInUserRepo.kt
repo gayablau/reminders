@@ -38,14 +38,16 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         return loggedInUserPref.getInt(context.getString(R.string.UserId), 0)
     }
 
-    override fun setLoggedInUsername(context: Context, username: String) {
+    override fun setLoggedIn(context: Context, id: Int, username: String) {
         loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), username).apply()
+        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), id).apply()
         loggedInUserDao.deleteOldLogins()
-        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(username))
+        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id ,username))
     }
 
     override fun logout(context: Context) {
         loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), EMPTY).apply()
+        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), 0).apply()
         loggedInUserDao.deleteOldLogins()
     }
 

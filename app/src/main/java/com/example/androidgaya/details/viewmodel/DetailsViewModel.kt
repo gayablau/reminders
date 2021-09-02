@@ -51,7 +51,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getUserId() : Int {
-        return userRepo.findUserIdByUsername(getUsername())
+        return loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
     fun getReminderByID(id : Int) : ReminderEntity? {

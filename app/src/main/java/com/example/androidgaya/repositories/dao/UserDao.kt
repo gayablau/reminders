@@ -21,7 +21,7 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE username LIKE :username")
     fun findUserByUsername(username: String): UserEntity?
 
-    @Query("SELECT sharedId FROM users WHERE username LIKE :username")
+    @Query("SELECT id FROM users WHERE username LIKE :username")
     fun findUserIdByUsername(username: String): Int
 
     @Query("UPDATE users SET username = :newUsername WHERE username = :oldUsername")

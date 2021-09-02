@@ -6,8 +6,6 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(tableName = "users")
-class UserEntity(@ColumnInfo(name = "sharedId") var sharedId: Int,
+class UserEntity(@PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") var id: Int,
                  @ColumnInfo(name = "username") var username: String,
-                 @ColumnInfo(name = "password") var password: String) {
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Int = 0
-}
+                 @ColumnInfo(name = "password") var password: String) {}

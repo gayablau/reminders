@@ -86,10 +86,9 @@ class SocketService : Service() {
             }
             mSocket?.on(getString(R.string.change_username)) { args ->
                 if (args[0] != null) {
-                    mSocket!!.emit(getString(R.string.change_username_only), args[1] as String)
                     userRepo.editUsername(args[0] as String, args[1] as String)
                     if (loggedInUserRepo.getLoggedInUsername(application).equals(args[0] as String)) {
-                        loggedInUserRepo.setLoggedInUsername(application, args[1] as String)
+                        loggedInUserRepo.setLoggedIn(application, loggedInUserRepo.getLoggedInUserId(application), args[1] as String)
                     }
                 }
             }
