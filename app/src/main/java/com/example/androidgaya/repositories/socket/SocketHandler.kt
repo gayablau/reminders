@@ -5,7 +5,7 @@ import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import java.net.URISyntaxException
 
-object SocketHandler {
+class SocketHandler {
 
     lateinit var mSocket: Socket
 

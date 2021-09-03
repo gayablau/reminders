@@ -47,9 +47,10 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun provideSocket(): Socket {
-        SocketHandler.setSocket()
-        SocketHandler.establishConnection()
-        return SocketHandler.mSocket
+    fun provideSocket(): SocketHandler {
+        val mSocket = SocketHandler()
+        mSocket.setSocket()
+        mSocket.establishConnection()
+        return mSocket
     }
 }

@@ -12,12 +12,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
+import com.example.androidgaya.login.viewmodel.ViewModelFactory;
 import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.util.LoginNavigator;
+
+import javax.inject.Inject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,6 +31,9 @@ public class LoginActivity extends AppCompatActivity {
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
+
+    @Inject
+    ViewModelFactory factory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +106,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        //viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        viewModel
     }
 
     public void login() {
