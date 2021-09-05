@@ -58,17 +58,17 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         userId = Random(System.currentTimeMillis()).nextInt(10000)
         insertUser(UserEntity(userId, username, password))
         setUsername(userId, username)
-        mSocket.emit((getApplication() as Context).getString(R.string.create_user), userId, username, password)
+        mSocket?.emit((getApplication() as Context).getString(R.string.create_user), userId, username, password)
     }
 
     fun connectUser(username: String) {
         userId = userRepo.findUserIdByUsername(username)
         setUsername(userId, username)
-        mSocket.emit((getApplication() as Context).getString(R.string.connect_user), userId, username)
+        mSocket!!.emit((getApplication() as Context).getString(R.string.connect_user), userId, username)
     }
 
     fun getAllUsers() {
-        mSocket.emit((getApplication() as Context).getString(R.string.get_all_users))
+        mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_users))
     }
 
     fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
