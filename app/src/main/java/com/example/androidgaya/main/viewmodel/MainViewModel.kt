@@ -9,11 +9,12 @@ import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import io.socket.client.Socket
 import javax.inject.Inject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
 
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
@@ -21,11 +22,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var username: String
     var userId: Int
 
-    @set:Inject
-    var mSocket: Socket? = null
-
     init {
-        (application as AppDataGetter).getAppComponent()?.injectMain(this)
         updateLoggedInUser()
         username = loggedInUserRepo.getLoggedInUsername(getApplication())
         userId = loggedInUserRepo.getLoggedInUserId(getApplication())
@@ -34,7 +31,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun logout() {
         loggedInUserRepo.logout(getApplication())
-        mSocket!!.emit((getApplication() as Context).getString(R.string.logout))
+        socketRepo.logout()
     }
 
     fun getMyRemindersIds(): List<Int> {
@@ -54,6 +51,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getAllReminders(userId: Int) {
-        mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_reminders), userId)
+        socketRepo.getAllReminders(userId)
     }
 }

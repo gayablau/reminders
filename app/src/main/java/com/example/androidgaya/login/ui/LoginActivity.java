@@ -14,10 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.socket.SocketService;
+import com.example.androidgaya.repositories.di.AppDataGetter;
+import com.example.androidgaya.repositories.socket.SocketRepo;
 import com.example.androidgaya.util.LoginNavigator;
+
+import javax.inject.Inject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,7 +33,13 @@ public class LoginActivity extends AppCompatActivity {
     String username = "";
     String password = "";
     LoginViewModel viewModel;
+    ViewModelFactory factory;
     LoginNavigator nav;
+
+    @Inject
+    SocketRepo socket;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void init() {
         setContentView(R.layout.activity_login);
+        ((AppDataGetter) getApplicationContext()).getAppComponent().injectLogin(this);
         startService(new Intent(this, SocketService.class));
         initViewModel();
         nav = new LoginNavigator(this);
@@ -101,7 +113,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        factory = new ViewModelFactory(getApplication(), socket);
+        viewModel = new ViewModelProvider(this, factory).get(LoginViewModel.class);
     }
 
     public void login() {

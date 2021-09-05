@@ -8,12 +8,13 @@ import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import io.socket.client.Socket
 import javax.inject.Inject
 
-class RemindersViewModel(application: Application) : AndroidViewModel(application) {
+class RemindersViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
 
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
@@ -22,23 +23,13 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     private var userId: Int = 0
     lateinit var remindersList: LiveData<List<ReminderEntity>?>
 
-    @set:Inject
-    var mSocket: Socket? = null
-
     init {
-        (application as AppDataGetter).getAppComponent()?.injectReminders(this)
         getMyReminders()
     }
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
         remindersRepo.deleteReminder(reminderEntity)
-        mSocket!!.emit((getApplication() as Context).getString(R.string.delete_reminder),
-                reminderEntity.id,
-                reminderEntity.header,
-                reminderEntity.description,
-                reminderEntity.user,
-                reminderEntity.time,
-                reminderEntity.createdAt)
+        socketRepo.deleteReminder(reminderEntity)
     }
 
     private fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {

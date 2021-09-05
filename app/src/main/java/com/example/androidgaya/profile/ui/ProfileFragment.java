@@ -17,10 +17,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.androidgaya.details.viewmodel.DetailsViewModel;
+import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.repositories.di.AppDataGetter;
+import com.example.androidgaya.repositories.socket.SocketRepo;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
+
+import javax.inject.Inject;
 
 public class ProfileFragment extends Fragment {
 
@@ -28,6 +34,10 @@ public class ProfileFragment extends Fragment {
     private static String username;
     MainNavigator nav;
     ProfileViewModel viewModel;
+    ViewModelFactory factory;
+
+    @Inject
+    SocketRepo socket;
 
     public ProfileFragment() {
     }
@@ -85,7 +95,9 @@ public class ProfileFragment extends Fragment {
         usernameET = view.findViewById(R.id.profile_username_et);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
         ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.profile), true);
-        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectProfile(this);
+        factory = new ViewModelFactory(getActivity().getApplication(), socket);
+        viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
         username = viewModel.getUsername();
         usernameET.setText(username);
     }

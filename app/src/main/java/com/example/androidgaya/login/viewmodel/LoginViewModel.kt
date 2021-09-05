@@ -8,13 +8,14 @@ import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.UserEntity
+import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import io.socket.client.Socket
 import java.util.*
 import javax.inject.Inject
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
 
     private var userRepo: UserRepo = UserRepo(application)
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
@@ -22,11 +23,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var username: String
     var userId: Int
 
-    @Inject
-    lateinit var mSocket: Socket
-
     init {
-        (application as AppDataGetter).getAppComponent()?.injectLogin(this)
         username = loggedInUserRepo.getLoggedInUsername(getApplication())
         userId = loggedInUserRepo.getLoggedInUserId(getApplication())
         updateLoggedInUser()
@@ -50,7 +47,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun isUserExists(username: String): Boolean {
-        mSocket.emit((getApplication() as Context).getString(R.string.update_users))
+        socketRepo.updateUsers()
         return userRepo.isUserExists(username)
     }
 
@@ -58,17 +55,17 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         userId = Random(System.currentTimeMillis()).nextInt(10000)
         insertUser(UserEntity(userId, username, password))
         setUsername(userId, username)
-        mSocket?.emit((getApplication() as Context).getString(R.string.create_user), userId, username, password)
+        socketRepo.createUser(userId, username, password)
     }
 
     fun connectUser(username: String) {
         userId = userRepo.findUserIdByUsername(username)
         setUsername(userId, username)
-        mSocket!!.emit((getApplication() as Context).getString(R.string.connect_user), userId, username)
+        socketRepo.connectUser(userId, username)
     }
 
     fun getAllUsers() {
-        mSocket!!.emit((getApplication() as Context).getString(R.string.get_all_users))
+        socketRepo.getAllUsers()
     }
 
     fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {

@@ -6,7 +6,7 @@ import com.example.androidgaya.repositories.db.AppDatabase
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.dao.UserDao
-import com.example.androidgaya.repositories.socket.SocketHandler
+import com.example.androidgaya.repositories.socket.SocketRepo
 import dagger.Module
 import dagger.Provides
 import io.socket.client.Socket
@@ -47,9 +47,10 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun provideSocket(): Socket {
-        SocketHandler.setSocket()
-        SocketHandler.establishConnection()
-        return SocketHandler.mSocket
+    fun provideSocket(): SocketRepo {
+        val socketRepo = SocketRepo(application)
+        socketRepo.setSocket()
+        socketRepo.establishConnection()
+        return socketRepo
     }
 }

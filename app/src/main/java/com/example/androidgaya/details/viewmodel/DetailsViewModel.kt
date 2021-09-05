@@ -7,46 +7,31 @@ import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
+import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import io.socket.client.Socket
 import javax.inject.Inject
 
-class DetailsViewModel(application: Application) : AndroidViewModel(application) {
+class DetailsViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     var username: String
     var userId: Int
 
-    @set:Inject
-    var mSocket: Socket? = null
-
     init {
-        (application as AppDataGetter).getAppComponent()?.injectDetails(this)
         username = loggedInUserRepo.getLoggedInUsername(getApplication())
         userId = loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
     fun addReminder(reminderEntity: ReminderEntity) {
         remindersRepo.addReminder(reminderEntity)
-        mSocket!!.emit((getApplication() as Context).getString(R.string.create_reminder),
-                reminderEntity.id,
-                reminderEntity.header,
-                reminderEntity.description,
-                reminderEntity.user,
-                reminderEntity.time,
-                reminderEntity.createdAt)
+        socketRepo.createReminder(reminderEntity)
     }
 
     fun editReminder(reminderEntity: ReminderEntity) {
         remindersRepo.editReminder(reminderEntity)
-        mSocket!!.emit((getApplication() as Context).getString(R.string.edit_reminder),
-                reminderEntity.id,
-                reminderEntity.header,
-                reminderEntity.description,
-                reminderEntity.user,
-                reminderEntity.time,
-                reminderEntity.createdAt)
+        socketRepo.editReminder(reminderEntity)
     }
 
     fun getReminderByID(id: Int): ReminderEntity? {

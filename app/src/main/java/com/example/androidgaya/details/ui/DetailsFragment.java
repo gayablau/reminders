@@ -21,8 +21,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.androidgaya.factory.ViewModelFactory;
+import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.repositories.di.AppDataGetter;
 import com.example.androidgaya.repositories.models.ReminderEntity;
+import com.example.androidgaya.repositories.socket.SocketRepo;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
@@ -34,6 +38,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+
+import javax.inject.Inject;
 
 public class DetailsFragment extends Fragment {
     private static final String ID_KEY = "id";
@@ -62,6 +68,10 @@ public class DetailsFragment extends Fragment {
     private DateFormat dayFormat;
     private boolean isNotified = false;
     ReminderEntity reminderEntity;
+    ViewModelFactory factory;
+
+    @Inject
+    SocketRepo socket;
 
     public DetailsFragment() {
     }
@@ -302,7 +312,9 @@ public class DetailsFragment extends Fragment {
         dateTV = view.findViewById(R.id.date_tv);
         dateButton = view.findViewById(R.id.button_date);
         timePicker = view.findViewById(R.id.time_picker);
-        viewModel = new ViewModelProvider(this).get(DetailsViewModel.class);
+        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectDetails(this);
+        factory = new ViewModelFactory(getActivity().getApplication(), socket);
+        viewModel = new ViewModelProvider(this, factory).get(DetailsViewModel.class);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
     }
 

@@ -6,8 +6,5 @@ import io.socket.client.Socket;
 
 public interface MainActivityInterface {
     MainNavigator getNavigator();
-
     void changeToolbar(String title, Boolean back);
-
-    Socket getSocket();
 }
