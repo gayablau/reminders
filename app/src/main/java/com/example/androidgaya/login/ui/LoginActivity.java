@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
             nav.toMainActivity();
             viewModel.connectUser(viewModel.getUsername());
         }
-
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);

@@ -101,9 +101,10 @@ class RemindersFragment : Fragment() {
         recyclerViewReminders.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@RemindersFragment.context)
         recyclerViewReminders.setLayoutManager(layoutManager)
-        username = viewModel.getUsername()
         nav = (activity as MainActivityInterface?)!!.navigator
-        (activity as MainActivityInterface?)!!.changeToolbar(getString(R.string.toolbar_main, username), false)
+        (activity as MainActivityInterface?)!!.changeToolbar(getString(R.string.toolbar_main,
+                viewModel.username),
+                false)
     }
 
     fun add() {

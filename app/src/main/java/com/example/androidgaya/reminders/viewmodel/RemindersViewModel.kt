@@ -2,6 +2,7 @@ package com.example.androidgaya.reminders.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.androidgaya.R
@@ -18,9 +19,8 @@ class RemindersViewModel(application: Application, val socketRepo : SocketRepo) 
 
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    private var userRepo: UserRepo = UserRepo(application)
-    private var username: String = ""
-    private var userId: Int = 0
+    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
+    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
     lateinit var remindersList: LiveData<List<ReminderEntity>?>
 
     init {
@@ -33,16 +33,10 @@ class RemindersViewModel(application: Application, val socketRepo : SocketRepo) 
     }
 
     private fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {
-        username = getUsername()
-        userId = userRepo.findUserIdByUsername(username)
         return remindersRepo.getReminders(userId)
     }
 
-    fun getUsername(): String {
-        return loggedInUserRepo.getLoggedInUsername(getApplication())
-    }
-
-    fun getMyReminders() {
+    private fun getMyReminders() {
         remindersList = getRemindersByUserId()
     }
 }

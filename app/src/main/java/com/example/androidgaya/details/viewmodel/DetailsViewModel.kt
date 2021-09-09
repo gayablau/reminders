@@ -16,13 +16,8 @@ import javax.inject.Inject
 class DetailsViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String
-    var userId: Int
-
-    init {
-        username = loggedInUserRepo.getLoggedInUsername(getApplication())
-        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
-    }
+    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
+    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     fun addReminder(reminderEntity: ReminderEntity) {
         remindersRepo.addReminder(reminderEntity)

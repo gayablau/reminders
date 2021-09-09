@@ -20,12 +20,10 @@ class LoginViewModel(application: Application, val socketRepo : SocketRepo) : An
     private var userRepo: UserRepo = UserRepo(application)
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String
-    var userId: Int
+    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
+    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     init {
-        username = loggedInUserRepo.getLoggedInUsername(getApplication())
-        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
         updateLoggedInUser()
         getAllUsers()
     }

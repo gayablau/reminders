@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         new NotificationUtils().createAll(this, viewModel.getRemindersByUserIdList());
     }
 
-
     @Override
     public MainNavigator getNavigator() {
         return nav;
@@ -92,10 +91,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         }
         invalidateOptionsMenu();
     }
-
-/*    public Socket getSocket() {
-        return socket;
-    }*/
 
     private void initViewModel() {
         ((AppDataGetter) getApplicationContext()).getAppComponent().injectMain(this);

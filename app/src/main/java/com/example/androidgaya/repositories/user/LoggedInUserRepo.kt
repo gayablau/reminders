@@ -9,6 +9,8 @@ import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
@@ -40,16 +42,30 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     }
 
     override fun setLoggedIn(context: Context, id: Int, username: String) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), username).apply()
+        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase),
+                username).apply()
         loggedInUserPref.edit().putInt(context.getString(R.string.UserId), id).apply()
-        loggedInUserDao.deleteOldLogins()
-        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
+        setLoggedInDB(id, username)
+
+    }
+
+    fun setLoggedInDB(id: Int, username: String) = runBlocking {
+        launch {
+            loggedInUserDao.deleteOldLogins()
+            loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
+        }
     }
 
     override fun logout(context: Context) {
         loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), EMPTY).apply()
         loggedInUserPref.edit().putInt(context.getString(R.string.UserId), 0).apply()
-        loggedInUserDao.deleteOldLogins()
+        deleteOldLogins()
+    }
+
+    fun deleteOldLogins() = runBlocking {
+        launch {
+            loggedInUserDao.deleteOldLogins()
+        }
     }
 
     override fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?> {

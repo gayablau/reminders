@@ -328,18 +328,20 @@ public class DetailsFragment extends Fragment {
     }
 
     public void setNewDate(int year, int month, int dayOfMonth) {
-        int currentmonth = month + 1;
-        chosenDateNum = dayOfMonth + "/" + currentmonth + "/" + year;
-        Date date12 = null;
+        int currentMonth = month + 1;
+        chosenDateNum = dayOfMonth + "/" + currentMonth + "/" + year;
+        Date date = null;
         try {
-            date12 = fullFormat.parse(chosenDateNum);
+            date = fullFormat.parse(chosenDateNum);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        chosenDateWords = wordsFormat.format(date12);
-        dateTV.setText(chosenDateWords);
-        chosenDayStr = dayFormat.format(date12);
-        chosenTime.set(year, currentmonth, dayOfMonth,
+        if (date != null) {
+            chosenDateWords = wordsFormat.format(date);
+            dateTV.setText(chosenDateWords);
+            chosenDayStr = dayFormat.format(date);
+        }
+        chosenTime.set(year, currentMonth, dayOfMonth,
                 chosenTime.get(Calendar.HOUR_OF_DAY), chosenTime.get(Calendar.MINUTE));
     }
 

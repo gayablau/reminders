@@ -15,13 +15,8 @@ class ProfileViewModel(application: Application, val socketRepo : SocketRepo) : 
 
     private var userRepo: UserRepo = UserRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String
-    var userId: Int
-
-    init {
-        username = loggedInUserRepo.getLoggedInUsername(getApplication())
-        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
-    }
+    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
+    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     fun editUsername(newUsername: String) {
         userRepo.editUsername(username, newUsername)

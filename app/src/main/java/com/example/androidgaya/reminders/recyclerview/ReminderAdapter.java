@@ -19,7 +19,9 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderViewHolder> {
     private final OnReminderClicked onclick;
     private final OnReminderDelete onDelete;
 
-    public ReminderAdapter(LiveData<List<ReminderEntity>> reminderEntities, OnReminderClicked onclick, OnReminderDelete onDelete) {
+    public ReminderAdapter(LiveData<List<ReminderEntity>> reminderEntities,
+                           OnReminderClicked onclick,
+                           OnReminderDelete onDelete) {
         this.reminderEntities = reminderEntities;
         this.onclick = onclick;
         this.onDelete = onDelete;
