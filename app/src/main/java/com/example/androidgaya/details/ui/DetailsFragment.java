@@ -2,6 +2,7 @@ package com.example.androidgaya.details.ui;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -86,6 +87,12 @@ public class DetailsFragment extends Fragment {
 
     public static DetailsFragment getInstance() {
         return new DetailsFragment();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectDetails(this);
     }
 
     @Override
@@ -236,7 +243,7 @@ public class DetailsFragment extends Fragment {
                     makeToast(getString(R.string.update_msg));
                 }
                 new NotificationUtils().setNotification(chosenTime.getTimeInMillis(),
-                        getActivity(),
+                        getActivity().getApplicationContext(),
                         chosenReminderHeader,
                         chosenReminderDescription,
                         reminderId);
@@ -312,7 +319,6 @@ public class DetailsFragment extends Fragment {
         dateTV = view.findViewById(R.id.date_tv);
         dateButton = view.findViewById(R.id.button_date);
         timePicker = view.findViewById(R.id.time_picker);
-        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectDetails(this);
         factory = new ViewModelFactory(getActivity().getApplication(), socket);
         viewModel = new ViewModelProvider(this, factory).get(DetailsViewModel.class);
         nav = ((MainActivityInterface) getActivity()).getNavigator();

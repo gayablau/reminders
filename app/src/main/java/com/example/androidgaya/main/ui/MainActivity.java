@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((AppDataGetter) getApplicationContext()).getAppComponent().injectMain(this);
         super.onCreate(savedInstanceState);
         init();
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     }
 
     private void initViewModel() {
-        ((AppDataGetter) getApplicationContext()).getAppComponent().injectMain(this);
         factory = new ViewModelFactory(getApplication(), socket);
         viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
 

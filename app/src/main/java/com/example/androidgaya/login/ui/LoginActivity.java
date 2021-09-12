@@ -39,10 +39,9 @@ public class LoginActivity extends AppCompatActivity {
     @Inject
     SocketRepo socket;
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        ((AppDataGetter) getApplicationContext()).getAppComponent().injectLogin(this);
         super.onCreate(savedInstanceState);
         init();
         if (savedInstanceState != null) {
@@ -92,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void init() {
         setContentView(R.layout.activity_login);
-        ((AppDataGetter) getApplicationContext()).getAppComponent().injectLogin(this);
         startService(new Intent(this, SocketService.class));
         initViewModel();
         nav = new LoginNavigator(this);

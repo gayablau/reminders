@@ -1,6 +1,7 @@
 package com.example.androidgaya.profile.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,12 @@ public class ProfileFragment extends Fragment {
     SocketRepo socket;
 
     public ProfileFragment() {
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectProfile(this);
     }
 
     @Override
@@ -95,7 +102,6 @@ public class ProfileFragment extends Fragment {
         usernameET = view.findViewById(R.id.profile_username_et);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
         ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.profile), true);
-        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectProfile(this);
         factory = new ViewModelFactory(getActivity().getApplication(), socket);
         viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
         username = viewModel.getUsername();

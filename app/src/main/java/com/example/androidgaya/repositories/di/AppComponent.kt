@@ -29,5 +29,4 @@ interface AppComponent {
     fun injectRemindersRepo(remindersRepo: RemindersRepo)
     fun injectLoggedInUserRepo(loggedInUserRepo: LoggedInUserRepo)
     fun injectSocketService(socketService: SocketService)
-
 }

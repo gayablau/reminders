@@ -24,7 +24,7 @@ class SocketRepo(val application: Application) {
     @Synchronized
     fun setSocket() {
         try {
-            mSocket = IO.socket("http://10.131.34.135:3456")
+            mSocket = IO.socket("http://10.128.133.71:3456")
         } catch (e: URISyntaxException) {
 
         }

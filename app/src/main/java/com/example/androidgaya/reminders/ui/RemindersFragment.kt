@@ -1,6 +1,7 @@
 package com.example.androidgaya.reminders.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -38,6 +39,11 @@ class RemindersFragment : Fragment() {
 
     @Inject
     lateinit var socket: SocketRepo
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().applicationContext as AppDataGetter).getAppComponent()!!.injectReminders(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,7 +133,6 @@ class RemindersFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        (requireActivity().applicationContext as AppDataGetter).getAppComponent()!!.injectReminders(this)
         factory = activity?.let { ViewModelFactory(it.application, socket) }!!
         viewModel = ViewModelProvider(this, factory).get(RemindersViewModel::class.java)
 

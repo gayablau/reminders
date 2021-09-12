@@ -13,5 +13,4 @@ class AppDataGetter : MultiDexApplication() {
     fun getAppComponent(): AppComponent? {
         return appComponent
     }
-
 }

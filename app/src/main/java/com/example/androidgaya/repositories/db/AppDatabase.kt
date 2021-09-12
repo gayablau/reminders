@@ -28,7 +28,6 @@ abstract class AppDatabase : RoomDatabase() {
                         AppDatabase::class.java,
                         context.getString(R.string.Reminders_database)
                 ).allowMainThreadQueries().build()
-
             }
             return dbINSTANCE!!
         }
