@@ -9,6 +9,8 @@ import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
@@ -20,7 +22,8 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     @Inject
     lateinit var loggedInUserDao: LoggedInUserDao
 
-    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
+    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp),
+            MODE_PRIVATE)
 
     init {
         (context as AppDataGetter).getAppComponent()?.injectLoggedInUserRepo(this)
@@ -31,22 +34,39 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     }
 
     override fun getLoggedInUsername(context: Context): String {
-        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY) ?: EMPTY
+        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY)
+                ?: EMPTY
     }
 
     override fun getLoggedInUserId(context: Context): Int {
         return loggedInUserPref.getInt(context.getString(R.string.UserId), 0)
     }
 
-    override fun setLoggedInUsername(context: Context, username: String) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), username).apply()
-        loggedInUserDao.deleteOldLogins()
-        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(username))
+    override fun setLoggedIn(context: Context, id: Int, username: String) {
+        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase),
+                username).apply()
+        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), id).apply()
+        setLoggedInDB(id, username)
+
+    }
+
+    fun setLoggedInDB(id: Int, username: String) = runBlocking {
+        launch {
+            loggedInUserDao.deleteOldLogins()
+            loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
+        }
     }
 
     override fun logout(context: Context) {
         loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), EMPTY).apply()
-        loggedInUserDao.deleteOldLogins()
+        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), 0).apply()
+        deleteOldLogins()
+    }
+
+    fun deleteOldLogins() = runBlocking {
+        launch {
+            loggedInUserDao.deleteOldLogins()
+        }
     }
 
     override fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?> {

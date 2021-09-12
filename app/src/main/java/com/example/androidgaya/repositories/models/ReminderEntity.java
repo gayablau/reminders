@@ -2,16 +2,15 @@ package com.example.androidgaya.repositories.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Calendar;
-import java.util.Random;
 
 @Entity(tableName = "reminders")
 public class ReminderEntity {
 
-    @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id")
+    @PrimaryKey()
+    @ColumnInfo(name = "id")
     private int id;
 
     @ColumnInfo(name = "header")
@@ -44,8 +43,7 @@ public class ReminderEntity {
         if (createdAt == 0) {
             Calendar helperCalendar = Calendar.getInstance();
             this.createdAt = helperCalendar.getTimeInMillis();
-        }
-        else {
+        } else {
             this.createdAt = createdAt;
         }
     }
@@ -68,9 +66,13 @@ public class ReminderEntity {
         return helperCalendar.get(Calendar.DATE);
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getHeader() { return header; }
+    public String getHeader() {
+        return header;
+    }
 
     public String getDescription() {
         return description;

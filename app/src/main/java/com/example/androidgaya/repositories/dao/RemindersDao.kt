@@ -3,9 +3,6 @@ package com.example.androidgaya.repositories.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.repositories.models.UserEntity
-import java.util.*
-import kotlin.collections.ArrayList
 
 @Dao
 interface RemindersDao {
@@ -22,17 +19,16 @@ interface RemindersDao {
     fun deleteReminder(reminderEntity: ReminderEntity)
 
     @Query("SELECT * FROM reminders WHERE user LIKE :userId ORDER BY createdAt ASC")
-    fun getRemindersByUserId(userId : Int): LiveData<List<ReminderEntity>?>
+    fun getRemindersByUserId(userId: Int): LiveData<List<ReminderEntity>?>
 
     @Query("SELECT * FROM reminders WHERE user LIKE :userId ORDER BY createdAt ASC")
-    fun getRemindersByUserIdList(userId : Int): List<ReminderEntity>
+    fun getRemindersByUserIdList(userId: Int): List<ReminderEntity>
 
     @Query("SELECT * FROM reminders WHERE user LIKE :username ORDER BY createdAt ASC")
     fun getRemindersByUsernameList(username: String): List<ReminderEntity>
 
     @Query("SELECT * FROM reminders WHERE id LIKE :id")
     fun getReminderByID(id: Int): ReminderEntity?
-
 
     @Query("UPDATE reminders SET header = :header AND description = :description AND time = :time WHERE id = :id")
     fun editReminder(id: Int, header: String, description: String, time: Long)
@@ -41,7 +37,7 @@ interface RemindersDao {
     fun deleteReminderById(id: Int)
 
     @Query("SELECT id FROM reminders WHERE user LIKE :userId ORDER BY createdAt ASC")
-    fun getMyRemindersIds(userId : Int): List<Int>
+    fun getMyRemindersIds(userId: Int): List<Int>
 
     @Query("DELETE FROM reminders")
     fun deleteAllReminders()

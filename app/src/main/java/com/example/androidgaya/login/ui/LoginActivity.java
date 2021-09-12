@@ -14,10 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.socket.SocketService;
+import com.example.androidgaya.repositories.di.AppDataGetter;
+import com.example.androidgaya.repositories.socket.SocketRepo;
 import com.example.androidgaya.util.LoginNavigator;
+
+import javax.inject.Inject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,13 +31,17 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     ImageView imageView;
     String username = "";
-    int userId = 1;
     String password = "";
     LoginViewModel viewModel;
+    ViewModelFactory factory;
     LoginNavigator nav;
+
+    @Inject
+    SocketRepo socket;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        ((AppDataGetter) getApplicationContext()).getAppComponent().injectLogin(this);
         super.onCreate(savedInstanceState);
         init();
         if (savedInstanceState != null) {
@@ -45,7 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -53,12 +63,13 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
 
-    public static Intent getIntent(Context context){
+    public static Intent getIntent(Context context) {
         return new Intent(context, LoginActivity.class);
     }
 
@@ -80,15 +91,15 @@ public class LoginActivity extends AppCompatActivity {
 
     public void init() {
         setContentView(R.layout.activity_login);
+        startService(new Intent(this, SocketService.class));
         initViewModel();
-        username = viewModel.getUsername();
-        userId = viewModel.getUserId(username);
         nav = new LoginNavigator(this);
-        if (viewModel.isUserLoggedIn() &&
-                viewModel.isUserExists(username)) { nav.toMainActivity();
-            viewModel.connectUser(userId, username);
-        }
 
+        if (viewModel.isUserLoggedIn() &&
+                viewModel.isUserExists(viewModel.getUsername())) {
+            nav.toMainActivity();
+            viewModel.connectUser(viewModel.getUsername());
+        }
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);
@@ -96,26 +107,24 @@ public class LoginActivity extends AppCompatActivity {
         imageView = findViewById(R.id.image_clock);
         imageView.setBackgroundResource(R.drawable.alarm_clock_img);
 
-        startService(new Intent(this, SocketService.class));
     }
 
     private void initViewModel() {
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        factory = new ViewModelFactory(getApplication(), socket);
+        viewModel = new ViewModelProvider(this, factory).get(LoginViewModel.class);
     }
 
     public void login() {
+        viewModel.getAllUsers();
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {
-            userId = viewModel.getUserId(username);
-            viewModel.connectUser(userId, username);
+            viewModel.connectUser(username);
             goToMainActivity();
-        }
-        else {
+        } else {
             if (viewModel.isUserExists(username)) {
                 Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
-            }
-            else {
+            } else {
                 viewModel.createNewUser(username, password);
                 goToMainActivity();
             }

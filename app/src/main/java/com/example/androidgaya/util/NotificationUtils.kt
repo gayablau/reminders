@@ -11,7 +11,11 @@ import com.example.androidgaya.repositories.models.ReminderEntity
 import java.util.*
 
 class NotificationUtils {
-    fun setExistNotification(timeInMilliSeconds: Long, context: Context, header: String, description: String, id : Int) {
+    fun setExistNotification(timeInMilliSeconds: Long,
+                             context: Context,
+                             header: String,
+                             description: String,
+                             id: Int) {
 
         if (timeInMilliSeconds > 0) {
 
@@ -30,13 +34,22 @@ class NotificationUtils {
 
             val currentTime = Calendar.getInstance()
             if (currentTime.timeInMillis <= calendar.timeInMillis) {
-                val pendingIntent = PendingIntent.getBroadcast(context, id, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                val pendingIntent = PendingIntent.getBroadcast(context,
+                        id,
+                        alarmIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                        calendar.timeInMillis,
+                        pendingIntent)
             }
         }
     }
 
-    fun setNotification(timeInMilliSeconds: Long, context: Context, header: String, description: String, id : Int) {
+    fun setNotification(timeInMilliSeconds: Long,
+                        context: Context,
+                        header: String,
+                        description: String,
+                        id: Int) {
 
         if (timeInMilliSeconds > 0) {
 
@@ -53,31 +66,46 @@ class NotificationUtils {
             calendar.timeInMillis = timeInMilliSeconds
             calendar.add(Calendar.MONTH, -1)
 
-            val pendingIntent = PendingIntent.getBroadcast(context, id, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+            val pendingIntent = PendingIntent.getBroadcast(context,
+                    id,
+                    alarmIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+            alarmManager.set(AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent)
         }
     }
 
-    fun deleteNotification(context: Context, id : Int) {
+    fun deleteNotification(context: Context, id: Int) {
         val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
         alarmIntent.putExtra(context.getString(R.string.id_uppercase), id)
 
-        val pendingIntent = PendingIntent.getBroadcast(context, id, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-        alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent)
+        val pendingIntent = PendingIntent.getBroadcast(context,
+                id,
+                alarmIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT)
+        alarmManager.set(AlarmManager.RTC_WAKEUP,
+                0,
+                pendingIntent)
     }
 
-    fun cancelAll(activity: Activity, ids : List<Int>) {
+    fun cancelAll(activity: Activity, ids: List<Int>) {
         val alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(activity.applicationContext, ReminderReceiver::class.java)
         for (id in ids) {
-            val pendingIntent = PendingIntent.getBroadcast(activity, id, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-            alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent)
+            val pendingIntent = PendingIntent.getBroadcast(activity,
+                    id,
+                    alarmIntent,
+                    PendingIntent.FLAG_CANCEL_CURRENT)
+            alarmManager.set(AlarmManager.RTC_WAKEUP,
+                    0,
+                    pendingIntent)
         }
     }
 
-    fun createAll(activity: Activity, reminders : List<ReminderEntity>) {
+    fun createAll(activity: Activity, reminders: List<ReminderEntity>) {
         for (rem in reminders) {
             setExistNotification(rem.time, activity, rem.header, rem.description, rem.id)
         }

@@ -11,36 +11,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/alarm_clock_img"
+        android:contentDescription="@string/picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/picture" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/username_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:autofillHints="@string/username_uppercase"
         android:hint="@string/username_uppercase"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_clock"
-        android:autofillHints="@string/username_uppercase" />
+        app:layout_constraintTop_toBottomOf="@id/image_clock" />
 
     <EditText
         android:id="@+id/password_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:autofillHints="@string/username_uppercase"
         android:hint="@string/password_uppercase"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/username_et"
-        android:autofillHints="@string/username_uppercase" />
+        app:layout_constraintTop_toBottomOf="@id/username_et" />
 
     <Button
         android:id="@+id/login_btn"

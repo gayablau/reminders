@@ -52,13 +52,13 @@
             android:id="@+id/rem_name_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:autofillHints="@string/reminder_name"
             android:hint="@string/reminder_name"
             android:inputType="text"
             android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/de_rem_name_tv"
-            app:layout_constraintTop_toBottomOf="@id/time_picker"
-            android:autofillHints="@string/reminder_name" />
+            app:layout_constraintTop_toBottomOf="@id/time_picker" />
 
         <TextView
             android:id="@+id/de_rem_description_tv"
@@ -74,12 +74,12 @@
             android:id="@+id/rem_description_et"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:autofillHints="@string/description_uppercase"
             android:hint="@string/description_uppercase"
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/rem_name_et"
-            app:layout_constraintTop_toBottomOf="@id/rem_name_et"
-            android:autofillHints="@string/description_uppercase" />
+            app:layout_constraintTop_toBottomOf="@id/rem_name_et" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

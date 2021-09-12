@@ -6,10 +6,9 @@ import com.example.androidgaya.repositories.db.AppDatabase
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.dao.UserDao
-import com.example.androidgaya.repositories.socket.SocketHandler
+import com.example.androidgaya.repositories.socket.SocketRepo
 import dagger.Module
 import dagger.Provides
-import io.socket.client.Socket
 import javax.inject.Singleton
 
 @Module
@@ -17,19 +16,19 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun getUserDao(appDatabase: AppDatabase) : UserDao {
+    fun getUserDao(appDatabase: AppDatabase): UserDao {
         return appDatabase.getUsersDao()
     }
 
     @Singleton
     @Provides
-    fun getRemindersDao(appDatabase: AppDatabase) : RemindersDao {
+    fun getRemindersDao(appDatabase: AppDatabase): RemindersDao {
         return appDatabase.getRemindersDao()
     }
 
     @Singleton
     @Provides
-    fun getLoggedInUserDao(appDatabase: AppDatabase) : LoggedInUserDao {
+    fun getLoggedInUserDao(appDatabase: AppDatabase): LoggedInUserDao {
         return appDatabase.getLoggedInUserDao()
     }
 
@@ -41,15 +40,16 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun provideAppContext() : Context {
+    fun provideAppContext(): Context {
         return application.applicationContext
     }
 
     @Singleton
     @Provides
-    fun provideSocket() : Socket {
-        SocketHandler.setSocket()
-        SocketHandler.establishConnection()
-        return SocketHandler.mSocket
+    fun provideSocket(): SocketRepo {
+        val socketRepo = SocketRepo(application)
+        socketRepo.setSocket()
+        socketRepo.establishConnection()
+        return socketRepo
     }
 }

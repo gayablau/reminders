@@ -2,6 +2,7 @@ package com.example.androidgaya.details.ui;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,8 +22,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.repositories.di.AppDataGetter;
 import com.example.androidgaya.repositories.models.ReminderEntity;
+import com.example.androidgaya.repositories.socket.SocketRepo;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
@@ -34,6 +38,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+
+import javax.inject.Inject;
 
 public class DetailsFragment extends Fragment {
     private static final String ID_KEY = "id";
@@ -52,8 +58,6 @@ public class DetailsFragment extends Fragment {
     private String chosenReminderDescription = "";
     private String chosenDateWords;
     private String todayDateNum;
-    private String username = "";
-    private int userId = 1;
     private int reminderId = 0;
     private long createdAt = 0;
     private boolean isNewFlag = true;
@@ -64,6 +68,10 @@ public class DetailsFragment extends Fragment {
     private DateFormat dayFormat;
     private boolean isNotified = false;
     ReminderEntity reminderEntity;
+    ViewModelFactory factory;
+
+    @Inject
+    SocketRepo socket;
 
     public DetailsFragment() {
     }
@@ -81,6 +89,12 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectDetails(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_details, container, false);
@@ -92,7 +106,6 @@ public class DetailsFragment extends Fragment {
         setHasOptionsMenu(true);
         initViews(view);
         initVariables();
-        getUsername();
         updateCurrentTime();
         updateChosenTimeToCurrent();
         setDetailsOnScreen();
@@ -100,8 +113,8 @@ public class DetailsFragment extends Fragment {
     }
 
     public void initListeners() {
-       initTimePicker();
-       initDatePickerDialog();
+        initTimePicker();
+        initDatePickerDialog();
     }
 
     public void initVariables() {
@@ -133,8 +146,11 @@ public class DetailsFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.save, menu);
         menuItem = menu.findItem(R.id.action_save);
-        if (isNewFlag) {menuItem.setTitle(R.string.add); }
-        else {menuItem.setTitle(R.string.save);}
+        if (isNewFlag) {
+            menuItem.setTitle(R.string.add);
+        } else {
+            menuItem.setTitle(R.string.save);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -199,7 +215,7 @@ public class DetailsFragment extends Fragment {
         reminderEntity = new ReminderEntity(reminderId,
                 chosenReminderHeader,
                 chosenReminderDescription,
-                userId,
+                viewModel.getUserId(),
                 chosenTime.getTimeInMillis(),
                 createdAt);
         return reminderEntity;
@@ -226,7 +242,7 @@ public class DetailsFragment extends Fragment {
                     makeToast(getString(R.string.update_msg));
                 }
                 new NotificationUtils().setNotification(chosenTime.getTimeInMillis(),
-                        getActivity(),
+                        getActivity().getApplicationContext(),
                         chosenReminderHeader,
                         chosenReminderDescription,
                         reminderId);
@@ -302,13 +318,9 @@ public class DetailsFragment extends Fragment {
         dateTV = view.findViewById(R.id.date_tv);
         dateButton = view.findViewById(R.id.button_date);
         timePicker = view.findViewById(R.id.time_picker);
-        viewModel = new ViewModelProvider(this).get(DetailsViewModel.class);
+        factory = new ViewModelFactory(getActivity().getApplication(), socket);
+        viewModel = new ViewModelProvider(this, factory).get(DetailsViewModel.class);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
-    }
-
-    public void getUsername() {
-        username = viewModel.getUsername();
-        userId = viewModel.getUserId();
     }
 
     public void makeToast(String msg) {
@@ -321,18 +333,20 @@ public class DetailsFragment extends Fragment {
     }
 
     public void setNewDate(int year, int month, int dayOfMonth) {
-        int currentmonth = month + 1;
-        chosenDateNum = dayOfMonth + "/" + currentmonth + "/" + year;
-        Date date12 = null;
+        int currentMonth = month + 1;
+        chosenDateNum = dayOfMonth + "/" + currentMonth + "/" + year;
+        Date date = null;
         try {
-            date12 = fullFormat.parse(chosenDateNum);
+            date = fullFormat.parse(chosenDateNum);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        chosenDateWords = wordsFormat.format(date12);
-        dateTV.setText(chosenDateWords);
-        chosenDayStr = dayFormat.format(date12);
-        chosenTime.set(year, currentmonth, dayOfMonth,
+        if (date != null) {
+            chosenDateWords = wordsFormat.format(date);
+            dateTV.setText(chosenDateWords);
+            chosenDayStr = dayFormat.format(date);
+        }
+        chosenTime.set(year, currentMonth, dayOfMonth,
                 chosenTime.get(Calendar.HOUR_OF_DAY), chosenTime.get(Calendar.MINUTE));
     }
 

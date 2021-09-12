@@ -3,7 +3,6 @@ package com.example.androidgaya.repositories.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import com.example.androidgaya.repositories.models.ReminderEntity
 
 @Dao
 interface LoggedInUserDao {
@@ -27,6 +26,9 @@ interface LoggedInUserDao {
 
     @Query("SELECT username FROM loggedIn LIMIT 1")
     fun getLoggedInUsername(): LiveData<String>?
+
+    @Query("SELECT id FROM loggedIn LIMIT 1")
+    fun getLoggedInId(): Int
 
     @Query("DELETE FROM loggedIn")
     fun deleteOldLogins()
