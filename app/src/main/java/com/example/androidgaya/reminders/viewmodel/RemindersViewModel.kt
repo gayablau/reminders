@@ -1,21 +1,15 @@
 package com.example.androidgaya.reminders.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.androidgaya.R
-import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
-import com.example.androidgaya.repositories.user.UserRepo
-import io.socket.client.Socket
-import javax.inject.Inject
 
-class RemindersViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
+class RemindersViewModel(application: Application,
+                         private val socketRepo: SocketRepo) : AndroidViewModel(application) {
 
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)

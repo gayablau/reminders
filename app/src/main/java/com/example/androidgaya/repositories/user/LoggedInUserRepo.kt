@@ -22,7 +22,8 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     @Inject
     lateinit var loggedInUserDao: LoggedInUserDao
 
-    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
+    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp),
+            MODE_PRIVATE)
 
     init {
         (context as AppDataGetter).getAppComponent()?.injectLoggedInUserRepo(this)

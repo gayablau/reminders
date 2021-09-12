@@ -23,7 +23,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.androidgaya.factory.ViewModelFactory;
-import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.repositories.di.AppDataGetter;
 import com.example.androidgaya.repositories.models.ReminderEntity;

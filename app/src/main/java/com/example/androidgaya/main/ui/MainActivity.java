@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.R;
-import com.example.androidgaya.details.viewmodel.DetailsViewModel;
 import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.main.socket.SocketService;
@@ -28,9 +27,6 @@ import com.example.androidgaya.util.NotificationUtils;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.socket.client.Socket;
-
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
     LiveData<List<LoggedInUserEntity>> loggedInUserList;

@@ -9,7 +9,6 @@ import com.example.androidgaya.repositories.dao.UserDao
 import com.example.androidgaya.repositories.socket.SocketRepo
 import dagger.Module
 import dagger.Provides
-import io.socket.client.Socket
 import javax.inject.Singleton
 
 @Module

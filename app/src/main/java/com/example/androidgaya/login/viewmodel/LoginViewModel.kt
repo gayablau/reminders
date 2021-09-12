@@ -1,21 +1,17 @@
 package com.example.androidgaya.login.viewmodel
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.androidgaya.R
-import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
-import io.socket.client.Socket
 import java.util.*
-import javax.inject.Inject
 
-class LoginViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
+class LoginViewModel(application: Application,
+                     private val socketRepo: SocketRepo) : AndroidViewModel(application) {
 
     private var userRepo: UserRepo = UserRepo(application)
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>

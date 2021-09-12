@@ -1,20 +1,16 @@
 package com.example.androidgaya.main.viewmodel
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.androidgaya.R
-import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
-import io.socket.client.Socket
-import javax.inject.Inject
 
-class MainViewModel(application: Application, val socketRepo : SocketRepo) : AndroidViewModel(application) {
+class MainViewModel(application: Application,
+                    private val socketRepo: SocketRepo) : AndroidViewModel(application) {
 
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
@@ -42,15 +38,15 @@ class MainViewModel(application: Application, val socketRepo : SocketRepo) : And
         return remindersRepo.getRemindersByUsernameList(userId)
     }
 
-    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
+    private fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
         return loggedInUserRepo.getLoggedInUserFromDB()
     }
 
-    fun updateLoggedInUser() {
+    private fun updateLoggedInUser() {
         loggedInUserList = getLoggedInUser()
     }
 
-    fun getAllReminders(userId: Int) {
+    private fun getAllReminders(userId: Int) {
         socketRepo.getAllReminders(userId)
     }
 }

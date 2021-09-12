@@ -83,5 +83,9 @@
     <string name="created_at">createdAt</string>
     <string name="Service_start_arguments">ServiceStartArguments</string>
     <string name="Reminders_database">RemindersDatabase</string>
+    <string name="login_viewmodel_path">com.example.androidgaya.login.viewmodel.LoginViewModel</string>
+    <string name="details_viewmodel_path">com.example.androidgaya.details.viewmodel.DetailsViewModel</string>
+    <string name="main_viewmodel_path">com.example.androidgaya.main.viewmodel.MainViewModel</string>
+    <string name="profile_viewmodel_path">com.example.androidgaya.profile.viewmodel.ProfileViewModel</string>
 
 </resources>

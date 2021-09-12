@@ -5,18 +5,10 @@ import android.content.Intent
 import android.os.*
 import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
-import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.repositories.types.ReminderJson
-import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketRepo
-import com.example.androidgaya.repositories.types.UserJson
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
-import com.example.androidgaya.util.NotificationUtils
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import org.json.JSONArray
 import javax.inject.Inject
 
 class SocketService : Service() {

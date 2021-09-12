@@ -42,7 +42,8 @@ class RemindersFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (requireActivity().applicationContext as AppDataGetter).getAppComponent()!!.injectReminders(this)
+        (requireActivity().applicationContext as AppDataGetter).getAppComponent()!!.
+        injectReminders(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,7 +137,7 @@ class RemindersFragment : Fragment() {
         factory = activity?.let { ViewModelFactory(it.application, socket) }!!
         viewModel = ViewModelProvider(this, factory).get(RemindersViewModel::class.java)
 
-        val reminderObserver = Observer<List<ReminderEntity>?> { newRem ->
+        val reminderObserver = Observer<List<ReminderEntity>?> {
             reminderAdapter.notifyDataSetChanged()
         }
 

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
-import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationCompat
 import com.example.androidgaya.R
 import com.example.androidgaya.main.ui.MainActivity
@@ -82,8 +81,9 @@ class NotificationService : IntentService("NotificationService") {
                     .setAutoCancel(true)
                     .setContentTitle(header)
                     .setContentText(description).build()
-            
-            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            val notificationManager: NotificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(id, mNotification)
         }
     }

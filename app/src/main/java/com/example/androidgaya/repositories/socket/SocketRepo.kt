@@ -24,15 +24,8 @@ class SocketRepo(val application: Application) {
     @Synchronized
     fun setSocket() {
         try {
-            mSocket = IO.socket("http://10.128.133.71:3456")
-        } catch (e: URISyntaxException) {
-
-        }
-    }
-
-    @Synchronized
-    fun getSocket(): Socket {
-        return mSocket
+            mSocket = IO.socket("http://10.211.0.183:3456")
+        } catch (e: URISyntaxException) {}
     }
 
     @Synchronized
@@ -116,7 +109,11 @@ class SocketRepo(val application: Application) {
                         args[5] as Long)
                 if (remindersRepo.getReminderByID(args[0] as Int) == null) {
                     remindersRepo.addReminder(rem)
-                    NotificationUtils().setNotification(rem.time, application.applicationContext, rem.header, rem.description, rem.id)
+                    NotificationUtils().setNotification(rem.time,
+                            application.applicationContext,
+                            rem.header,
+                            rem.description,
+                            rem.id)
                 }
             }
         }
@@ -133,10 +130,18 @@ class SocketRepo(val application: Application) {
                         args[5] as Long)
                 if (remindersRepo.getReminderByID(args[0] as Int) != null) {
                     remindersRepo.editReminder(rem)
-                    NotificationUtils().setExistNotification(rem.time, application.applicationContext, rem.header, rem.description, rem.id)
+                    NotificationUtils().setExistNotification(rem.time,
+                            application.applicationContext,
+                            rem.header,
+                            rem.description,
+                            rem.id)
                 } else {
                     remindersRepo.addReminder(rem)
-                    NotificationUtils().setNotification(rem.time, application.applicationContext, rem.header, rem.description, rem.id)
+                    NotificationUtils().setNotification(rem.time,
+                            application.applicationContext,
+                            rem.header,
+                            rem.description,
+                            rem.id)
                 }
             }
         }
@@ -157,7 +162,7 @@ class SocketRepo(val application: Application) {
         }
     }
 
-    fun onCreateUser(userRepo : UserRepo) {
+    fun onCreateUser(userRepo: UserRepo) {
         mSocket.on(application.getString(R.string.create_user)) { args ->
             if (args[0] != null) {
                 val user = UserEntity(args[0] as Int, args[1] as String, args[2] as String)
@@ -166,12 +171,14 @@ class SocketRepo(val application: Application) {
         }
     }
 
-    fun onChangeUsername(userRepo : UserRepo, loggedInUserRepo: LoggedInUserRepo) {
+    fun onChangeUsername(userRepo: UserRepo, loggedInUserRepo: LoggedInUserRepo) {
         mSocket.on(application.getString(R.string.change_username)) { args ->
             if (args[0] != null) {
                 userRepo.editUsername(args[0] as String, args[1] as String)
-                if (loggedInUserRepo.getLoggedInUsername(application).equals(args[0] as String)) {
-                    loggedInUserRepo.setLoggedIn(application, loggedInUserRepo.getLoggedInUserId(application), args[1] as String)
+                if (loggedInUserRepo.getLoggedInUsername(application) == args[0] as String) {
+                    loggedInUserRepo.setLoggedIn(application,
+                            loggedInUserRepo.getLoggedInUserId(application),
+                            args[1] as String)
                 }
             }
         }
@@ -223,7 +230,7 @@ class SocketRepo(val application: Application) {
         }
     }
 
-    fun jsonToRemEntity(reminderJson: ReminderJson): ReminderEntity {
+    private fun jsonToRemEntity(reminderJson: ReminderJson): ReminderEntity {
         return ReminderEntity(reminderJson.id,
                 reminderJson.header,
                 reminderJson.description,
@@ -232,7 +239,7 @@ class SocketRepo(val application: Application) {
                 reminderJson.createdAt)
     }
 
-    fun jsonToUserEntity(userJson: UserJson): UserEntity {
+    private fun jsonToUserEntity(userJson: UserJson): UserEntity {
         return UserEntity(userJson.userId,
                 userJson.username,
                 userJson.password)
