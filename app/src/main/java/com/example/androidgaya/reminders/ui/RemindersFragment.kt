@@ -32,7 +32,7 @@ class RemindersFragment : Fragment() {
     lateinit var addFab: FloatingActionButton
     lateinit var recyclerViewReminders: RecyclerView
     lateinit var remindersList: LiveData<List<ReminderEntity>?>
-    lateinit var nav: MainNavigator
+    var nav: MainNavigator? = null
     lateinit var viewModel: RemindersViewModel
     lateinit var reminderAdapter: ReminderAdapter
     lateinit var factory: ViewModelFactory
@@ -52,7 +52,6 @@ class RemindersFragment : Fragment() {
         initViewModel()
     }
 
-    @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_reminders, container, false)
@@ -93,9 +92,8 @@ class RemindersFragment : Fragment() {
         (activity as MainActivity?)!!.logout()
     }
 
-    @SuppressLint("RestrictedApi")
     fun profile() {
-        nav.toProfileFragment()
+        nav?.toProfileFragment()
     }
 
     fun onBackPressed() {
@@ -108,19 +106,19 @@ class RemindersFragment : Fragment() {
         recyclerViewReminders.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@RemindersFragment.context)
         recyclerViewReminders.setLayoutManager(layoutManager)
-        nav = (activity as MainActivityInterface?)!!.navigator
-        (activity as MainActivityInterface?)!!.changeToolbar(getString(R.string.toolbar_main,
+        nav = (activity as? MainActivityInterface)?.navigator
+        (activity as? MainActivityInterface)?.changeToolbar(getString(R.string.toolbar_main,
                 viewModel.username),
                 false)
     }
 
     fun add() {
-        nav.toDetailsFragment()
+        nav?.toDetailsFragment()
     }
 
     fun setAdapter() {
         reminderAdapter = ReminderAdapter(remindersList, { reminder: ReminderEntity ->
-            nav.toDetailsFragment(reminder.id)
+            nav?.toDetailsFragment(reminder.id)
         }) { reminder: ReminderEntity? ->
             viewModel.deleteReminder(reminder!!)
             activity?.let { NotificationUtils().deleteNotification(it, reminder.id) }

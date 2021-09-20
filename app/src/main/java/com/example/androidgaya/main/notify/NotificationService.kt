@@ -76,8 +76,8 @@ class NotificationService : IntentService("NotificationService") {
 
             mNotification = NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.alarm_clock_old)
-                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.alarm_clock_old))
+                    .setSmallIcon(R.drawable.clock_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.clock_notify2))
                     .setAutoCancel(true)
                     .setContentTitle(header)
                     .setContentText(description).build()

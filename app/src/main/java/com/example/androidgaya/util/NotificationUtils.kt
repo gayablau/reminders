@@ -91,11 +91,11 @@ class NotificationUtils {
                 pendingIntent)
     }
 
-    fun cancelAll(activity: Activity, ids: List<Int>) {
-        val alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(activity.applicationContext, ReminderReceiver::class.java)
+    fun cancelAll(context: Context, ids: List<Int>) {
+        val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
         for (id in ids) {
-            val pendingIntent = PendingIntent.getBroadcast(activity,
+            val pendingIntent = PendingIntent.getBroadcast(context,
                     id,
                     alarmIntent,
                     PendingIntent.FLAG_CANCEL_CURRENT)
@@ -105,9 +105,9 @@ class NotificationUtils {
         }
     }
 
-    fun createAll(activity: Activity, reminders: List<ReminderEntity>) {
+    fun createAll(context: Context, reminders: List<ReminderEntity>) {
         for (rem in reminders) {
-            setExistNotification(rem.time, activity, rem.header, rem.description, rem.id)
+            setExistNotification(rem.time, context, rem.header, rem.description, rem.id)
         }
     }
 }
