@@ -35,10 +35,9 @@ class RemindersFragment : Fragment() {
     var nav: MainNavigator? = null
     lateinit var viewModel: RemindersViewModel
     lateinit var reminderAdapter: ReminderAdapter
-    lateinit var factory: ViewModelFactory
 
     @Inject
-    lateinit var socket: SocketRepo
+    lateinit var factory: ViewModelFactory
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -132,7 +131,6 @@ class RemindersFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        factory = activity?.let { ViewModelFactory(it.application, socket) }!!
         viewModel = ViewModelProvider(this, factory).get(RemindersViewModel::class.java)
 
         val reminderObserver = Observer<List<ReminderEntity>?> {

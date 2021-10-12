@@ -34,10 +34,9 @@ public class ProfileFragment extends Fragment {
     private static String username;
     MainNavigator nav;
     ProfileViewModel viewModel;
-    ViewModelFactory factory;
 
     @Inject
-    SocketRepo socket;
+    ViewModelFactory factory;
 
     public ProfileFragment() {
     }
@@ -101,7 +100,6 @@ public class ProfileFragment extends Fragment {
         usernameET = view.findViewById(R.id.profile_username_et);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
         ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.profile), true);
-        factory = new ViewModelFactory(getActivity().getApplication(), socket);
         viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
         username = viewModel.getUsername();
         usernameET.setText(username);

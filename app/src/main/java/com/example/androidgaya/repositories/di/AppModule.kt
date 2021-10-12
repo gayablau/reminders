@@ -2,10 +2,11 @@ package com.example.androidgaya.repositories.di
 
 import android.app.Application
 import android.content.Context
-import com.example.androidgaya.repositories.db.AppDatabase
+import com.example.androidgaya.factory.ViewModelFactory
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.dao.UserDao
+import com.example.androidgaya.repositories.db.AppDatabase
 import com.example.androidgaya.repositories.socket.SocketRepo
 import dagger.Module
 import dagger.Provides
@@ -13,6 +14,13 @@ import javax.inject.Singleton
 
 @Module
 class AppModule(val application: Application) {
+
+    var socketRepo = SocketRepo(application)
+
+    init {
+        socketRepo.setSocket()
+        socketRepo.establishConnection()
+    }
 
     @Singleton
     @Provides
@@ -47,9 +55,11 @@ class AppModule(val application: Application) {
     @Singleton
     @Provides
     fun provideSocket(): SocketRepo {
-        val socketRepo = SocketRepo(application)
-        socketRepo.setSocket()
-        socketRepo.establishConnection()
         return socketRepo
+    }
+
+    @Provides
+    fun provideFactory(): ViewModelFactory {
+        return ViewModelFactory(application, provideSocket())
     }
 }

@@ -10,6 +10,7 @@ import com.example.androidgaya.main.viewmodel.MainViewModel
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
 import com.example.androidgaya.repositories.socket.SocketRepo
+import javax.inject.Inject
 
 class ViewModelFactory(val application: Application, private val socketRepo: SocketRepo) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

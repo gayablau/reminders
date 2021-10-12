@@ -33,10 +33,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     Toolbar toolbar;
     MainViewModel viewModel;
     MainNavigator nav;
-    ViewModelFactory factory;
 
     @Inject
-    SocketRepo socket;
+    ViewModelFactory factory;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, MainActivity.class);
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     }
 
     private void initViewModel() {
-        factory = new ViewModelFactory(getApplication(), socket);
         viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
 
         Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {

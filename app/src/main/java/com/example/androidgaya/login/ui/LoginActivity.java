@@ -33,11 +33,10 @@ public class LoginActivity extends AppCompatActivity {
     String username = "";
     String password = "";
     LoginViewModel viewModel;
-    ViewModelFactory factory;
     LoginNavigator nav;
 
     @Inject
-    SocketRepo socket;
+    ViewModelFactory factory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +109,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        factory = new ViewModelFactory(getApplication(), socket);
         viewModel = new ViewModelProvider(this, factory).get(LoginViewModel.class);
     }
 

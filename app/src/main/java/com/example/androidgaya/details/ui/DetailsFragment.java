@@ -68,10 +68,9 @@ public class DetailsFragment extends Fragment {
     private DateFormat dayFormat;
     private boolean isNotified = false;
     ReminderEntity reminderEntity;
-    ViewModelFactory factory;
 
     @Inject
-    SocketRepo socket;
+    ViewModelFactory factory;
 
     public DetailsFragment() {
     }
@@ -318,7 +317,6 @@ public class DetailsFragment extends Fragment {
         dateTV = view.findViewById(R.id.date_tv);
         dateButton = view.findViewById(R.id.button_date);
         timePicker = view.findViewById(R.id.time_picker);
-        factory = new ViewModelFactory(getActivity().getApplication(), socket);
         viewModel = new ViewModelProvider(this, factory).get(DetailsViewModel.class);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
     }
