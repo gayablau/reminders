@@ -23,7 +23,7 @@ class RemindersViewModel(application: Application,
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
         remindersRepo.deleteReminder(reminderEntity)
-        socketRepo.deleteReminder(reminderEntity)
+        //socketRepo.deleteReminder(reminderEntity)
     }
 
     private fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {

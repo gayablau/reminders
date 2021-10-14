@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
-        viewModel.getAllUsers();
+        //viewModel.getAllUsers();
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
         if (viewModel.areDetailsOK(username, password)) {

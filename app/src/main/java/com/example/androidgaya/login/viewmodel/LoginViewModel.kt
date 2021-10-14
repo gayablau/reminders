@@ -21,7 +21,6 @@ class LoginViewModel(application: Application,
 
     init {
         updateLoggedInUser()
-        getAllUsers()
     }
 
     fun insertUser(userEntity: UserEntity) {
@@ -41,7 +40,6 @@ class LoginViewModel(application: Application,
     }
 
     fun isUserExists(username: String): Boolean {
-        socketRepo.updateUsers()
         return userRepo.isUserExists(username)
     }
 
@@ -49,17 +47,13 @@ class LoginViewModel(application: Application,
         userId = Random(System.currentTimeMillis()).nextInt(10000)
         insertUser(UserEntity(userId, username, password))
         setUsername(userId, username)
-        socketRepo.createUser(userId, username, password)
+       // socketRepo.createUser(userId, username, password)
     }
 
     fun connectUser(username: String) {
         userId = userRepo.findUserIdByUsername(username)
         setUsername(userId, username)
-        socketRepo.connectUser(userId, username)
-    }
-
-    fun getAllUsers() {
-        socketRepo.getAllUsers()
+       // socketRepo.connectUser(userId, username)
     }
 
     fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {

@@ -87,6 +87,6 @@
     <string name="details_viewmodel_path">com.example.androidgaya.details.viewmodel.DetailsViewModel</string>
     <string name="main_viewmodel_path">com.example.androidgaya.main.viewmodel.MainViewModel</string>
     <string name="profile_viewmodel_path">com.example.androidgaya.profile.viewmodel.ProfileViewModel</string>
-    <string name="socket_uri">http://10.210.151.241:3456</string>
+    <string name="socket_uri">http://10.209.195.231:3456</string>
 
 </resources>

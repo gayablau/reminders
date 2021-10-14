@@ -27,7 +27,7 @@ class MainViewModel(application: Application,
 
     fun logout() {
         loggedInUserRepo.logout(getApplication())
-        socketRepo.logout()
+        //socketRepo.logout()
     }
 
     fun getMyRemindersIds(): List<Int> {
@@ -47,6 +47,6 @@ class MainViewModel(application: Application,
     }
 
     private fun getAllReminders(userId: Int) {
-        socketRepo.getAllReminders(userId)
+        //socketRepo.getAllReminders(userId)
     }
 }

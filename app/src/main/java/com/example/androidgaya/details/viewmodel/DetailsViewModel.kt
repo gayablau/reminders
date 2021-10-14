@@ -16,12 +16,12 @@ class DetailsViewModel(application: Application,
 
     fun addReminder(reminderEntity: ReminderEntity) {
         remindersRepo.addReminder(reminderEntity)
-        socketRepo.createReminder(reminderEntity)
+       // socketRepo.createReminder(reminderEntity)
     }
 
     fun editReminder(reminderEntity: ReminderEntity) {
         remindersRepo.editReminder(reminderEntity)
-        socketRepo.editReminder(reminderEntity)
+       // socketRepo.editReminder(reminderEntity)
     }
 
     fun getReminderByID(id: Int): ReminderEntity? {

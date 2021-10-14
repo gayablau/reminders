@@ -17,7 +17,7 @@ class ProfileViewModel(application: Application,
     fun editUsername(newUsername: String) {
         userRepo.editUsername(username, newUsername)
         setLoggedInUsername(newUsername)
-        socketRepo.changeUsername(username, newUsername)
+        //socketRepo.changeUsername(username, newUsername)
     }
 
     fun setLoggedInUsername(username: String) {
