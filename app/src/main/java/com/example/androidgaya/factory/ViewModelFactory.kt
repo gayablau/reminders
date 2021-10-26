@@ -9,17 +9,16 @@ import com.example.androidgaya.login.viewmodel.LoginViewModel
 import com.example.androidgaya.main.viewmodel.MainViewModel
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
-import com.example.androidgaya.repositories.socket.SocketRepo
-import javax.inject.Inject
+import com.example.androidgaya.repositories.socket.SocketDao
 
-class ViewModelFactory(val application: Application, private val socketRepo: SocketRepo) : ViewModelProvider.Factory {
+class ViewModelFactory(val application: Application, private val socketDao: SocketDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (modelClass.canonicalName) {
-            application.getString(R.string.login_viewmodel_path) -> LoginViewModel(application, socketRepo) as T
-            application.getString(R.string.details_viewmodel_path) -> DetailsViewModel(application, socketRepo) as T
-            application.getString(R.string.main_viewmodel_path) -> MainViewModel(application, socketRepo) as T
-            application.getString(R.string.profile_viewmodel_path) -> ProfileViewModel(application, socketRepo) as T
-            else -> RemindersViewModel(application, socketRepo) as T
+            application.getString(R.string.login_viewmodel_path) -> LoginViewModel(application, socketDao) as T
+            application.getString(R.string.details_viewmodel_path) -> DetailsViewModel(application, socketDao) as T
+            application.getString(R.string.main_viewmodel_path) -> MainViewModel(application, socketDao) as T
+            application.getString(R.string.profile_viewmodel_path) -> ProfileViewModel(application, socketDao) as T
+            else -> RemindersViewModel(application, socketDao) as T
         }
     }
 }

@@ -8,10 +8,11 @@ import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.factory.ViewModelFactory;
@@ -19,8 +20,10 @@ import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.repositories.di.AppDataGetter;
-import com.example.androidgaya.repositories.socket.SocketRepo;
+import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.LoginNavigator;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     String password = "";
     LoginViewModel viewModel;
     LoginNavigator nav;
+    Intent serviceIntent;
+    LiveData<List<LoggedInUserEntity>> loggedInUserList;
 
     @Inject
     ViewModelFactory factory;
@@ -67,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
     public static Intent getIntent(Context context) {
         return new Intent(context, LoginActivity.class);
     }
@@ -90,15 +94,19 @@ public class LoginActivity extends AppCompatActivity {
 
     public void init() {
         setContentView(R.layout.activity_login);
-        startService(new Intent(this, SocketService.class));
+        serviceIntent = new Intent(this, SocketService.class);
+        startService(serviceIntent);
         initViewModel();
         nav = new LoginNavigator(this);
 
-        if (viewModel.isUserLoggedIn() &&
-                viewModel.isUserExists(viewModel.getUsername())) {
-            nav.toMainActivity();
-            viewModel.connectUser(viewModel.getUsername());
-        }
+        Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
+            if (!loggedInUserEntities.isEmpty()) {
+                goToMainActivity();
+            }
+        };
+
+        loggedInUserList = viewModel.loggedInUserList;
+        loggedInUserList.observe(this, loggedInObserver);
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);
@@ -113,19 +121,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
-        //viewModel.getAllUsers();
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
-        if (viewModel.areDetailsOK(username, password)) {
-            viewModel.connectUser(username);
-            goToMainActivity();
-        } else {
-            if (viewModel.isUserExists(username)) {
-                Toast.makeText(this, getString(R.string.wrong_login), Toast.LENGTH_LONG).show();
-            } else {
-                viewModel.createNewUser(username, password);
-                goToMainActivity();
-            }
-        }
+        viewModel.connectUser(username, password);
     }
 }

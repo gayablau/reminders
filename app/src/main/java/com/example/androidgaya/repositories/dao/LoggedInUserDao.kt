@@ -25,10 +25,10 @@ interface LoggedInUserDao {
     fun getLoggedInUsernameList(): List<String>?
 
     @Query("SELECT username FROM loggedIn LIMIT 1")
-    fun getLoggedInUsername(): LiveData<String>?
+    fun getLoggedInUsername(): String?
 
     @Query("SELECT id FROM loggedIn LIMIT 1")
-    fun getLoggedInId(): Int
+    fun getLoggedInId(): String?
 
     @Query("DELETE FROM loggedIn")
     fun deleteOldLogins()

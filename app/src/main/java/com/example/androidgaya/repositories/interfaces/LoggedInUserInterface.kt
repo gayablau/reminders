@@ -5,10 +5,11 @@ import androidx.lifecycle.LiveData
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 
 interface LoggedInUserInterface {
-    fun isUserLoggedIn(context: Context): Boolean
     fun getLoggedInUsername(context: Context): String?
-    fun setLoggedIn(context: Context, id: Int, username: String)
+    fun setLoggedIn(id: String, username: String): Unit
     fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?>
-    fun getLoggedInUserId(context: Context): Int
-    fun logout(context: Context)
+    fun getLoggedInUserId(context: Context): String?
+    fun logoutFromDB()
+    fun login(context: Context, username: String, password: String)
+    fun changeUsername(context: Context, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit, oldUsername: String, newUsername: String)
 }

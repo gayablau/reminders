@@ -1,17 +1,23 @@
 package com.example.androidgaya.repositories.user
 
 import android.app.Application
+import android.content.Context
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.dao.UserDao
 import com.example.androidgaya.repositories.interfaces.UserInterface
 import com.example.androidgaya.repositories.models.UserEntity
+import com.example.androidgaya.repositories.socket.SocketDao
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class UserRepo(application: Application) : UserInterface {
-    @Inject
+   /* @Inject
     lateinit var userDao: UserDao
+
+    @Inject
+    lateinit var socketDao: SocketDao
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectUserRepo(this)
@@ -43,7 +49,7 @@ class UserRepo(application: Application) : UserInterface {
         return true
     }
 
-    override fun findUserIdByUsername(username: String): Int {
+    override fun findUserIdByUsername(username: String): String {
         return userDao.findUserIdByUsername(username)
-    }
+    }*/
 }

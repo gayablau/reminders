@@ -4,24 +4,22 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
-import com.example.androidgaya.repositories.socket.SocketRepo
+import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 
 class DetailsViewModel(application: Application,
-                       private val socketRepo: SocketRepo) : AndroidViewModel(application) {
+                       private val socketDao: SocketDao) : AndroidViewModel(application) {
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
+    var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     fun addReminder(reminderEntity: ReminderEntity) {
-        remindersRepo.addReminder(reminderEntity)
-       // socketRepo.createReminder(reminderEntity)
+        remindersRepo.createReminder(getApplication(), reminderEntity)
     }
 
     fun editReminder(reminderEntity: ReminderEntity) {
-        remindersRepo.editReminder(reminderEntity)
-       // socketRepo.editReminder(reminderEntity)
+        remindersRepo.editReminder(getApplication(), reminderEntity)
     }
 
     fun getReminderByID(id: Int): ReminderEntity? {

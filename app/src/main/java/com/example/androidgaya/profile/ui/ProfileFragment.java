@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.repositories.di.AppDataGetter;
-import com.example.androidgaya.repositories.socket.SocketRepo;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
@@ -86,14 +85,15 @@ public class ProfileFragment extends Fragment {
 
     @SuppressLint("RestrictedApi")
     public void save() {
-        if (viewModel.isUsernameExists(getNewUsername())) {
-            Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();
-        } else {
-            viewModel.editUsername(getNewUsername());
-            username = getNewUsername();
-            viewModel.setUsername(username);
-            nav.toRemindersFragment();
-        }
+        viewModel.editUsername(getNewUsername(), (dataFromSocket, dataFromClient) -> {
+            if ((Boolean)dataFromSocket[0]) {
+                viewModel.setLoggedIn(dataFromClient.get(1).toString());
+                nav.toRemindersFragment();
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();
+            }
+            return null;
+        });
     }
 
     public void init(View view) {

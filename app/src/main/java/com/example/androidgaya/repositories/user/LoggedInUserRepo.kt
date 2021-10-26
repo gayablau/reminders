@@ -3,12 +3,14 @@ package com.example.androidgaya.repositories.user
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.androidgaya.R
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
+import com.example.androidgaya.repositories.socket.SocketDao
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -22,48 +24,31 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     @Inject
     lateinit var loggedInUserDao: LoggedInUserDao
 
-    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp),
-            MODE_PRIVATE)
+    @Inject
+    lateinit var socketDao: SocketDao
+
 
     init {
         (context as AppDataGetter).getAppComponent()?.injectLoggedInUserRepo(this)
     }
 
-    override fun isUserLoggedIn(context: Context): Boolean {
-        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY) != EMPTY
-    }
-
     override fun getLoggedInUsername(context: Context): String {
-        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY)
-                ?: EMPTY
+        return loggedInUserDao.getLoggedInUsername() ?: EMPTY
     }
 
-    override fun getLoggedInUserId(context: Context): Int {
-        return loggedInUserPref.getInt(context.getString(R.string.UserId), 0)
+    override fun getLoggedInUserId(context: Context): String {
+        return loggedInUserDao.getLoggedInId() ?: EMPTY
     }
 
-    override fun setLoggedIn(context: Context, id: Int, username: String) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase),
-                username).apply()
-        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), id).apply()
-        setLoggedInDB(id, username)
 
-    }
-
-    fun setLoggedInDB(id: Int, username: String) = runBlocking {
+    override fun setLoggedIn(id: String, username: String): Unit = runBlocking {
         launch {
             loggedInUserDao.deleteOldLogins()
             loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
         }
     }
 
-    override fun logout(context: Context) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), EMPTY).apply()
-        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), 0).apply()
-        deleteOldLogins()
-    }
-
-    fun deleteOldLogins() = runBlocking {
+    override fun logoutFromDB(): Unit = runBlocking {
         launch {
             loggedInUserDao.deleteOldLogins()
         }
@@ -71,5 +56,21 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
 
     override fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?> {
         return loggedInUserDao.getLoggedInUserFromDBLive()
+    }
+
+
+    override fun login(context: Context, username: String, password: String) {
+        socketDao.listenOnce(context.getString(R.string.connect_user), context.getString(R.string.user_id), connectUser, username, password)
+    }
+
+    override fun changeUsername(context: Context, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit, oldUsername: String, newUsername: String) {
+        socketDao.listenOnce(context.getString(R.string.change_username_if_able), context.getString(R.string.change_username), callback, oldUsername, newUsername)
+    }
+
+
+    private val connectUser: (Array<Any>, List<Any>) -> Unit = { dataFromSocket: Array<Any>, dataFromClient: List<Any> ->
+        if (dataFromSocket[0].toString().isNotBlank()) {
+            setLoggedIn(dataFromSocket[0].toString(), dataFromClient[0].toString())
+        }
     }
 }

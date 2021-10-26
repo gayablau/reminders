@@ -1,6 +1,5 @@
 package com.example.androidgaya.reminders.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.*
@@ -20,7 +19,6 @@ import com.example.androidgaya.reminders.recyclerview.SwipeToDeleteCallback
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
 import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.util.MainNavigator
 import com.example.androidgaya.util.NotificationUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton

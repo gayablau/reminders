@@ -6,28 +6,28 @@ import androidx.lifecycle.LiveData
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
-import com.example.androidgaya.repositories.socket.SocketRepo
+import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import com.example.androidgaya.util.NotificationUtils
 
 class MainViewModel(application: Application,
-                    private val socketRepo: SocketRepo) : AndroidViewModel(application) {
+                    private val socketDao: SocketDao) : AndroidViewModel(application) {
 
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
     var username: String
-    var userId: Int
+    var userId: String
 
     init {
         updateLoggedInUser()
         username = loggedInUserRepo.getLoggedInUsername(getApplication())
         userId = loggedInUserRepo.getLoggedInUserId(getApplication())
-        getAllReminders(userId)
     }
 
     fun logout() {
-        loggedInUserRepo.logout(getApplication())
-        //socketRepo.logout()
+        loggedInUserRepo.logoutFromDB()
+        remindersRepo.logout(getApplication(), userId)
     }
 
     fun getMyRemindersIds(): List<Int> {
@@ -44,9 +44,5 @@ class MainViewModel(application: Application,
 
     private fun updateLoggedInUser() {
         loggedInUserList = getLoggedInUser()
-    }
-
-    private fun getAllReminders(userId: Int) {
-        //socketRepo.getAllReminders(userId)
     }
 }

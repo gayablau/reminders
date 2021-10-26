@@ -26,7 +26,6 @@ import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.repositories.di.AppDataGetter;
 import com.example.androidgaya.repositories.models.ReminderEntity;
-import com.example.androidgaya.repositories.socket.SocketRepo;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
@@ -240,11 +239,6 @@ public class DetailsFragment extends Fragment {
                     viewModel.editReminder(createReminderFromInput());
                     makeToast(getString(R.string.update_msg));
                 }
-                new NotificationUtils().setNotification(chosenTime.getTimeInMillis(),
-                        getActivity().getApplicationContext(),
-                        chosenReminderHeader,
-                        chosenReminderDescription,
-                        reminderId);
                 nav.toRemindersFragment();
             } else {
                 makeToast(getString(R.string.select_valid_time_msg));

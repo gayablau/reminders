@@ -9,18 +9,19 @@ import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
-import com.example.androidgaya.repositories.socket.SocketRepo
+import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.types.ReminderJson
 import com.example.androidgaya.repositories.types.UserJson
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.repositories.user.UserRepo
 import com.example.androidgaya.util.NotificationUtils
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import io.socket.emitter.Emitter
 import org.json.JSONArray
-import java.util.logging.Logger
+import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
+
 
 class SocketService : Service() {
     private lateinit var serviceLooper: Looper
@@ -28,9 +29,13 @@ class SocketService : Service() {
     private lateinit var remindersRepo: RemindersRepo
     private lateinit var loggedInUserRepo: LoggedInUserRepo
     private lateinit var userRepo: UserRepo
+    private val mBinder: IBinder = SocketBinder()
 
     @Inject
-    lateinit var socket: SocketRepo
+    lateinit var socket: SocketDao
+
+    @Inject
+    lateinit var moshi: Moshi
 
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
 
@@ -40,9 +45,7 @@ class SocketService : Service() {
             //onDeleteReminder(remindersRepo)
            // onCreateUser(userRepo)
            // onChangeUsername(userRepo, loggedInUserRepo)
-            //onGetAllUsers(userRepo)
            // onGetAllReminders(remindersRepo)
-            connectUser(1,"1", "1")
         }
     }
 
@@ -67,20 +70,23 @@ class SocketService : Service() {
         return START_STICKY
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
-
-    fun connectUser(userId: Int, username: String, password: String) {
-        //socket.emit(application.getString(R.string.connect_user), userId, username, password)
-        socket.ask(application.getString(R.string.connect_user), userId, username, password) {
-            //if (it[0] as Boolean)
-            Log.i("wtf", it[0].toString())
+    inner class SocketBinder : Binder() {
+        fun getService() : SocketService {
+            return this@SocketService
         }
     }
 
-    fun createReminder(reminderEntity: ReminderEntity) {
-        socket.emit(application.getString(R.string.create_reminder),
+    override fun onBind(intent: Intent?): IBinder {
+        return mBinder
+    }
+
+
+   /* fun createReminder(reminderEntity: ReminderEntity) {
+        //val reminder = jsonReminderAdapter.toJson(reminderEntity)
+
+        Log.d("idk", reminderEntity.toString())
+
+        socket.emit(getString(R.string.create_reminder),
                 reminderEntity.id,
                 reminderEntity.header,
                 reminderEntity.description,
@@ -90,7 +96,7 @@ class SocketService : Service() {
     }
 
     fun editReminder(reminderEntity: ReminderEntity) {
-        socket.emit(application.getString(R.string.edit_reminder),
+        socket.emit(getString(R.string.edit_reminder),
                 reminderEntity.id,
                 reminderEntity.header,
                 reminderEntity.description,
@@ -100,7 +106,7 @@ class SocketService : Service() {
     }
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
-        socket.emit(application.getString(R.string.delete_reminder),
+        socket.emit(getString(R.string.delete_reminder),
                 reminderEntity.id,
                 reminderEntity.header,
                 reminderEntity.description,
@@ -110,32 +116,32 @@ class SocketService : Service() {
     }
 
     fun logout() {
-        socket.emit(application.getString(R.string.logout))
+        socket.emit(getString(R.string.logout))
     }
 
     fun getAllReminders(userId: Int) {
-        socket.emit(application.getString(R.string.get_all_reminders), userId)
+        socket.emit(getString(R.string.get_all_reminders), userId)
     }
 
     fun changeUsername(oldUsername: String, newUsername: String) {
-        socket.emit(application.getString(R.string.change_username),
+        socket.emit(getString(R.string.change_username),
                 oldUsername,
                 newUsername)
     }
 
     fun onCreateReminder(remindersRepo: RemindersRepo) {
-        socket.listen(application.getString(R.string.create_reminder)) { args ->
+        socket.listen(getString(R.string.create_reminder)) { args ->
             if (args[0] != null) {
                 val rem = ReminderEntity(args[0] as Int,
                         args[1] as String,
                         args[2] as String?,
-                        args[3] as Int,
+                        args[3] as String,
                         args[4] as Long,
                         args[5] as Long)
                 if (remindersRepo.getReminderByID(args[0] as Int) == null) {
                     remindersRepo.addReminder(rem)
                     NotificationUtils().setNotification(rem.time,
-                            application.applicationContext,
+                            applicationContext,
                             rem.header,
                             rem.description,
                             rem.id)
@@ -146,25 +152,25 @@ class SocketService : Service() {
     }
 
     fun onEditReminder(remindersRepo: RemindersRepo) {
-        socket.listen(application.getString(R.string.edit_reminder)) { args ->
+        socket.listen(getString(R.string.edit_reminder)) { args ->
             if (args[0] != null) {
                 val rem = ReminderEntity(args[0] as Int,
                         args[1] as String,
                         args[2] as String?,
-                        args[3] as Int,
+                        args[3] as String,
                         args[4] as Long,
                         args[5] as Long)
                 if (remindersRepo.getReminderByID(args[0] as Int) != null) {
                     remindersRepo.editReminder(rem)
                     NotificationUtils().setExistNotification(rem.time,
-                            application.applicationContext,
+                            applicationContext,
                             rem.header,
                             rem.description,
                             rem.id)
                 } else {
                     remindersRepo.addReminder(rem)
                     NotificationUtils().setNotification(rem.time,
-                            application.applicationContext,
+                            applicationContext,
                             rem.header,
                             rem.description,
                             rem.id)
@@ -179,7 +185,7 @@ class SocketService : Service() {
                 val rem = ReminderEntity(args[0] as Int,
                         args[1] as String,
                         args[2] as String?,
-                        args[3] as Int,
+                        args[3] as String,
                         args[4] as Long,
                         args[5] as Long)
                 remindersRepo.deleteReminder(rem)
@@ -191,7 +197,7 @@ class SocketService : Service() {
     fun onCreateUser(userRepo: UserRepo) {
         socket.listen(application.getString(R.string.create_user)) { args ->
             if (args[0] != null) {
-                val user = UserEntity(args[0] as Int, args[1] as String, args[2] as String)
+                val user = UserEntity(args[0] as String, args[1] as String, args[2] as String)
                 userRepo.insertUser(user)
             }
         }
@@ -214,10 +220,7 @@ class SocketService : Service() {
         socket.listen(application.getString(R.string.get_all_users)) { args ->
             if (args[0] != null) {
                 val data = args[0] as JSONArray
-                val moshi: Moshi = Moshi.Builder().build()
-                val listMyData = Types.newParameterizedType(List::class.java, UserJson::class.java)
-                val jsonAdapter = moshi.adapter<List<UserJson>>(listMyData)
-                val usersList = jsonAdapter.fromJson(data.toString())
+                val usersList = jsonUsersAdapter.fromJson(data.toString())
                 if (usersList != null) {
                     for (user in usersList) {
                         if (!userRepo.isUserExists(user.username)) {
@@ -235,10 +238,7 @@ class SocketService : Service() {
             if (args[0] != null) {
                 remindersRepo.deleteAllReminders()
                 val reminders = args[0] as JSONArray
-                val moshi: Moshi = Moshi.Builder().build()
-                val listMyData = Types.newParameterizedType(List::class.java, ReminderJson::class.java)
-                val jsonAdapter = moshi.adapter<List<ReminderJson>>(listMyData)
-                val remindersList = jsonAdapter.fromJson(reminders.toString())
+                val remindersList = jsonRemindersAdapter.fromJson(reminders.toString())
                 if (remindersList != null) {
                     for (rem in remindersList) {
                         if (remindersRepo.getReminderByID(rem.id) == null) {
@@ -269,5 +269,5 @@ class SocketService : Service() {
         return UserEntity(userJson.userId,
                 userJson.username,
                 userJson.password)
-    }
+    }*/
 }
