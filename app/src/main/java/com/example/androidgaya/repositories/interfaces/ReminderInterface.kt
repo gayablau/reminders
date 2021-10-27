@@ -18,4 +18,7 @@ interface ReminderInterface {
     fun editReminder(context: Context, reminderEntity: ReminderEntity)
     fun deleteReminder(context: Context, reminderEntity: ReminderEntity)
     fun logout(context: Context, userId: String)
+    fun onDeleteReminder(context: Context, reminderEntity: ReminderEntity)
+    fun onEditReminder(context: Context, reminderEntity: ReminderEntity)
+    fun onCreateReminder(context: Context, reminderEntity: ReminderEntity)
 }

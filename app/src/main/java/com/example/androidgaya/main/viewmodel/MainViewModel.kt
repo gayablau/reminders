@@ -26,7 +26,7 @@ class MainViewModel(application: Application,
     }
 
     fun logout() {
-        loggedInUserRepo.logoutFromDB()
+        loggedInUserRepo.logout(getApplication())
         remindersRepo.logout(getApplication(), userId)
     }
 

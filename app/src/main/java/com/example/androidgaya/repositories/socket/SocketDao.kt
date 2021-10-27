@@ -30,6 +30,10 @@ class SocketDao(val application: Application) {
         mSocket.disconnect()
     }
 
+    fun emit(event: String){
+        mSocket.emit(event)
+    }
+
     fun emit(event: String, vararg data: Any){
         val jsonData = JSONArray(data.asList())
         mSocket.emit(event, jsonData.toString())

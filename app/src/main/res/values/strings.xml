@@ -92,5 +92,9 @@
     <string name="user_id">userId</string>
     <string name="on_get_all_reminders">OnGetAllReminders</string>
     <string name="empty_json">[]</string>
+    <string name="on_create_reminder">onCreateReminder</string>
+    <string name="on_edit_reminder">onEditReminder</string>
+    <string name="on_delete_reminder">onDeleteReminder</string>
+    <string name="on_change_username">onChangeUsername</string>
 
 </resources>

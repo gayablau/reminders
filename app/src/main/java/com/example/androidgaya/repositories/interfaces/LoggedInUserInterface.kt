@@ -10,6 +10,7 @@ interface LoggedInUserInterface {
     fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?>
     fun getLoggedInUserId(context: Context): String?
     fun logoutFromDB()
+    fun logout(context: Context)
     fun login(context: Context, username: String, password: String)
     fun changeUsername(context: Context, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit, oldUsername: String, newUsername: String)
 }

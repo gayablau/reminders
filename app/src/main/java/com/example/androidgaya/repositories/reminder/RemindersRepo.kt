@@ -81,8 +81,12 @@ class RemindersRepo(application: Application) : ReminderInterface {
     }
 
     override fun createReminder(context: Context, reminderEntity: ReminderEntity) {
-        addReminderToDB(reminderEntity)
         socketDao.emit(context.getString(R.string.create_reminder), reminderEntityAdapter.toJson(reminderEntity))
+        onCreateReminder(context, reminderEntity)
+    }
+
+    override fun onCreateReminder(context: Context, reminderEntity: ReminderEntity) {
+        addReminderToDB(reminderEntity)
         NotificationUtils().setNotification(reminderEntity.time,
                 context,
                 reminderEntity.header,
@@ -91,8 +95,12 @@ class RemindersRepo(application: Application) : ReminderInterface {
     }
 
     override fun editReminder(context: Context, reminderEntity: ReminderEntity) {
-        editReminderFromDB(reminderEntity)
         socketDao.emit(context.getString(R.string.edit_reminder), reminderEntityAdapter.toJson(reminderEntity))
+        onEditReminder(context, reminderEntity)
+    }
+
+    override fun onEditReminder(context: Context, reminderEntity: ReminderEntity) {
+        editReminderFromDB(reminderEntity)
         NotificationUtils().setExistNotification(reminderEntity.time,
                 context,
                 reminderEntity.header,
@@ -101,6 +109,11 @@ class RemindersRepo(application: Application) : ReminderInterface {
     }
 
     override fun deleteReminder(context: Context, reminderEntity: ReminderEntity) {
+        socketDao.emit(context.getString(R.string.delete_reminder), reminderEntityAdapter.toJson(reminderEntity))
+        onDeleteReminder(context, reminderEntity)
+    }
+
+    override fun onDeleteReminder(context: Context, reminderEntity: ReminderEntity) {
         deleteReminderFromDB(reminderEntity)
         socketDao.emit(context.getString(R.string.delete_reminder), reminderEntityAdapter.toJson(reminderEntity))
         NotificationUtils().deleteNotification(context,

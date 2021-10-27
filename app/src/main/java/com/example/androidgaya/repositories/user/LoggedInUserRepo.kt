@@ -54,6 +54,11 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         }
     }
 
+    override fun logout(context: Context) {
+        logoutFromDB()
+        socketDao.emit(context.getString(R.string.logout))
+    }
+
     override fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?> {
         return loggedInUserDao.getLoggedInUserFromDBLive()
     }
@@ -73,4 +78,6 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
             setLoggedIn(dataFromSocket[0].toString(), dataFromClient[0].toString())
         }
     }
+
+
 }

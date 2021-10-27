@@ -19,6 +19,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import org.json.JSONArray
+import org.json.JSONObject
 import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
 
@@ -32,20 +33,18 @@ class SocketService : Service() {
     private val mBinder: IBinder = SocketBinder()
 
     @Inject
-    lateinit var socket: SocketDao
+    lateinit var socketDao: SocketDao
 
     @Inject
-    lateinit var moshi: Moshi
+    lateinit var reminderEntityAdapter: JsonAdapter<ReminderEntity>
 
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
 
         override fun handleMessage(msg: Message) {
-           // onCreateReminder(remindersRepo)
-           // onEditReminder(remindersRepo)
-            //onDeleteReminder(remindersRepo)
-           // onCreateUser(userRepo)
-           // onChangeUsername(userRepo, loggedInUserRepo)
-           // onGetAllReminders(remindersRepo)
+            onCreateReminder(remindersRepo)
+            onEditReminder(remindersRepo)
+            onDeleteReminder(remindersRepo)
+            onChangeUsername(userRepo, loggedInUserRepo)
         }
     }
 
@@ -81,193 +80,53 @@ class SocketService : Service() {
     }
 
 
-   /* fun createReminder(reminderEntity: ReminderEntity) {
-        //val reminder = jsonReminderAdapter.toJson(reminderEntity)
-
-        Log.d("idk", reminderEntity.toString())
-
-        socket.emit(getString(R.string.create_reminder),
-                reminderEntity.id,
-                reminderEntity.header,
-                reminderEntity.description,
-                reminderEntity.user,
-                reminderEntity.time,
-                reminderEntity.createdAt)
-    }
-
-    fun editReminder(reminderEntity: ReminderEntity) {
-        socket.emit(getString(R.string.edit_reminder),
-                reminderEntity.id,
-                reminderEntity.header,
-                reminderEntity.description,
-                reminderEntity.user,
-                reminderEntity.time,
-                reminderEntity.createdAt)
-    }
-
-    fun deleteReminder(reminderEntity: ReminderEntity) {
-        socket.emit(getString(R.string.delete_reminder),
-                reminderEntity.id,
-                reminderEntity.header,
-                reminderEntity.description,
-                reminderEntity.user,
-                reminderEntity.time,
-                reminderEntity.createdAt)
-    }
-
-    fun logout() {
-        socket.emit(getString(R.string.logout))
-    }
-
-    fun getAllReminders(userId: Int) {
-        socket.emit(getString(R.string.get_all_reminders), userId)
-    }
-
-    fun changeUsername(oldUsername: String, newUsername: String) {
-        socket.emit(getString(R.string.change_username),
-                oldUsername,
-                newUsername)
-    }
-
     fun onCreateReminder(remindersRepo: RemindersRepo) {
-        socket.listen(getString(R.string.create_reminder)) { args ->
+        socketDao.listen(getString(R.string.on_create_reminder)) { args ->
             if (args[0] != null) {
-                val rem = ReminderEntity(args[0] as Int,
-                        args[1] as String,
-                        args[2] as String?,
-                        args[3] as String,
-                        args[4] as Long,
-                        args[5] as Long)
-                if (remindersRepo.getReminderByID(args[0] as Int) == null) {
-                    remindersRepo.addReminder(rem)
-                    NotificationUtils().setNotification(rem.time,
-                            applicationContext,
-                            rem.header,
-                            rem.description,
-                            rem.id)
+                val reminder = reminderEntityAdapter.fromJson(args[0].toString())
+                if (reminder != null) {
+                    if (remindersRepo.getReminderByID(reminder.id) == null) {
+                        remindersRepo.onCreateReminder(application, reminder)
+                    }
                 }
             }
         }
-
     }
 
     fun onEditReminder(remindersRepo: RemindersRepo) {
-        socket.listen(getString(R.string.edit_reminder)) { args ->
+        socketDao.listen(getString(R.string.on_edit_reminder)) { args ->
             if (args[0] != null) {
-                val rem = ReminderEntity(args[0] as Int,
-                        args[1] as String,
-                        args[2] as String?,
-                        args[3] as String,
-                        args[4] as Long,
-                        args[5] as Long)
-                if (remindersRepo.getReminderByID(args[0] as Int) != null) {
-                    remindersRepo.editReminder(rem)
-                    NotificationUtils().setExistNotification(rem.time,
-                            applicationContext,
-                            rem.header,
-                            rem.description,
-                            rem.id)
-                } else {
-                    remindersRepo.addReminder(rem)
-                    NotificationUtils().setNotification(rem.time,
-                            applicationContext,
-                            rem.header,
-                            rem.description,
-                            rem.id)
+                val reminder = reminderEntityAdapter.fromJson(args[0].toString())
+                if (reminder != null) {
+                    if (remindersRepo.getReminderByID(reminder.id) != null) {
+                        remindersRepo.onEditReminder(application, reminder)
+                    } else {
+                        remindersRepo.onCreateReminder(application, reminder)
+                    }
                 }
             }
         }
     }
 
     fun onDeleteReminder(remindersRepo: RemindersRepo) {
-        socket.listen(application.getString(R.string.delete_reminder)) { args ->
+        socketDao.listen(getString(R.string.on_delete_reminder)) { args ->
             if (args[0] != null) {
-                val rem = ReminderEntity(args[0] as Int,
-                        args[1] as String,
-                        args[2] as String?,
-                        args[3] as String,
-                        args[4] as Long,
-                        args[5] as Long)
-                remindersRepo.deleteReminder(rem)
-                NotificationUtils().deleteNotification(application.applicationContext, rem.id)
-            }
-        }
-    }
-
-    fun onCreateUser(userRepo: UserRepo) {
-        socket.listen(application.getString(R.string.create_user)) { args ->
-            if (args[0] != null) {
-                val user = UserEntity(args[0] as String, args[1] as String, args[2] as String)
-                userRepo.insertUser(user)
+                val reminder = reminderEntityAdapter.fromJson(args[0].toString())
+                if (reminder != null) {
+                    if (remindersRepo.getReminderByID(reminder.id) != null) {
+                        remindersRepo.onDeleteReminder(application, reminder)
+                    }
+                }
             }
         }
     }
 
     fun onChangeUsername(userRepo: UserRepo, loggedInUserRepo: LoggedInUserRepo) {
-        socket.listen(application.getString(R.string.change_username)) { args ->
+        socketDao.listen(getString(R.string.on_change_username)) { args ->
             if (args[0] != null) {
-                userRepo.editUsername(args[0] as String, args[1] as String)
-                if (loggedInUserRepo.getLoggedInUsername(application) == args[0] as String) {
-                    loggedInUserRepo.setLoggedIn(application,
-                            loggedInUserRepo.getLoggedInUserId(application),
-                            args[1] as String)
-                }
+                loggedInUserRepo.setLoggedIn(loggedInUserRepo.getLoggedInUserId(application),
+                        args[0] as String)
             }
         }
     }
-
-    fun onGetAllUsers(userRepo: UserRepo) {
-        socket.listen(application.getString(R.string.get_all_users)) { args ->
-            if (args[0] != null) {
-                val data = args[0] as JSONArray
-                val usersList = jsonUsersAdapter.fromJson(data.toString())
-                if (usersList != null) {
-                    for (user in usersList) {
-                        if (!userRepo.isUserExists(user.username)) {
-                            val userToAdd = jsonToUserEntity(user)
-                            userRepo.insertUser(userToAdd)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun onGetAllReminders(remindersRepo: RemindersRepo) {
-        socket.listen(application.getString(R.string.get_all_reminders)) { args ->
-            if (args[0] != null) {
-                remindersRepo.deleteAllReminders()
-                val reminders = args[0] as JSONArray
-                val remindersList = jsonRemindersAdapter.fromJson(reminders.toString())
-                if (remindersList != null) {
-                    for (rem in remindersList) {
-                        if (remindersRepo.getReminderByID(rem.id) == null) {
-                            val remToAdd = jsonToRemEntity(rem)
-                            remindersRepo.addReminder(remToAdd)
-                            NotificationUtils().setExistNotification(remToAdd.time,
-                                    application.applicationContext,
-                                    remToAdd.header,
-                                    remToAdd.description,
-                                    remToAdd.id)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun jsonToRemEntity(reminderJson: ReminderJson): ReminderEntity {
-        return ReminderEntity(reminderJson.id,
-                reminderJson.header,
-                reminderJson.description,
-                reminderJson.user,
-                reminderJson.time,
-                reminderJson.createdAt)
-    }
-
-    private fun jsonToUserEntity(userJson: UserJson): UserEntity {
-        return UserEntity(userJson.userId,
-                userJson.username,
-                userJson.password)
-    }*/
 }
