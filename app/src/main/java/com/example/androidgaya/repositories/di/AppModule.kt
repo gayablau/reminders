@@ -5,10 +5,9 @@ import android.content.Context
 import com.example.androidgaya.factory.ViewModelFactory
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
-import com.example.androidgaya.repositories.dao.UserDao
 import com.example.androidgaya.repositories.db.AppDatabase
+import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.types.ReminderJson
@@ -34,7 +33,7 @@ class AppModule(val application: Application) {
     private val jsonUsersAdapter: JsonAdapter<List<UserJson>> = moshi.adapter(listUsersType)
     private val jsonUserAdapter: JsonAdapter<UserJson> = moshi.adapter(UserJson::class.java)
     private val jsonReminderAdapter: JsonAdapter<ReminderJson> = moshi.adapter(ReminderJson::class.java)
-    private val userEntityAdapter: JsonAdapter<UserEntity> = moshi.adapter(UserEntity::class.java)
+    private val userEntityAdapter: JsonAdapter<LoggedInUserEntity> = moshi.adapter(LoggedInUserEntity::class.java)
     private val reminderEntityAdapter: JsonAdapter<ReminderEntity> = moshi.adapter(ReminderEntity::class.java)
 
     init {
@@ -110,7 +109,7 @@ class AppModule(val application: Application) {
     }
 
     @Provides
-    fun provideUserEntityAdapter(): JsonAdapter<UserEntity> {
+    fun provideUserEntityAdapter(): JsonAdapter<LoggedInUserEntity> {
         return userEntityAdapter
     }
 
