@@ -10,6 +10,10 @@ import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.ParameterizedType
@@ -29,6 +33,9 @@ class SocketService : Service() {
     @Inject
     lateinit var reminderEntityAdapter: JsonAdapter<ReminderEntity>
 
+    private val socketCoroutineJob = SupervisorJob()
+    private val socketScope = CoroutineScope(Dispatchers.IO + socketCoroutineJob)
+
     override fun onCreate() {
         (application as AppDataGetter).getAppComponent()?.injectSocketService(this)
         onCreateReminder()
@@ -47,11 +54,13 @@ class SocketService : Service() {
 
     private fun onCreateReminder() {
         socketDao.listen(getString(R.string.on_create_reminder)) { args ->
-            if (args[0] != null) {
-                val reminder = reminderEntityAdapter.fromJson(args[0].toString())
-                if (reminder != null) {
-                    if (remindersRepo.getReminderByID(reminder.id) == null) {
-                        remindersRepo.onCreateReminder(application, reminder)
+            socketScope.launch {
+                if (args[0] != null) {
+                    val reminder = reminderEntityAdapter.fromJson(args[0].toString())
+                    if (reminder != null) {
+                        if (remindersRepo.getReminderByID(reminder.id) == null) {
+                            remindersRepo.onCreateReminder(application, reminder)
+                        }
                     }
                 }
             }
@@ -60,13 +69,15 @@ class SocketService : Service() {
 
     private fun onEditReminder() {
         socketDao.listen(getString(R.string.on_edit_reminder)) { args ->
-            if (args[0] != null) {
-                val reminder = reminderEntityAdapter.fromJson(args[0].toString())
-                if (reminder != null) {
-                    if (remindersRepo.getReminderByID(reminder.id) != null) {
-                        remindersRepo.onEditReminder(application, reminder)
-                    } else {
-                        remindersRepo.onCreateReminder(application, reminder)
+            socketScope.launch {
+                if (args[0] != null) {
+                    val reminder = reminderEntityAdapter.fromJson(args[0].toString())
+                    if (reminder != null) {
+                        if (remindersRepo.getReminderByID(reminder.id) != null) {
+                            remindersRepo.onEditReminder(application, reminder)
+                        } else {
+                            remindersRepo.onCreateReminder(application, reminder)
+                        }
                     }
                 }
             }
@@ -75,7 +86,8 @@ class SocketService : Service() {
 
     private fun onDeleteReminder() {
         socketDao.listen(getString(R.string.on_delete_reminder)) { args ->
-            if (args[0] != null) {
+            socketScope.launch {
+                if (args[0] != null) {
                 val reminder = reminderEntityAdapter.fromJson(args[0].toString())
                 if (reminder != null) {
                     if (remindersRepo.getReminderByID(reminder.id) != null) {
@@ -83,14 +95,17 @@ class SocketService : Service() {
                     }
                 }
             }
+            }
         }
     }
 
     private fun onChangeUsername() {
         socketDao.listen(getString(R.string.on_change_username)) { args ->
-            if (args[0] != null) {
-                loggedInUserRepo.setLoggedIn(loggedInUserRepo.getLoggedInUserId(application),
-                        args[0] as String)
+            socketScope.launch {
+                if (args[0] != null) {
+                    loggedInUserRepo.updateLoggedIn(loggedInUserRepo.getLoggedInUserId(application),
+                            args[0] as String)
+                }
             }
         }
     }

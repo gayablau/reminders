@@ -17,6 +17,6 @@ class ProfileViewModel(application: Application,
     }
 
     fun setLoggedIn(newUsername: String) {
-        loggedInUserRepo.setLoggedIn(userId, newUsername)
+        loggedInUserRepo.updateLoggedIn(userId, newUsername)
     }
 }

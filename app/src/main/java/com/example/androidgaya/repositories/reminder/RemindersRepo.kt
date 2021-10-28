@@ -42,8 +42,8 @@ class RemindersRepo(application: Application) : ReminderInterface {
         (application as AppDataGetter).getAppComponent()?.injectRemindersRepo(this)
     }
 
-    override fun deleteReminderFromDB(reminderEntity: ReminderEntity): Unit = runBlocking {
-        launch { remindersDao.deleteReminder(reminderEntity) }
+    override fun deleteReminderFromDB(reminderEntity: ReminderEntity) {
+          remindersDao.deleteReminder(reminderEntity)
     }
 
     override fun getRemindersFromDB(userId: String): LiveData<List<ReminderEntity>?> {
@@ -54,12 +54,12 @@ class RemindersRepo(application: Application) : ReminderInterface {
         return remindersDao.getRemindersByUserIdList(userId)
     }
 
-    override fun addReminderToDB(reminderEntity: ReminderEntity): Unit = runBlocking {
-        launch { remindersDao.addReminder(reminderEntity) }
+    override fun addReminderToDB(reminderEntity: ReminderEntity) {
+        remindersDao.addReminder(reminderEntity)
     }
 
-    override fun editReminderFromDB(reminderEntity: ReminderEntity): Unit = runBlocking {
-        launch { remindersDao.updateReminder(reminderEntity) }
+    override fun editReminderFromDB(reminderEntity: ReminderEntity) {
+         remindersDao.updateReminder(reminderEntity)
     }
 
     override fun getReminderByID(id: Int): ReminderEntity? {
@@ -70,10 +70,8 @@ class RemindersRepo(application: Application) : ReminderInterface {
         return remindersDao.getMyRemindersIds(userId)
     }
 
-    override fun deleteAllReminders(): Unit = runBlocking {
-        launch {
-            remindersDao.deleteAllReminders()
-        }
+    override fun deleteAllReminders() {
+        remindersDao.deleteAllReminders()
     }
 
     override fun getAllReminders(context: Context, userId: String) {

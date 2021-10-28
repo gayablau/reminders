@@ -40,18 +40,17 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         return loggedInUserDao.getLoggedInId() ?: EMPTY
     }
 
-
-    override fun setLoggedIn(id: String, username: String): Unit = runBlocking {
-        launch {
-            loggedInUserDao.deleteOldLogins()
-            loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
-        }
+    override fun setLoggedIn(id: String, username: String) {
+        loggedInUserDao.deleteOldLogins()
+        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
     }
 
-    override fun logoutFromDB(): Unit = runBlocking {
-        launch {
-            loggedInUserDao.deleteOldLogins()
-        }
+    override fun updateLoggedIn(id: String, username: String) {
+        loggedInUserDao.updateLoggedInUser(LoggedInUserEntity(id, username))
+    }
+
+    override fun logoutFromDB() {
+        loggedInUserDao.deleteOldLogins()
     }
 
     override fun logout(context: Context) {
@@ -72,12 +71,9 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         socketDao.listenOnce(context.getString(R.string.change_username_if_able), context.getString(R.string.change_username), callback, oldUsername, newUsername)
     }
 
-
     private val connectUser: (Array<Any>, List<Any>) -> Unit = { dataFromSocket: Array<Any>, dataFromClient: List<Any> ->
         if (dataFromSocket[0].toString().isNotBlank()) {
             setLoggedIn(dataFromSocket[0].toString(), dataFromClient[0].toString())
         }
     }
-
-
 }
