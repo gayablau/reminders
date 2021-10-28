@@ -86,7 +86,7 @@ class RemindersFragment : Fragment() {
     }
 
     fun logout() {
-        (activity as MainActivity?)!!.logout()
+        (activity as? MainActivity)?.logout()
     }
 
     fun profile() {
