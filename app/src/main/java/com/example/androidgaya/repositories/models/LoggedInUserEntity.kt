@@ -5,6 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "loggedIn")
-class LoggedInUserEntity(@PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") var id: String,
+data class LoggedInUserEntity(@PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") var id: String,
                          @ColumnInfo(name = "username") var username: String) {
 }

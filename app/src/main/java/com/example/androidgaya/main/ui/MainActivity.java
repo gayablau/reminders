@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         initViewModel();
         nav = new MainNavigator(R.id.fragment_container, this);
         changeToolbar(getString(R.string.toolbar_main, viewModel.getUsername()), false);
-        //new NotificationUtils().createAll(this, viewModel.getRemindersByUserIdList());
     }
 
     @Override
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
             }
         };
 
-        loggedInUserList = viewModel.loggedInUserList;
+        loggedInUserList = viewModel.getLoggedInUser();
         loggedInUserList.observe(this, loggedInObserver);
     }
 }

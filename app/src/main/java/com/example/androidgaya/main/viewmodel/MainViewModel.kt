@@ -16,15 +16,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
-    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
-    var username: String
-    var userId: String
-
-    init {
-        updateLoggedInUser()
-        username = loggedInUserRepo.getLoggedInUsername(getApplication())
-        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
-    }
+    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
+    var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     fun logout() {
         viewModelScope.launch {
@@ -33,19 +26,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getMyRemindersIds(): List<Int> {
-        return remindersRepo.getMyRemindersIds(userId)
-    }
-
-    fun getRemindersByUserIdList(): List<ReminderEntity> {
-        return remindersRepo.getRemindersByUsernameList(userId)
-    }
-
-    private fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
+    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
         return loggedInUserRepo.getLoggedInUserFromDB()
-    }
-
-    private fun updateLoggedInUser() {
-        loggedInUserList = getLoggedInUser()
     }
 }

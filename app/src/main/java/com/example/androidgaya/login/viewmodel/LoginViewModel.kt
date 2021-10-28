@@ -11,14 +11,9 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
-    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
-
-    init {
-        updateLoggedInUser()
-    }
 
     fun connectUser(username: String, password: String) {
         viewModelScope.launch {
@@ -26,11 +21,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
+    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
         return loggedInUserRepo.getLoggedInUserFromDB()
-    }
-
-    private fun updateLoggedInUser() {
-        loggedInUserList = getLoggedInUser()
     }
 }

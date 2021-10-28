@@ -134,7 +134,7 @@ class RemindersFragment : Fragment() {
             reminderAdapter.notifyDataSetChanged()
         }
 
-        remindersList = viewModel.remindersList
+        remindersList = viewModel.getRemindersByUserId()
         remindersList.observe(this, reminderObserver)
     }
 }

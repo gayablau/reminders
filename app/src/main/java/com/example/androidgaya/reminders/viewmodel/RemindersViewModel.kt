@@ -16,11 +16,9 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
-    lateinit var remindersList: LiveData<List<ReminderEntity>?>
 
     init {
         getAllReminders(userId)
-        getMyReminders()
     }
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
@@ -29,12 +27,8 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    private fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {
+    fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {
         return remindersRepo.getRemindersFromDB(userId)
-    }
-
-    private fun getMyReminders() {
-        remindersList = getRemindersByUserId()
     }
 
     private fun getAllReminders(userId: String) {
