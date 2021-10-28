@@ -8,7 +8,6 @@ import com.example.androidgaya.profile.ui.ProfileFragment
 import com.example.androidgaya.reminders.ui.RemindersFragment
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
-import com.example.androidgaya.repositories.user.UserRepo
 import dagger.Component
 import javax.inject.Singleton
 
@@ -20,7 +19,6 @@ interface AppComponent {
     fun injectProfile(profileFragment: ProfileFragment)
     fun injectDetails(detailsFragment: DetailsFragment)
     fun injectReminders(remindersFragment: RemindersFragment)
-    fun injectUserRepo(userRepo: UserRepo)
     fun injectRemindersRepo(remindersRepo: RemindersRepo)
     fun injectLoggedInUserRepo(loggedInUserRepo: LoggedInUserRepo)
     fun injectSocketService(socketService: SocketService)

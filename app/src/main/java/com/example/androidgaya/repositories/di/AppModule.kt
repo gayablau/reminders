@@ -9,9 +9,11 @@ import com.example.androidgaya.repositories.dao.UserDao
 import com.example.androidgaya.repositories.db.AppDatabase
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.models.UserEntity
+import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.types.ReminderJson
 import com.example.androidgaya.repositories.types.UserJson
+import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.util.Functions
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -38,12 +40,6 @@ class AppModule(val application: Application) {
     init {
         socketDao.setSocket()
         socketDao.establishConnection()
-    }
-
-    @Singleton
-    @Provides
-    fun getUserDao(appDatabase: AppDatabase): UserDao {
-        return appDatabase.getUsersDao()
     }
 
     @Singleton
@@ -121,5 +117,17 @@ class AppModule(val application: Application) {
     @Provides
     fun provideReminderEntityAdapter(): JsonAdapter<ReminderEntity> {
         return reminderEntityAdapter
+    }
+
+    @Singleton
+    @Provides
+    fun getLoggedInUserRepo(): LoggedInUserRepo {
+        return LoggedInUserRepo(application)
+    }
+
+    @Singleton
+    @Provides
+    fun getRemindersRepo(): RemindersRepo {
+        return RemindersRepo(application)
     }
 }

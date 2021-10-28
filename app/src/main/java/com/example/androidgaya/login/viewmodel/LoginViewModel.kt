@@ -7,12 +7,10 @@ import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.UserEntity
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
-import com.example.androidgaya.repositories.user.UserRepo
 
 class LoginViewModel(application: Application,
                      private val socketDao: SocketDao) : AndroidViewModel(application) {
 
-    private var userRepo: UserRepo = UserRepo(application)
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
