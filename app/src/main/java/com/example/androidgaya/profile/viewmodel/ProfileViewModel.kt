@@ -7,8 +7,7 @@ import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(application: Application,
-                       private val socketDao: SocketDao) : AndroidViewModel(application) {
+class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())

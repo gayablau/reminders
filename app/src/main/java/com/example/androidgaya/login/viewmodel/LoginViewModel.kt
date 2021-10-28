@@ -9,8 +9,7 @@ import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
 
-class LoginViewModel(application: Application,
-                     private val socketDao: SocketDao) : AndroidViewModel(application) {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)

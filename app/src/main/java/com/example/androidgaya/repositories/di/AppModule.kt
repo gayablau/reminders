@@ -76,7 +76,7 @@ class AppModule(val application: Application) {
 
     @Provides
     fun provideFactory(): ViewModelFactory {
-        return ViewModelFactory(application, provideSocket())
+        return ViewModelFactory(application)
     }
 
     @Singleton

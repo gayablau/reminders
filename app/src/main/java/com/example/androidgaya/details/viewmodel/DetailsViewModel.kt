@@ -9,8 +9,7 @@ import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
 
-class DetailsViewModel(application: Application,
-                       private val socketDao: SocketDao) : AndroidViewModel(application) {
+class DetailsViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
