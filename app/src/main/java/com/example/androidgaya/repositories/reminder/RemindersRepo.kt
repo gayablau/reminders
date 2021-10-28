@@ -2,10 +2,9 @@ package com.example.androidgaya.repositories.reminder
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.androidgaya.R
-import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.interfaces.ReminderInterface
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.models.ReminderEntity
@@ -16,7 +15,6 @@ import com.example.androidgaya.util.NotificationUtils
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import javax.inject.Inject
 
@@ -43,7 +41,7 @@ class RemindersRepo(application: Application) : ReminderInterface {
     lateinit var dbCoroutineScope : CoroutineScope
 
     init {
-        (application as AppDataGetter).getAppComponent()?.injectRemindersRepo(this)
+        (application as ReminderApplication).getAppComponent()?.injectRemindersRepo(this)
     }
 
     override fun deleteReminderFromDB(reminderEntity: ReminderEntity) {

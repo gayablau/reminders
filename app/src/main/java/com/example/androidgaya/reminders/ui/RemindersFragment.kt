@@ -17,10 +17,9 @@ import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.reminders.recyclerview.ReminderAdapter
 import com.example.androidgaya.reminders.recyclerview.SwipeToDeleteCallback
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
-import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.util.MainNavigator
-import com.example.androidgaya.util.NotificationUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 import javax.inject.Inject
@@ -39,7 +38,7 @@ class RemindersFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (requireActivity().applicationContext as AppDataGetter).getAppComponent()!!.
+        (requireActivity().applicationContext as ReminderApplication).getAppComponent()!!.
         injectReminders(this)
     }
 
@@ -75,17 +74,14 @@ class RemindersFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_profile) {
-            profile()
-            return true
-        } else if (item.itemId == R.id.action_logout) {
-            logout()
-            return true
+        when (item.itemId) {
+            R.id.action_profile -> profile()
+            R.id.action_logout -> logout()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun logout() {
+    private fun logout() {
         (activity as? MainActivity)?.logout()
     }
 
@@ -93,11 +89,11 @@ class RemindersFragment : Fragment() {
         nav?.toProfileFragment()
     }
 
-    fun onBackPressed() {
+    private fun onBackPressed() {
         requireActivity().finishAffinity()
     }
 
-    fun init(view: View) {
+    private fun init(view: View) {
         recyclerViewReminders = view.findViewById(R.id.recycler_view_reminders)
         addFab = view.findViewById(R.id.add_fab)
         recyclerViewReminders.setHasFixedSize(true)
@@ -113,7 +109,7 @@ class RemindersFragment : Fragment() {
         nav?.toDetailsFragment()
     }
 
-    fun setAdapter() {
+    private fun setAdapter() {
         reminderAdapter = ReminderAdapter(remindersList, { reminder: ReminderEntity ->
             nav?.toDetailsFragment(reminder.id)
         }) { reminder: ReminderEntity? ->

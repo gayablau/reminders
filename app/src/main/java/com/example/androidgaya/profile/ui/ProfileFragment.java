@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
-import com.example.androidgaya.repositories.di.AppDataGetter;
+import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
@@ -43,7 +45,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectProfile(this);
+        ((ReminderApplication) getActivity().getApplicationContext()).getAppComponent().injectProfile(this);
     }
 
     @Override
@@ -90,7 +92,10 @@ public class ProfileFragment extends Fragment {
                 viewModel.updateLoggedIn(dataFromClient.get(1).toString());
                 nav.toRemindersFragment();
             } else {
-                Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();
+                new Handler(Looper.getMainLooper()).post(() ->
+                        Toast.makeText(getActivity(),
+                                getString(R.string.user_exists),
+                                Toast.LENGTH_LONG).show());
             }
             return null;
         });

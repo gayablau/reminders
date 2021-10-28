@@ -1,4 +1,4 @@
-package com.example.androidgaya.repositories.di
+package com.example.androidgaya.application
 
 import android.app.Application
 import android.content.Context

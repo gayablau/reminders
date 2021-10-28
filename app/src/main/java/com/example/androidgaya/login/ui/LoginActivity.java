@@ -19,7 +19,7 @@ import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.socket.SocketService;
-import com.example.androidgaya.repositories.di.AppDataGetter;
+import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.LoginNavigator;
 
@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        ((AppDataGetter) getApplicationContext()).getAppComponent().injectLogin(this);
+        ((ReminderApplication) getApplicationContext()).getAppComponent().injectLogin(this);
         super.onCreate(savedInstanceState);
         init();
         if (savedInstanceState != null) {

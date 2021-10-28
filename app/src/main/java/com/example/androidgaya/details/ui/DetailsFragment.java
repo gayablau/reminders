@@ -24,12 +24,11 @@ import android.widget.Toast;
 
 import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
-import com.example.androidgaya.repositories.di.AppDataGetter;
+import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.ReminderEntity;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
-import com.example.androidgaya.util.NotificationUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -89,7 +88,7 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectDetails(this);
+        ((ReminderApplication) getActivity().getApplicationContext()).getAppComponent().injectDetails(this);
     }
 
     @Override
@@ -208,7 +207,7 @@ public class DetailsFragment extends Fragment {
     public ReminderEntity createReminderFromInput() {
         setUpdatedDetails();
         if (isNewFlag) {
-            reminderId = new Random(System.currentTimeMillis()).nextInt(10000);
+            reminderId = new Random(System.currentTimeMillis()).nextInt(100000);
         }
         reminderEntity = new ReminderEntity(reminderId,
                 chosenReminderHeader,

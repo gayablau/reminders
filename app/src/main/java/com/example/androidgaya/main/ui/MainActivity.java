@@ -18,10 +18,9 @@ import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.main.viewmodel.MainViewModel;
 import com.example.androidgaya.reminders.ui.RemindersFragment;
-import com.example.androidgaya.repositories.di.AppDataGetter;
+import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.MainNavigator;
-import com.example.androidgaya.util.NotificationUtils;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ((AppDataGetter) getApplicationContext()).getAppComponent().injectMain(this);
+        ((ReminderApplication) getApplicationContext()).getAppComponent().injectMain(this);
         super.onCreate(savedInstanceState);
         init();
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
