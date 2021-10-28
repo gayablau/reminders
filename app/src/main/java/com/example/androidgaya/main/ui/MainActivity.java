@@ -93,10 +93,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
             else {
                 nav.toLoginActivity();
             }
-            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (currentFragment instanceof RemindersFragment) {
-                changeToolbar(getString(R.string.toolbar_main, viewModel.getUsername()), false);
-            }
         };
 
         loggedInUserList = viewModel.getLoggedInUser();

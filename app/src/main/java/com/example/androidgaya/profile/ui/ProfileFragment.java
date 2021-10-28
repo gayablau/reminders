@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
@@ -23,9 +25,12 @@ import android.widget.Toast;
 import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.application.ReminderApplication;
+import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,6 +40,7 @@ public class ProfileFragment extends Fragment {
     private static String username;
     MainNavigator nav;
     ProfileViewModel viewModel;
+    LiveData<List<LoggedInUserEntity>> loggedInUserList;
 
     @Inject
     ViewModelFactory factory;
@@ -89,7 +95,7 @@ public class ProfileFragment extends Fragment {
     public void save() {
         viewModel.editUsername(getNewUsername(), (dataFromSocket, dataFromClient) -> {
             if ((Boolean)dataFromSocket[0]) {
-                viewModel.updateLoggedIn(dataFromClient.get(1).toString());
+                viewModel.updateLoggedIn(dataFromClient.get(0).toString());
                 nav.toRemindersFragment();
             } else {
                 new Handler(Looper.getMainLooper()).post(() ->
@@ -106,7 +112,15 @@ public class ProfileFragment extends Fragment {
         nav = ((MainActivityInterface) getActivity()).getNavigator();
         ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.profile), true);
         viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
-        username = viewModel.getUsername();
-        usernameET.setText(username);
+
+        Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
+            if (!loggedInUserEntities.isEmpty()) {
+                username = loggedInUserEntities.get(0).getUsername();
+                usernameET.setText(username);
+            }
+        };
+        loggedInUserList = viewModel.getLoggedInUser();
+        loggedInUserList.observe(getViewLifecycleOwner(), loggedInObserver);
+
     }
 }

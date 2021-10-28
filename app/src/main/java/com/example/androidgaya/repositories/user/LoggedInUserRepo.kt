@@ -66,8 +66,8 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         socketDao.listenOnce(context.getString(R.string.connect_user), context.getString(R.string.user_id), connectUser, username, password)
     }
 
-    override fun changeUsername(context: Context, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit, oldUsername: String, newUsername: String) {
-        socketDao.listenOnce(context.getString(R.string.change_username_if_able), context.getString(R.string.change_username), callback, oldUsername, newUsername)
+    override fun changeUsername(context: Context, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit, newUsername: String) {
+        socketDao.listenOnce(context.getString(R.string.change_username_if_able), context.getString(R.string.change_username), callback, newUsername)
     }
 
     private val connectUser: (Array<Any>, List<Any>) -> Unit = { dataFromSocket: Array<Any>, dataFromClient: List<Any> ->

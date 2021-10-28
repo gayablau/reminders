@@ -104,9 +104,9 @@ public class LoginActivity extends AppCompatActivity {
                 goToMainActivity();
             }
         };
-
         loggedInUserList = viewModel.getLoggedInUser();
         loggedInUserList.observe(this, loggedInObserver);
+
         getSupportActionBar().hide();
         usernameEditText = findViewById(R.id.username_et);
         passwordEditText = findViewById(R.id.password_et);

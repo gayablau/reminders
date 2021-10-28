@@ -11,13 +11,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidgaya.R
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.factory.ViewModelFactory
 import com.example.androidgaya.main.interfaces.MainActivityInterface
 import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.reminders.recyclerview.ReminderAdapter
 import com.example.androidgaya.reminders.recyclerview.SwipeToDeleteCallback
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
-import com.example.androidgaya.application.ReminderApplication
+import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.util.MainNavigator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -29,6 +30,7 @@ class RemindersFragment : Fragment() {
     lateinit var addFab: FloatingActionButton
     lateinit var recyclerViewReminders: RecyclerView
     lateinit var remindersList: LiveData<List<ReminderEntity>?>
+    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
     var nav: MainNavigator? = null
     lateinit var viewModel: RemindersViewModel
     lateinit var reminderAdapter: ReminderAdapter
@@ -98,11 +100,17 @@ class RemindersFragment : Fragment() {
         addFab = view.findViewById(R.id.add_fab)
         recyclerViewReminders.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@RemindersFragment.context)
-        recyclerViewReminders.setLayoutManager(layoutManager)
+        recyclerViewReminders.layoutManager = layoutManager
         nav = (activity as? MainActivityInterface)?.navigator
-        (activity as? MainActivityInterface)?.changeToolbar(getString(R.string.toolbar_main,
-                viewModel.username),
-                false)
+
+        val loggedInObserver = Observer { loggedInUserEntities: List<LoggedInUserEntity> ->
+            (activity as? MainActivityInterface)?.changeToolbar(getString(R.string.toolbar_main,
+                    loggedInUserEntities[0].username),
+                    false)
+        }
+
+        loggedInUserList = viewModel.getLoggedInUser()
+        loggedInUserList.observe(viewLifecycleOwner, loggedInObserver)
     }
 
     fun add() {
