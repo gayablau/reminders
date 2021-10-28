@@ -87,7 +87,7 @@ public class ProfileFragment extends Fragment {
     public void save() {
         viewModel.editUsername(getNewUsername(), (dataFromSocket, dataFromClient) -> {
             if ((Boolean)dataFromSocket[0]) {
-                viewModel.setLoggedIn(dataFromClient.get(1).toString());
+                viewModel.updateLoggedIn(dataFromClient.get(1).toString());
                 nav.toRemindersFragment();
             } else {
                 Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();

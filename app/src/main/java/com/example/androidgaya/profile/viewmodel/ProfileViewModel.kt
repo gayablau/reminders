@@ -2,8 +2,10 @@ package com.example.androidgaya.profile.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import kotlinx.coroutines.launch
 
 class ProfileViewModel(application: Application,
                        private val socketDao: SocketDao) : AndroidViewModel(application) {
@@ -13,10 +15,14 @@ class ProfileViewModel(application: Application,
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     fun editUsername(newUsername: String, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit) {
-        loggedInUserRepo.changeUsername(getApplication(), callback, username, newUsername)
+        viewModelScope.launch {
+            loggedInUserRepo.changeUsername(getApplication(), callback, username, newUsername)
+        }
     }
 
-    fun setLoggedIn(newUsername: String) {
-        loggedInUserRepo.updateLoggedIn(userId, newUsername)
+    fun updateLoggedIn(newUsername: String) {
+        viewModelScope.launch {
+            loggedInUserRepo.updateLoggedIn(userId, newUsername)
+        }
     }
 }

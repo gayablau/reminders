@@ -19,6 +19,9 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.lang.reflect.ParameterizedType
 import javax.inject.Singleton
 
@@ -128,5 +131,12 @@ class AppModule(val application: Application) {
     @Provides
     fun getRemindersRepo(): RemindersRepo {
         return RemindersRepo(application)
+    }
+
+    @Singleton
+    @Provides
+    fun getDBCoroutineScope(): CoroutineScope {
+        val dbCoroutineJob = SupervisorJob()
+        return CoroutineScope(Dispatchers.IO + dbCoroutineJob)
     }
 }

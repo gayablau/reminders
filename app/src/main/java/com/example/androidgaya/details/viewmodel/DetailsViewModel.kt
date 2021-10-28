@@ -2,10 +2,12 @@ package com.example.androidgaya.details.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import kotlinx.coroutines.launch
 
 class DetailsViewModel(application: Application,
                        private val socketDao: SocketDao) : AndroidViewModel(application) {
@@ -15,11 +17,15 @@ class DetailsViewModel(application: Application,
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     fun addReminder(reminderEntity: ReminderEntity) {
-        remindersRepo.createReminder(getApplication(), reminderEntity)
+        viewModelScope.launch {
+            remindersRepo.createReminder(getApplication(), reminderEntity)
+        }
     }
 
     fun editReminder(reminderEntity: ReminderEntity) {
-        remindersRepo.editReminder(getApplication(), reminderEntity)
+        viewModelScope.launch {
+            remindersRepo.editReminder(getApplication(), reminderEntity)
+        }
     }
 
     fun getReminderByID(id: Int): ReminderEntity? {

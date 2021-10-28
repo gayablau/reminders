@@ -3,9 +3,11 @@ package com.example.androidgaya.login.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application,
                      private val socketDao: SocketDao) : AndroidViewModel(application) {
@@ -20,7 +22,9 @@ class LoginViewModel(application: Application,
     }
 
     fun connectUser(username: String, password: String) {
-        loggedInUserRepo.login(getApplication(), username, password)
+        viewModelScope.launch {
+            loggedInUserRepo.login(getApplication(), username, password)
+        }
     }
 
     private fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {

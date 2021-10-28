@@ -14,6 +14,7 @@ import com.example.androidgaya.repositories.types.ReminderJson
 import com.example.androidgaya.util.Functions
 import com.example.androidgaya.util.NotificationUtils
 import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
@@ -37,6 +38,9 @@ class RemindersRepo(application: Application) : ReminderInterface {
 
     @Inject
     lateinit var functions: Functions
+
+    @Inject
+    lateinit var dbCoroutineScope : CoroutineScope
 
     init {
         (application as AppDataGetter).getAppComponent()?.injectRemindersRepo(this)
@@ -78,12 +82,12 @@ class RemindersRepo(application: Application) : ReminderInterface {
         socketDao.listenOnce(context.getString(R.string.get_all_reminders), context.getString(R.string.on_get_all_reminders), addUserReminders, userId, context)
     }
 
-    override fun createReminder(context: Context, reminderEntity: ReminderEntity) {
+    override suspend fun createReminder(context: Context, reminderEntity: ReminderEntity) {
         socketDao.emit(context.getString(R.string.create_reminder), reminderEntityAdapter.toJson(reminderEntity))
         onCreateReminder(context, reminderEntity)
     }
 
-    override fun onCreateReminder(context: Context, reminderEntity: ReminderEntity) {
+    override suspend fun onCreateReminder(context: Context, reminderEntity: ReminderEntity) {
         addReminderToDB(reminderEntity)
         NotificationUtils().setNotification(reminderEntity.time,
                 context,
@@ -92,12 +96,21 @@ class RemindersRepo(application: Application) : ReminderInterface {
                 reminderEntity.id)
     }
 
-    override fun editReminder(context: Context, reminderEntity: ReminderEntity) {
+    override suspend fun onCreateReminders(context: Context, reminderEntity: ReminderEntity) {
+        addReminderToDB(reminderEntity)
+        NotificationUtils().setExistNotification(reminderEntity.time,
+                context,
+                reminderEntity.header,
+                reminderEntity.description,
+                reminderEntity.id)
+    }
+
+    override suspend fun editReminder(context: Context, reminderEntity: ReminderEntity) {
         socketDao.emit(context.getString(R.string.edit_reminder), reminderEntityAdapter.toJson(reminderEntity))
         onEditReminder(context, reminderEntity)
     }
 
-    override fun onEditReminder(context: Context, reminderEntity: ReminderEntity) {
+    override suspend fun onEditReminder(context: Context, reminderEntity: ReminderEntity) {
         editReminderFromDB(reminderEntity)
         NotificationUtils().setExistNotification(reminderEntity.time,
                 context,
@@ -106,12 +119,12 @@ class RemindersRepo(application: Application) : ReminderInterface {
                 reminderEntity.id)
     }
 
-    override fun deleteReminder(context: Context, reminderEntity: ReminderEntity) {
+    override suspend fun deleteReminder(context: Context, reminderEntity: ReminderEntity) {
         socketDao.emit(context.getString(R.string.delete_reminder), reminderEntityAdapter.toJson(reminderEntity))
         onDeleteReminder(context, reminderEntity)
     }
 
-    override fun onDeleteReminder(context: Context, reminderEntity: ReminderEntity) {
+    override suspend fun onDeleteReminder(context: Context, reminderEntity: ReminderEntity) {
         deleteReminderFromDB(reminderEntity)
         socketDao.emit(context.getString(R.string.delete_reminder), reminderEntityAdapter.toJson(reminderEntity))
         NotificationUtils().deleteNotification(context,
@@ -123,20 +136,17 @@ class RemindersRepo(application: Application) : ReminderInterface {
     }
 
     private val addUserReminders: (Array<Any>, List<Any>) -> Unit = { dataFromSocket: Array<Any>, dataFromClient: List<Any> ->
-        if (dataFromSocket[0].toString() != (dataFromClient[1] as Context).getString(R.string.empty_json)) {
-            deleteAllReminders()
-            val reminders = dataFromSocket[0] as JSONArray
-            val remindersList = jsonRemindersAdapter.fromJson(reminders.toString())
-            if (remindersList != null) {
-                for (rem in remindersList) {
-                    if (getReminderByID(rem.id) == null) {
-                        val remToAdd = functions.jsonToRemEntity(rem)
-                        addReminderToDB(remToAdd)
-                        NotificationUtils().setExistNotification(remToAdd.time,
-                                application.applicationContext,
-                                remToAdd.header,
-                                remToAdd.description,
-                                remToAdd.id)
+        dbCoroutineScope.launch {
+            if (dataFromSocket[0].toString() != (dataFromClient[1] as Context).getString(R.string.empty_json)) {
+                deleteAllReminders()
+                val reminders = dataFromSocket[0] as JSONArray
+                val remindersList = jsonRemindersAdapter.fromJson(reminders.toString())
+                if (remindersList != null) {
+                    for (rem in remindersList) {
+                        if (getReminderByID(rem.id) == null) {
+                            val remToAdd = functions.jsonToRemEntity(rem)
+                            onCreateReminders(application, remToAdd)
+                        }
                     }
                 }
             }

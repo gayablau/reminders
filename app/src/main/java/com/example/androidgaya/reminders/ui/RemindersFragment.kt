@@ -118,7 +118,6 @@ class RemindersFragment : Fragment() {
             nav?.toDetailsFragment(reminder.id)
         }) { reminder: ReminderEntity? ->
             viewModel.deleteReminder(reminder!!)
-            activity?.let { NotificationUtils().deleteNotification(it, reminder.id) }
         }
         recyclerViewReminders.adapter = reminderAdapter
         recyclerViewReminders.layoutManager = LinearLayoutManager(this@RemindersFragment.context)

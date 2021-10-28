@@ -11,6 +11,7 @@ import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.socket.SocketDao
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -26,6 +27,9 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
 
     @Inject
     lateinit var socketDao: SocketDao
+
+    @Inject
+    lateinit var dbCoroutineScope : CoroutineScope
 
 
     init {
@@ -45,7 +49,7 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
         loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
     }
 
-    override fun updateLoggedIn(id: String, username: String) {
+    override suspend fun updateLoggedIn(id: String, username: String) {
         loggedInUserDao.updateLoggedInUser(LoggedInUserEntity(id, username))
     }
 
