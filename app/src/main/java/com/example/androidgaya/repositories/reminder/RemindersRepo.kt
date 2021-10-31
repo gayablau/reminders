@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 import javax.inject.Inject
 
-class RemindersRepo(application: Application) {
+class RemindersRepo(application: Application) : ReminderInterface {
     @Inject
     lateinit var remindersDao: RemindersDao
 
@@ -44,35 +44,35 @@ class RemindersRepo(application: Application) {
         (application as ReminderApplication).getAppComponent()?.injectRemindersRepo(this)
     }
 
-    fun getRemindersFromDB(userId: String): LiveData<List<ReminderEntity>?> {
+    override fun getRemindersFromDB(userId: String): LiveData<List<ReminderEntity>?> {
         return remindersDao.getRemindersByUserId(userId)
     }
 
-    fun getReminderByID(id: Int): ReminderEntity? {
+    override fun getReminderByID(id: Int): ReminderEntity? {
         return remindersDao.getReminderByID(id)
     }
 
-    fun getMyRemindersIds(userId: String): List<Int> {
+    override fun getMyRemindersIds(userId: String): List<Int> {
         return remindersDao.getMyRemindersIds(userId)
     }
 
-    fun deleteAllReminders() {
+    override fun deleteAllReminders() {
         remindersDao.deleteAllReminders()
     }
 
-    fun getAllReminders(context: Context, userId: String) {
+    override fun getAllReminders(context: Context, userId: String) {
         socketDao.listenOnce(context.getString(R.string.get_all_reminders), context.getString(R.string.on_get_all_reminders), addUserReminders, userId, context)
     }
 
-    fun createReminder(context: Context, reminderEntity: ReminderEntity) {
+    override fun createReminder(context: Context, reminderEntity: ReminderEntity) {
         socketDao.emit(context.getString(R.string.create_reminder), reminderEntityAdapter.toJson(reminderEntity))
     }
 
-    fun editReminder(context: Context, reminderEntity: ReminderEntity) {
+    override fun editReminder(context: Context, reminderEntity: ReminderEntity) {
         socketDao.emit(context.getString(R.string.edit_reminder), reminderEntityAdapter.toJson(reminderEntity))
     }
 
-    fun deleteReminder(context: Context, reminderEntity: ReminderEntity) {
+    override fun deleteReminder(context: Context, reminderEntity: ReminderEntity) {
         socketDao.emit(context.getString(R.string.delete_reminder), reminderEntityAdapter.toJson(reminderEntity))
     }
 

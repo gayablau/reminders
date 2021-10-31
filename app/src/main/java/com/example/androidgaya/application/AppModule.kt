@@ -91,31 +91,37 @@ class AppModule(val application: Application) {
         return moshi
     }
 
+    @Singleton
     @Provides
     fun provideJsonRemindersAdapter(): JsonAdapter<List<ReminderJson>> {
         return jsonRemindersAdapter
     }
 
+    @Singleton
     @Provides
     fun provideJsonUsersAdapter(): JsonAdapter<List<UserJson>> {
         return jsonUsersAdapter
     }
 
+    @Singleton
     @Provides
     fun provideJsonUserAdapter(): JsonAdapter<UserJson> {
         return jsonUserAdapter
     }
 
+    @Singleton
     @Provides
     fun provideJsonReminderAdapter(): JsonAdapter<ReminderJson> {
         return jsonReminderAdapter
     }
 
+    @Singleton
     @Provides
     fun provideUserEntityAdapter(): JsonAdapter<LoggedInUserEntity> {
         return userEntityAdapter
     }
 
+    @Singleton
     @Provides
     fun provideReminderEntityAdapter(): JsonAdapter<ReminderEntity> {
         return reminderEntityAdapter

@@ -183,21 +183,16 @@ public class DetailsFragment extends Fragment {
 
     public void updateCurrentTime() {
         currentTime = Calendar.getInstance();
-       // currentTime.add(Calendar.MONTH, 1);
     }
 
     public void updateChosenTimeToCurrent() {
         chosenTime = Calendar.getInstance();
-        //chosenTime.add(Calendar.MONTH, 1);
     }
 
     public String getDateString(Calendar calendar) {
         Date date = calendar.getTime();
         Calendar updatedCal = Calendar.getInstance();
         updatedCal.setTime(date);
-        //updatedCal.add(Calendar.MONTH, -1);
-        //Todo - fix
-        //updatedCal.add(Calendar.DATE, 1);
         date = updatedCal.getTime();
         return fullFormat.format(date);
     }
@@ -223,15 +218,6 @@ public class DetailsFragment extends Fragment {
     public void setUpdatedDetails() {
         chosenReminderHeader = reminderHeaderET.getText().toString();
         chosenReminderDescription = reminderDescriptionET.getText().toString();
-/*        if (chosenTime.get(Calendar.DATE) == 31) {
-            //chosenTime.set(Calendar.YEAR, Calendar.MONTH, Calendar.DATE + 1);
-            chosenTime.add(Calendar.MONTH, 1);
-            chosenTime.add(Calendar.DATE, 1);
-        }
-        else {
-            chosenTime.add(Calendar.MONTH, 1);
-        }*/
-        //chosenTime.add(Calendar.MONTH, 1);
     }
 
     @SuppressLint("RestrictedApi")

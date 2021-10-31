@@ -9,9 +9,7 @@ import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketDao
-import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.util.NotificationUtils
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 class SocketService : Service() {
     @Inject
@@ -92,14 +89,14 @@ class SocketService : Service() {
         socketDao.listen(getString(R.string.on_delete_reminder)) { args ->
             socketScope.launch {
                 if (args[0] != null) {
-                val reminder = reminderEntityAdapter.fromJson(args[0].toString())
-                if (reminder != null) {
-                    if (remindersDao.getReminderByID(reminder.id) != null) {
-                        remindersDao.deleteReminder(reminder)
-                        NotificationUtils().deleteNotification(application, reminder)
+                    val reminder = reminderEntityAdapter.fromJson(args[0].toString())
+                    if (reminder != null) {
+                        if (remindersDao.getReminderByID(reminder.id) != null) {
+                            remindersDao.deleteReminder(reminder)
+                            NotificationUtils().deleteNotification(application, reminder)
+                        }
                     }
                 }
-            }
             }
         }
     }

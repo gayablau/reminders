@@ -13,5 +13,5 @@ interface LoggedInUserInterface {
     fun logout(context: Context)
     fun login(context: Context, username: String, password: String)
     suspend fun updateLoggedIn(id: String, username: String)
-    fun changeUsername(context: Context, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit, newUsername: String)
+    fun changeUsername(context: Context, callback: (callbackData: Array<Any>, userDetails: List<Any>) -> Unit, newUsername: String)
 }

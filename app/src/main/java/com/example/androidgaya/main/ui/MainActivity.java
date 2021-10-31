@@ -7,7 +7,6 @@ import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,7 +16,6 @@ import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.main.socket.SocketService;
 import com.example.androidgaya.main.viewmodel.MainViewModel;
-import com.example.androidgaya.reminders.ui.RemindersFragment;
 import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.MainNavigator;
@@ -89,8 +87,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
             if (!loggedInUserEntities.isEmpty()) {
                 viewModel.setUsername(loggedInUserEntities.get(0).getUsername());
-            }
-            else {
+            } else {
                 nav.toLoginActivity();
             }
         };

@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
 
@@ -15,7 +14,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
-    fun editUsername(newUsername: String, callback: (callbackData : Array<Any>, userDetails: List<Any>) -> Unit) {
+    fun editUsername(newUsername: String, callback: (callbackData: Array<Any>, userDetails: List<Any>) -> Unit) {
         viewModelScope.launch {
             loggedInUserRepo.changeUsername(getApplication(), callback, newUsername)
         }

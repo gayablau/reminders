@@ -94,7 +94,7 @@ public class ProfileFragment extends Fragment {
     @SuppressLint("RestrictedApi")
     public void save() {
         viewModel.editUsername(getNewUsername(), (dataFromSocket, dataFromClient) -> {
-            if ((Boolean)dataFromSocket[0]) {
+            if ((Boolean) dataFromSocket[0]) {
                 viewModel.updateLoggedIn(dataFromClient.get(0).toString());
                 nav.toRemindersFragment();
             } else {

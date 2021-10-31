@@ -9,7 +9,6 @@ import com.example.androidgaya.login.viewmodel.LoginViewModel
 import com.example.androidgaya.main.viewmodel.MainViewModel
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
-import com.example.androidgaya.repositories.socket.SocketDao
 
 class ViewModelFactory(val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

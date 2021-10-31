@@ -76,8 +76,8 @@ class NotificationUtils {
 
             mNotification = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.clock_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.clock_notify2))
+                    .setSmallIcon(R.drawable.ic_clock_notify)
+                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.ic_clock_notify))
                     .setAutoCancel(true)
                     .setContentTitle(header)
                     .setContentText(description).build()
@@ -85,7 +85,8 @@ class NotificationUtils {
             val notificationManager: NotificationManager =
                     context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(id, mNotification)
-    }}
+        }
+    }
 
     fun setExistNotification(context: Context,
                              reminderEntity: ReminderEntity) {
@@ -103,7 +104,6 @@ class NotificationUtils {
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = reminderEntity.time
-            //calendar.add(Calendar.MONTH, -1)
 
             val currentTime = Calendar.getInstance()
             if (currentTime.timeInMillis <= calendar.timeInMillis) {

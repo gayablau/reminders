@@ -40,8 +40,7 @@ class RemindersFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (requireActivity().applicationContext as ReminderApplication).getAppComponent()!!.
-        injectReminders(this)
+        (requireActivity().applicationContext as ReminderApplication).getAppComponent()!!.injectReminders(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
