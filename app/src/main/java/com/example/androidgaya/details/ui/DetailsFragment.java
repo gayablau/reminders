@@ -132,7 +132,7 @@ public class DetailsFragment extends Fragment {
             datePickerDialog =
                     new DatePickerDialog(DetailsFragment.this.getContext(), (datePicker, year, month, dayOfMonth) ->
                             setNewDate(year, month, dayOfMonth), chosenTime.get(Calendar.YEAR),
-                            chosenTime.get(Calendar.MONTH) - 1, chosenTime.get(Calendar.DATE));
+                            chosenTime.get(Calendar.MONTH), chosenTime.get(Calendar.DATE));
             setMinDate();
             datePickerDialog.show();
         });
@@ -183,19 +183,21 @@ public class DetailsFragment extends Fragment {
 
     public void updateCurrentTime() {
         currentTime = Calendar.getInstance();
-        currentTime.add(Calendar.MONTH, 1);
+       // currentTime.add(Calendar.MONTH, 1);
     }
 
     public void updateChosenTimeToCurrent() {
         chosenTime = Calendar.getInstance();
-        chosenTime.add(Calendar.MONTH, 1);
+        //chosenTime.add(Calendar.MONTH, 1);
     }
 
     public String getDateString(Calendar calendar) {
         Date date = calendar.getTime();
         Calendar updatedCal = Calendar.getInstance();
         updatedCal.setTime(date);
-        updatedCal.add(Calendar.MONTH, -1);
+        //updatedCal.add(Calendar.MONTH, -1);
+        //Todo - fix
+        //updatedCal.add(Calendar.DATE, 1);
         date = updatedCal.getTime();
         return fullFormat.format(date);
     }
@@ -221,6 +223,15 @@ public class DetailsFragment extends Fragment {
     public void setUpdatedDetails() {
         chosenReminderHeader = reminderHeaderET.getText().toString();
         chosenReminderDescription = reminderDescriptionET.getText().toString();
+/*        if (chosenTime.get(Calendar.DATE) == 31) {
+            //chosenTime.set(Calendar.YEAR, Calendar.MONTH, Calendar.DATE + 1);
+            chosenTime.add(Calendar.MONTH, 1);
+            chosenTime.add(Calendar.DATE, 1);
+        }
+        else {
+            chosenTime.add(Calendar.MONTH, 1);
+        }*/
+        //chosenTime.add(Calendar.MONTH, 1);
     }
 
     @SuppressLint("RestrictedApi")
@@ -230,9 +241,6 @@ public class DetailsFragment extends Fragment {
                 resetSeconds();
                 if (isNewFlag) {
                     viewModel.addReminder(createReminderFromInput());
-                    if (!isNotified) {
-                        isNotified = true;
-                    }
                     makeToast(getString(R.string.add_msg));
                 } else {
                     viewModel.editReminder(createReminderFromInput());

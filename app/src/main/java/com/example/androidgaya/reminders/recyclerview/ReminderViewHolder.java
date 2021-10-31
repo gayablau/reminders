@@ -56,7 +56,9 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
         Date date = calendar.getTime();
         Calendar updatedCal = Calendar.getInstance();
         updatedCal.setTime(date);
-        updatedCal.add(Calendar.MONTH, -1);
+        //updatedCal.add(Calendar.MONTH, -1);
+        //Todo - fix
+        //updatedCal.add(Calendar.DATE, 1);
         date = updatedCal.getTime();
         time_tv.setText(timeFormat.format(date));
         date_tv.setText(fullFormat.format(date));

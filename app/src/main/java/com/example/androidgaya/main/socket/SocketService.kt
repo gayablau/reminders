@@ -5,10 +5,14 @@ import android.content.Intent
 import android.os.*
 import com.example.androidgaya.R
 import com.example.androidgaya.application.ReminderApplication
+import com.example.androidgaya.repositories.dao.LoggedInUserDao
+import com.example.androidgaya.repositories.dao.RemindersDao
+import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import com.example.androidgaya.util.NotificationUtils
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,10 +23,10 @@ import javax.inject.Inject
 
 class SocketService : Service() {
     @Inject
-    lateinit var remindersRepo: RemindersRepo
+    lateinit var remindersDao: RemindersDao
 
     @Inject
-    lateinit var loggedInUserRepo: LoggedInUserRepo
+    lateinit var loggedInUserDao: LoggedInUserDao
 
     @Inject
     lateinit var socketDao: SocketDao
@@ -55,8 +59,9 @@ class SocketService : Service() {
                 if (args[0] != null) {
                     val reminder = reminderEntityAdapter.fromJson(args[0].toString())
                     if (reminder != null) {
-                        if (remindersRepo.getReminderByID(reminder.id) == null) {
-                            remindersRepo.onCreateReminder(application, reminder)
+                        if (remindersDao.getReminderByID(reminder.id) == null) {
+                            remindersDao.addReminder(reminder)
+                            NotificationUtils().setNotification(application, reminder)
                         }
                     }
                 }
@@ -70,10 +75,12 @@ class SocketService : Service() {
                 if (args[0] != null) {
                     val reminder = reminderEntityAdapter.fromJson(args[0].toString())
                     if (reminder != null) {
-                        if (remindersRepo.getReminderByID(reminder.id) != null) {
-                            remindersRepo.onEditReminder(application, reminder)
+                        if (remindersDao.getReminderByID(reminder.id) != null) {
+                            remindersDao.updateReminder(reminder)
+                            NotificationUtils().setExistNotification(application, reminder)
                         } else {
-                            remindersRepo.onCreateReminder(application, reminder)
+                            remindersDao.addReminder(reminder)
+                            NotificationUtils().setNotification(application, reminder)
                         }
                     }
                 }
@@ -87,8 +94,9 @@ class SocketService : Service() {
                 if (args[0] != null) {
                 val reminder = reminderEntityAdapter.fromJson(args[0].toString())
                 if (reminder != null) {
-                    if (remindersRepo.getReminderByID(reminder.id) != null) {
-                        remindersRepo.onDeleteReminder(application, reminder)
+                    if (remindersDao.getReminderByID(reminder.id) != null) {
+                        remindersDao.deleteReminder(reminder)
+                        NotificationUtils().deleteNotification(application, reminder)
                     }
                 }
             }
@@ -100,8 +108,8 @@ class SocketService : Service() {
         socketDao.listen(getString(R.string.on_change_username)) { args ->
             socketScope.launch {
                 if (args[0] != null) {
-                    loggedInUserRepo.updateLoggedIn(loggedInUserRepo.getLoggedInUserId(application),
-                            args[0] as String)
+                    val user = LoggedInUserEntity(args[0].toString(), args[1].toString())
+                    loggedInUserDao.updateLoggedInUser(user)
                 }
             }
         }

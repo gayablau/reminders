@@ -25,7 +25,6 @@
         <receiver
             android:name=".main.notify.ReminderReceiver" />
 
-        <service android:name=".main.notify.NotificationService" />
         <service android:name=".main.socket.SocketService" />
 
     </application>

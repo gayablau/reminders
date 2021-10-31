@@ -85,83 +85,74 @@ class NotificationUtils {
             val notificationManager: NotificationManager =
                     context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(id, mNotification)
-
-
     }}
 
-    fun setExistNotification(timeInMilliSeconds: Long,
-                             context: Context,
-                             header: String,
-                             description: String,
-                             id: Int) {
+    fun setExistNotification(context: Context,
+                             reminderEntity: ReminderEntity) {
 
-        if (timeInMilliSeconds > 0) {
+        if (reminderEntity.time > 0) {
 
             val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
             val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
             alarmIntent.putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
-            alarmIntent.putExtra(context.getString(R.string.timestamp), timeInMilliSeconds)
-            alarmIntent.putExtra(context.getString(R.string.header_uppercase), header)
-            alarmIntent.putExtra(context.getString(R.string.description_uppercase), description)
-            alarmIntent.putExtra(context.getString(R.string.id_uppercase), id)
+            alarmIntent.putExtra(context.getString(R.string.timestamp), reminderEntity.time)
+            alarmIntent.putExtra(context.getString(R.string.header_uppercase), reminderEntity.header)
+            alarmIntent.putExtra(context.getString(R.string.description_uppercase), reminderEntity.description)
+            alarmIntent.putExtra(context.getString(R.string.id_uppercase), reminderEntity.id)
 
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = timeInMilliSeconds
-            calendar.add(Calendar.MONTH, -1)
+            calendar.timeInMillis = reminderEntity.time
+            //calendar.add(Calendar.MONTH, -1)
 
             val currentTime = Calendar.getInstance()
             if (currentTime.timeInMillis <= calendar.timeInMillis) {
                 val pendingIntent = PendingIntent.getBroadcast(context,
-                        id,
+                        reminderEntity.id,
                         alarmIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT)
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,
                         calendar.timeInMillis,
                         pendingIntent)
             }
         }
     }
 
-    fun setNotification(timeInMilliSeconds: Long,
-                        context: Context,
-                        header: String,
-                        description: String,
-                        id: Int) {
+    fun setNotification(context: Context,
+                        reminderEntity: ReminderEntity) {
 
-        if (timeInMilliSeconds > 0) {
+        if (reminderEntity.time > 0) {
 
             val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
             val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
             alarmIntent.putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
-            alarmIntent.putExtra(context.getString(R.string.timestamp), timeInMilliSeconds)
-            alarmIntent.putExtra(context.getString(R.string.header_uppercase), header)
-            alarmIntent.putExtra(context.getString(R.string.description_uppercase), description)
-            alarmIntent.putExtra(context.getString(R.string.id_uppercase), id)
+            alarmIntent.putExtra(context.getString(R.string.timestamp), reminderEntity.time)
+            alarmIntent.putExtra(context.getString(R.string.header_uppercase), reminderEntity.header)
+            alarmIntent.putExtra(context.getString(R.string.description_uppercase), reminderEntity.description)
+            alarmIntent.putExtra(context.getString(R.string.id_uppercase), reminderEntity.id)
 
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = timeInMilliSeconds
-            calendar.add(Calendar.MONTH, -1)
+            calendar.timeInMillis = reminderEntity.time
 
             val pendingIntent = PendingIntent.getBroadcast(context,
-                    id,
+                    reminderEntity.id,
                     alarmIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT)
-            alarmManager.set(AlarmManager.RTC_WAKEUP,
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,
                     calendar.timeInMillis,
                     pendingIntent)
         }
     }
 
-    fun deleteNotification(context: Context, id: Int) {
+    fun deleteNotification(context: Context, reminderEntity: ReminderEntity) {
         val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
-        alarmIntent.putExtra(context.getString(R.string.id_uppercase), id)
+        alarmIntent.putExtra(context.getString(R.string.id_uppercase), reminderEntity.id)
 
         val pendingIntent = PendingIntent.getBroadcast(context,
-                id,
+                reminderEntity.id,
                 alarmIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT)
         alarmManager.set(AlarmManager.RTC_WAKEUP,
@@ -180,12 +171,6 @@ class NotificationUtils {
             alarmManager.set(AlarmManager.RTC_WAKEUP,
                     0,
                     pendingIntent)
-        }
-    }
-
-    fun createAll(context: Context, reminders: List<ReminderEntity>) {
-        for (rem in reminders) {
-            setExistNotification(rem.time, context, rem.header, rem.description, rem.id)
         }
     }
 }

@@ -103,7 +103,6 @@ public class ReminderEntity {
     }
 
     public Calendar getCalendar() {
-
         Calendar helperCalendar = Calendar.getInstance();
         helperCalendar.setTimeInMillis(time);
         return helperCalendar;

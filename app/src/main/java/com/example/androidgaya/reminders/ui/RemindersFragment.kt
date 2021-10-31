@@ -104,9 +104,11 @@ class RemindersFragment : Fragment() {
         nav = (activity as? MainActivityInterface)?.navigator
 
         val loggedInObserver = Observer { loggedInUserEntities: List<LoggedInUserEntity> ->
-            (activity as? MainActivityInterface)?.changeToolbar(getString(R.string.toolbar_main,
-                    loggedInUserEntities[0].username),
-                    false)
+            if (loggedInUserEntities.isNotEmpty()) {
+                (activity as? MainActivityInterface)?.changeToolbar(getString(R.string.toolbar_main,
+                        loggedInUserEntities[0].username),
+                        false)
+            }
         }
 
         loggedInUserList = viewModel.getLoggedInUser()
