@@ -1,4 +1,4 @@
-package com.example.androidgaya.util
+package com.example.androidgaya.notifications
 
 import android.app.*
 import android.content.Context
@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.androidgaya.R
-import com.example.androidgaya.main.notify.ReminderReceiver
 import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import java.util.*

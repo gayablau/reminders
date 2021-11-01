@@ -1,4 +1,4 @@
-package com.example.androidgaya.main.socket
+package com.example.androidgaya.socket
 
 import android.app.Service
 import android.content.Intent
@@ -10,7 +10,7 @@ import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.socket.SocketDao
-import com.example.androidgaya.util.NotificationUtils
+import com.example.androidgaya.notifications.NotificationUtils
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,10 +56,8 @@ class SocketService : Service() {
                 if (args[0] != null) {
                     val reminder = reminderEntityAdapter.fromJson(args[0].toString())
                     if (reminder != null) {
-                        if (remindersDao.getReminderByID(reminder.id) == null) {
-                            remindersDao.addReminder(reminder)
-                            NotificationUtils().setNotification(application, reminder)
-                        }
+                        remindersDao.addReminder(reminder)
+                        NotificationUtils().setNotification(application, reminder)
                     }
                 }
             }

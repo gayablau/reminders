@@ -9,7 +9,7 @@ interface RemindersDao {
     @Query("SELECT * FROM reminders ORDER BY createdAt ASC")
     fun getAllRemindersFromDB(): LiveData<List<ReminderEntity>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addReminder(reminderEntity: ReminderEntity)
 
     @Update

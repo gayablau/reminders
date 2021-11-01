@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
-import com.example.androidgaya.main.socket.SocketService;
+import com.example.androidgaya.socket.SocketService;
 import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.LoginNavigator;

@@ -1,10 +1,9 @@
-package com.example.androidgaya.main.notify
+package com.example.androidgaya.notifications
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.example.androidgaya.R
-import com.example.androidgaya.util.NotificationUtils
 
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

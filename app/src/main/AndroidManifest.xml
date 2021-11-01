@@ -22,8 +22,8 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <receiver android:name=".main.notify.ReminderReceiver" />
-        <service android:name=".main.socket.SocketService" />
+        <receiver android:name=".notifications.ReminderReceiver" />
+        <service android:name=".socket.SocketService" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_clock_notify" />

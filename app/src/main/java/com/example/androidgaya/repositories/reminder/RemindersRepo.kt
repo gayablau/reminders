@@ -11,7 +11,7 @@ import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.types.ReminderJson
 import com.example.androidgaya.util.Functions
-import com.example.androidgaya.util.NotificationUtils
+import com.example.androidgaya.notifications.NotificationUtils
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -81,14 +81,11 @@ class RemindersRepo(application: Application) : ReminderInterface {
             if (dataFromSocket[0].toString() != (dataFromClient[1] as Context).getString(R.string.empty_json)) {
                 val reminders = dataFromSocket[0] as JSONArray
                 val remindersList = jsonRemindersAdapter.fromJson(reminders.toString())
-                deleteAllReminders()
                 if (remindersList != null) {
                     for (rem in remindersList) {
                         val remToAdd = functions.jsonToRemEntity(rem)
-                        try {
-                            remindersDao.addReminder(remToAdd)
-                            NotificationUtils().setExistNotification(application, remToAdd)
-                        } catch (ex : Exception) {}
+                        remindersDao.addReminder(remToAdd)
+                        NotificationUtils().setExistNotification(application, remToAdd)
                     }
                 }
             }

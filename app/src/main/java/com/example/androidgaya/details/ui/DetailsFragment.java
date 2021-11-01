@@ -64,7 +64,6 @@ public class DetailsFragment extends Fragment {
     private SimpleDateFormat fullFormat;
     private DateFormat wordsFormat;
     private DateFormat dayFormat;
-    private boolean isNotified = false;
     ReminderEntity reminderEntity;
 
     @Inject
