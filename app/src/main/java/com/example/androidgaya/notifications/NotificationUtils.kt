@@ -29,12 +29,13 @@ class NotificationUtils {
             val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance)
-            notificationChannel.enableVibration(true)
-            notificationChannel.setShowBadge(true)
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.parseColor("#e8334a")
-            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            val notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
+                enableVibration(true)
+                setShowBadge(true)
+                enableLights(true)
+                lightColor = Color.parseColor("#e8334a")
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
@@ -44,22 +45,23 @@ class NotificationUtils {
         var timestamp: Long = 0
         var header = ""
         var description = ""
-
-        if (intent != null) {
-            if (intent.extras != null) {
-                timestamp = intent.extras!!.getLong(context.getString(R.string.timestamp))
-                header = intent.extras!!.getString(context.getString(R.string.header_uppercase)).toString()
-                description = intent.extras!!.getString(context.getString(R.string.description_uppercase)).toString()
-                id = intent.extras!!.getInt(context.getString(R.string.id_uppercase))
+        intent.extras.let {
+            if (it != null) {
+                timestamp = it.getLong(context.getString(R.string.timestamp))
+                header = it.getString(context.getString(R.string.header_uppercase)).toString()
+                description = it.getString(context.getString(R.string.description_uppercase)).toString()
+                id = it.getInt(context.getString(R.string.id_uppercase))
             }
         }
         if (timestamp > 0) {
             val notifyIntent = Intent(context, MainActivity::class.java)
 
-            notifyIntent.putExtra(context.getString(R.string.header_uppercase), header)
-            notifyIntent.putExtra(context.getString(R.string.description_uppercase), description)
-            notifyIntent.putExtra(context.getString(R.string.id_uppercase), id)
-            notifyIntent.putExtra(context.getString(R.string.notification), true)
+            notifyIntent.apply {
+                putExtra(context.getString(R.string.header_uppercase), header)
+                putExtra(context.getString(R.string.description_uppercase), description)
+                putExtra(context.getString(R.string.id_uppercase), id)
+                putExtra(context.getString(R.string.notification), true)
+            }
 
             notifyIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
@@ -94,11 +96,15 @@ class NotificationUtils {
             val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
             val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
-            alarmIntent.putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
-            alarmIntent.putExtra(context.getString(R.string.timestamp), reminderEntity.time)
-            alarmIntent.putExtra(context.getString(R.string.header_uppercase), reminderEntity.header)
-            alarmIntent.putExtra(context.getString(R.string.description_uppercase), reminderEntity.description)
-            alarmIntent.putExtra(context.getString(R.string.id_uppercase), reminderEntity.id)
+            alarmIntent.apply {
+                putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
+                reminderEntity.let {
+                    putExtra(context.getString(R.string.timestamp), it.time)
+                    putExtra(context.getString(R.string.header_uppercase), it.header)
+                    putExtra(context.getString(R.string.description_uppercase), it.description)
+                    putExtra(context.getString(R.string.id_uppercase), it.id)
+                }
+            }
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = reminderEntity.time
@@ -124,11 +130,15 @@ class NotificationUtils {
             val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
             val alarmIntent = Intent(context.applicationContext, ReminderReceiver::class.java)
 
-            alarmIntent.putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
-            alarmIntent.putExtra(context.getString(R.string.timestamp), reminderEntity.time)
-            alarmIntent.putExtra(context.getString(R.string.header_uppercase), reminderEntity.header)
-            alarmIntent.putExtra(context.getString(R.string.description_uppercase), reminderEntity.description)
-            alarmIntent.putExtra(context.getString(R.string.id_uppercase), reminderEntity.id)
+            alarmIntent.apply {
+                putExtra(context.getString(R.string.reason), context.getString(R.string.notification))
+                reminderEntity.let {
+                    putExtra(context.getString(R.string.timestamp), it.time)
+                    putExtra(context.getString(R.string.header_uppercase), it.header)
+                    putExtra(context.getString(R.string.description_uppercase), it.description)
+                    putExtra(context.getString(R.string.id_uppercase), it.id)
+                }
+            }
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = reminderEntity.time
