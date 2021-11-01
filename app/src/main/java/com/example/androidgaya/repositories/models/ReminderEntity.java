@@ -3,7 +3,6 @@ package com.example.androidgaya.repositories.models;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import java.util.Calendar;
 
 @Entity(tableName = "reminders")
@@ -27,7 +26,6 @@ public class ReminderEntity {
 
     @ColumnInfo(name = "createdAt")
     private long createdAt;
-
 
     public ReminderEntity(int id,
                           String header,

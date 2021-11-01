@@ -2,12 +2,9 @@ package com.example.androidgaya.reminders.recyclerview;
 
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.androidgaya.R;
 import com.example.androidgaya.repositories.models.ReminderEntity;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

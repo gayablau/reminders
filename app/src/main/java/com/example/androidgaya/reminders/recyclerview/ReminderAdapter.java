@@ -3,14 +3,11 @@ package com.example.androidgaya.reminders.recyclerview;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.androidgaya.R;
 import com.example.androidgaya.repositories.models.ReminderEntity;
-
 import java.util.List;
 
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderViewHolder> {

@@ -13,7 +13,6 @@ import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import java.util.*
 
-
 class NotificationUtils {
 
     companion object {

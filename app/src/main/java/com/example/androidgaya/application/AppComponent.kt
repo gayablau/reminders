@@ -15,11 +15,6 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AppModule::class])
 interface AppComponent {
-    fun injectLogin(loginActivity: LoginActivity)
-    fun injectMain(mainActivity: MainActivity)
-    fun injectProfile(profileFragment: ProfileFragment)
-    fun injectDetails(detailsFragment: DetailsFragment)
-    fun injectReminders(remindersFragment: RemindersFragment)
     fun injectRemindersRepo(remindersRepo: RemindersRepo)
     fun injectLoggedInUserRepo(loggedInUserRepo: LoggedInUserRepo)
     fun injectSocketService(socketService: SocketService)

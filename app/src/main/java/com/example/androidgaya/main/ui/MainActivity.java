@@ -4,25 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.androidgaya.R;
-import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
 import com.example.androidgaya.socket.SocketService;
 import com.example.androidgaya.main.viewmodel.MainViewModel;
-import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.MainNavigator;
-
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
     LiveData<List<LoggedInUserEntity>> loggedInUserList;
@@ -30,16 +23,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     MainViewModel viewModel;
     MainNavigator nav;
 
-    @Inject
-    ViewModelFactory factory;
-
     public static Intent getIntent(Context context) {
         return new Intent(context, MainActivity.class);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ((ReminderApplication) getApplicationContext()).getAppComponent().injectMain(this);
         super.onCreate(savedInstanceState);
         init();
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
@@ -82,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     }
 
     private void initViewModel() {
-        viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
             if (!loggedInUserEntities.isEmpty()) {

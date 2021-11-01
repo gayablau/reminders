@@ -1,6 +1,5 @@
 package com.example.androidgaya.reminders.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -11,8 +10,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidgaya.R
-import com.example.androidgaya.application.ReminderApplication
-import com.example.androidgaya.factory.ViewModelFactory
 import com.example.androidgaya.main.interfaces.MainActivityInterface
 import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.reminders.recyclerview.ReminderAdapter
@@ -23,7 +20,6 @@ import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.util.MainNavigator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
-import javax.inject.Inject
 
 class RemindersFragment : Fragment() {
     var username: String? = ""
@@ -34,14 +30,6 @@ class RemindersFragment : Fragment() {
     var nav: MainNavigator? = null
     lateinit var viewModel: RemindersViewModel
     lateinit var reminderAdapter: ReminderAdapter
-
-    @Inject
-    lateinit var factory: ViewModelFactory
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().applicationContext as ReminderApplication).getAppComponent()!!.injectReminders(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,7 +121,7 @@ class RemindersFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(this, factory).get(RemindersViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(RemindersViewModel::class.java)
 
         val reminderObserver = Observer<List<ReminderEntity>?> {
             reminderAdapter.notifyDataSetChanged()

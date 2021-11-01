@@ -2,7 +2,6 @@ package com.example.androidgaya.application
 
 import android.app.Application
 import android.content.Context
-import com.example.androidgaya.factory.ViewModelFactory
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.db.AppDatabase
@@ -66,11 +65,6 @@ class AppModule(val application: Application) {
     @Provides
     fun provideSocket(): SocketDao {
         return socketDao
-    }
-
-    @Provides
-    fun provideFactory(): ViewModelFactory {
-        return ViewModelFactory(application)
     }
 
     @Singleton

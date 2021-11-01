@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,23 +20,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
-import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.ReminderEntity;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.details.viewmodel.DetailsViewModel;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-
-import javax.inject.Inject;
 
 public class DetailsFragment extends Fragment {
     private static final String ID_KEY = "id";
@@ -66,9 +59,6 @@ public class DetailsFragment extends Fragment {
     private DateFormat dayFormat;
     ReminderEntity reminderEntity;
 
-    @Inject
-    ViewModelFactory factory;
-
     public DetailsFragment() {
     }
 
@@ -87,7 +77,6 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ((ReminderApplication) getActivity().getApplicationContext()).getAppComponent().injectDetails(this);
     }
 
     @Override
@@ -303,7 +292,7 @@ public class DetailsFragment extends Fragment {
         dateTV = view.findViewById(R.id.date_tv);
         dateButton = view.findViewById(R.id.button_date);
         timePicker = view.findViewById(R.id.time_picker);
-        viewModel = new ViewModelProvider(this, factory).get(DetailsViewModel.class);
+        viewModel = new ViewModelProvider(this).get(DetailsViewModel.class);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
     }
 

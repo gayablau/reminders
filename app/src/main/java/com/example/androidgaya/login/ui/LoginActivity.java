@@ -8,24 +8,17 @@ import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
 import com.example.androidgaya.socket.SocketService;
-import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.LoginNavigator;
-
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,12 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     Intent serviceIntent;
     LiveData<List<LoggedInUserEntity>> loggedInUserList;
 
-    @Inject
-    ViewModelFactory factory;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        ((ReminderApplication) getApplicationContext()).getAppComponent().injectLogin(this);
         super.onCreate(savedInstanceState);
         init();
         if (savedInstanceState != null) {
@@ -117,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        viewModel = new ViewModelProvider(this, factory).get(LoginViewModel.class);
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
     }
 
     public void login() {

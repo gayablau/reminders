@@ -3,14 +3,12 @@ package com.example.androidgaya.profile.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -21,18 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.example.androidgaya.factory.ViewModelFactory;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
-import com.example.androidgaya.application.ReminderApplication;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.MainNavigator;
 import com.example.androidgaya.R;
 import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
-
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class ProfileFragment extends Fragment {
 
@@ -42,16 +34,12 @@ public class ProfileFragment extends Fragment {
     ProfileViewModel viewModel;
     LiveData<List<LoggedInUserEntity>> loggedInUserList;
 
-    @Inject
-    ViewModelFactory factory;
-
     public ProfileFragment() {
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ((ReminderApplication) getActivity().getApplicationContext()).getAppComponent().injectProfile(this);
     }
 
     @Override
@@ -111,7 +99,7 @@ public class ProfileFragment extends Fragment {
         usernameET = view.findViewById(R.id.profile_username_et);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
         ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.profile), true);
-        viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
             if (!loggedInUserEntities.isEmpty()) {
