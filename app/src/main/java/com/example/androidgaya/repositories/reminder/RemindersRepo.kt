@@ -81,6 +81,7 @@ class RemindersRepo(application: Application) : ReminderInterface {
             if (dataFromSocket[0].toString() != (dataFromClient[1] as Context).getString(R.string.empty_json)) {
                 val reminders = dataFromSocket[0] as JSONArray
                 val remindersList = jsonRemindersAdapter.fromJson(reminders.toString())
+                deleteAllReminders()
                 if (remindersList != null) {
                     for (rem in remindersList) {
                         val remToAdd = functions.jsonToRemEntity(rem)

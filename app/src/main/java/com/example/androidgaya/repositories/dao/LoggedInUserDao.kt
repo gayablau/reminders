@@ -7,9 +7,6 @@ import com.example.androidgaya.repositories.models.LoggedInUserEntity
 @Dao
 interface LoggedInUserDao {
     @Query("SELECT * FROM loggedIn")
-    fun getLoggedInUserFromDB(): List<LoggedInUserEntity>?
-
-    @Query("SELECT * FROM loggedIn")
     fun getLoggedInUserFromDBLive(): LiveData<List<LoggedInUserEntity>?>
 
     @Insert
@@ -20,9 +17,6 @@ interface LoggedInUserDao {
 
     @Delete
     fun deleteLoggedInUser(loggedInUserEntity: LoggedInUserEntity)
-
-    @Query("SELECT username FROM loggedIn")
-    fun getLoggedInUsernameList(): List<String>?
 
     @Query("SELECT username FROM loggedIn LIMIT 1")
     fun getLoggedInUsername(): String?
