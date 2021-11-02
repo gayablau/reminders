@@ -2,7 +2,6 @@ package com.example.androidgaya.repositories.interfaces
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.example.androidgaya.R
 import com.example.androidgaya.repositories.models.ReminderEntity
 
 interface ReminderInterface {

@@ -22,14 +22,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 class RemindersFragment : Fragment() {
-    var username: String? = ""
-    lateinit var addFab: FloatingActionButton
-    lateinit var recyclerViewReminders: RecyclerView
-    lateinit var remindersList: LiveData<List<ReminderEntity>?>
-    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
-    var nav: MainNavigator? = null
-    lateinit var viewModel: RemindersViewModel
-    lateinit var reminderAdapter: ReminderAdapter
+    private lateinit var addFab: FloatingActionButton
+    private lateinit var recyclerViewReminders: RecyclerView
+    private lateinit var remindersList: LiveData<List<ReminderEntity>?>
+    private lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
+    private var nav: MainNavigator? = null
+    private lateinit var viewModel: RemindersViewModel
+    private lateinit var reminderAdapter: ReminderAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +73,7 @@ class RemindersFragment : Fragment() {
         (activity as? MainActivity)?.logout()
     }
 
-    fun profile() {
+    private fun profile() {
         nav?.toProfileFragment()
     }
 
@@ -102,7 +101,7 @@ class RemindersFragment : Fragment() {
         loggedInUserList.observe(viewLifecycleOwner, loggedInObserver)
     }
 
-    fun add() {
+    private fun add() {
         nav?.toDetailsFragment()
     }
 

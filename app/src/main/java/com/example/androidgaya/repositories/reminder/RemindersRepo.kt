@@ -38,7 +38,7 @@ class RemindersRepo(application: Application) : ReminderInterface {
     lateinit var functions: Functions
 
     @Inject
-    lateinit var dbCoroutineScope : CoroutineScope
+    lateinit var dbCoroutineScope: CoroutineScope
 
     init {
         (application as ReminderApplication).getAppComponent()?.injectRemindersRepo(this)
@@ -76,7 +76,8 @@ class RemindersRepo(application: Application) : ReminderInterface {
         socketDao.emit(context.getString(R.string.delete_reminder), reminderEntityAdapter.toJson(reminderEntity))
     }
 
-    private val addUserReminders: (Array<Any>, List<Any>) -> Unit = { dataFromSocket: Array<Any>, dataFromClient: List<Any> ->
+    private val addUserReminders: (Array<Any>, List<Any>) -> Unit = { dataFromSocket: Array<Any>,
+                                                                      dataFromClient: List<Any> ->
         dbCoroutineScope.launch {
             if (dataFromSocket[0].toString() != (dataFromClient[1] as Context).getString(R.string.empty_json)) {
                 val reminders = dataFromSocket[0] as JSONArray

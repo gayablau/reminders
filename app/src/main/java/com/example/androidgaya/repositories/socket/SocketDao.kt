@@ -52,7 +52,11 @@ class SocketDao(val application: Application) {
         mSocket.off(event)
     }
 
-    fun listenOnce(eventToEmit: String, eventToListen: String, callback: (callbackData: Array<Any>, userDetails: List<Any>) -> Unit, vararg data: Any) {
+    fun listenOnce(eventToEmit: String,
+                   eventToListen: String,
+                   callback: (callbackData: Array<Any>,
+                              userDetails: List<Any>) -> Unit,
+                   vararg data: Any) {
         emit(eventToEmit, data.asList())
         listen(eventToListen) {
             removeListener(eventToListen)

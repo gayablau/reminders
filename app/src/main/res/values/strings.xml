@@ -6,7 +6,6 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_login">LoginActivity</string>
@@ -88,7 +87,7 @@
     <string name="details_viewmodel_path">com.example.androidgaya.details.viewmodel.DetailsViewModel</string>
     <string name="main_viewmodel_path">com.example.androidgaya.main.viewmodel.MainViewModel</string>
     <string name="profile_viewmodel_path">com.example.androidgaya.profile.viewmodel.ProfileViewModel</string>
-    <string name="socket_uri">http://10.208.197.51:3456</string>
+    <string name="socket_uri">http://10.158.166.247:3456</string>
     <string name="user_id">userId</string>
     <string name="on_get_all_reminders">OnGetAllReminders</string>
     <string name="empty_json">[]</string>
@@ -96,5 +95,4 @@
     <string name="on_edit_reminder">onEditReminder</string>
     <string name="on_delete_reminder">onDeleteReminder</string>
     <string name="on_change_username">onChangeUsername</string>
-
 </resources>

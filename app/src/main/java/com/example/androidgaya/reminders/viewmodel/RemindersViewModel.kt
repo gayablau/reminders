@@ -18,7 +18,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     init {
-        getAllReminders(userId)
+        getAllReminders()
     }
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
@@ -27,7 +27,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    private fun getAllReminders(userId: String) {
+    private fun getAllReminders() {
         viewModelScope.launch {
             remindersRepo.getAllReminders(getApplication(), userId)
         }
