@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import com.example.androidgaya.repositories.models.ReminderEntity
 
 interface ReminderInterface {
-    fun getRemindersFromDB(userId: String): LiveData<List<ReminderEntity>?>
+    fun getRemindersFromDB(userId: String): LiveData<List<ReminderEntity>>
     fun getReminderByID(id: Int): ReminderEntity?
     suspend fun getMyRemindersIds(userId: String): List<Int>
     suspend fun deleteAllReminders()

@@ -71,12 +71,6 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun provideFunctions(): Functions {
-        return Functions()
-    }
-
-    @Singleton
-    @Provides
     fun provideJsonRemindersAdapter(): JsonAdapter<List<ReminderJson>> {
         return moshi.adapter(listRemindersType)
     }

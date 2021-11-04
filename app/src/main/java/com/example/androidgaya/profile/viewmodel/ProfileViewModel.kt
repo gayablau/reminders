@@ -4,15 +4,25 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
+
+    var username: String
+    val userId: String
+
+    init {
+        (application as ReminderApplication).getAppComponent()?.injectProfile(this)
+        username = loggedInUserRepo.getLoggedInUsername(getApplication())
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
+    }
 
     fun editUsername(newUsername: String, callback: (callbackData: Array<Any>, userDetails: String) -> Unit) {
         viewModelScope.launch {
@@ -26,7 +36,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
+    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>> {
         return loggedInUserRepo.getLoggedInUserFromDB()
     }
 }

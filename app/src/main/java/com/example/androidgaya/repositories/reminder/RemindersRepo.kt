@@ -36,9 +36,6 @@ class RemindersRepo(application: Application) : ReminderInterface {
     lateinit var reminderEntityAdapter: JsonAdapter<ReminderEntity>
 
     @Inject
-    lateinit var functions: Functions
-
-    @Inject
     lateinit var application: Context
 
     private val remRepoCoroutineJob = SupervisorJob()
@@ -48,7 +45,7 @@ class RemindersRepo(application: Application) : ReminderInterface {
         (application as ReminderApplication).getAppComponent()?.injectRemindersRepo(this)
     }
 
-    override fun getRemindersFromDB(userId: String): LiveData<List<ReminderEntity>?> {
+    override fun getRemindersFromDB(userId: String): LiveData<List<ReminderEntity>> {
         return remindersDao.getRemindersByUserId(userId)
     }
 
@@ -95,7 +92,7 @@ class RemindersRepo(application: Application) : ReminderInterface {
                 deleteAllReminders()
                 if (remindersList.isSuccess) {
                     for (rem in remindersList.getOrNull() ?: emptyList()) {
-                        val remToAdd = functions.jsonToRemEntity(rem)
+                        val remToAdd = Functions.jsonToRemEntity(rem)
                         remindersDao.addReminder(remToAdd)
                         NotificationUtils.setExistNotification(application, remToAdd)
                     }

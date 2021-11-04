@@ -23,9 +23,8 @@ import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
 
 class RemindersFragment : Fragment() {
-    private lateinit var recyclerViewReminders: RecyclerView
-    private lateinit var remindersList: LiveData<List<ReminderEntity>?>
-    private lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
+    private lateinit var remindersList: LiveData<List<ReminderEntity>>
+    private lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>>
     private var nav: MainNavigator? = null
     private lateinit var viewModel: RemindersViewModel
     private lateinit var reminderAdapter: ReminderAdapter
@@ -81,10 +80,9 @@ class RemindersFragment : Fragment() {
     }
 
     private fun init(view: View) {
-        recyclerViewReminders = view.findViewById(R.id.recycler_view_reminders)
-        recyclerViewReminders.setHasFixedSize(true)
+        recycler_view_reminders.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@RemindersFragment.context)
-        recyclerViewReminders.layoutManager = layoutManager
+        recycler_view_reminders.layoutManager = layoutManager
         nav = (activity as? MainActivityInterface)?.navigator
 
         val loggedInObserver = Observer { loggedInUserEntities: List<LoggedInUserEntity> ->
@@ -109,12 +107,12 @@ class RemindersFragment : Fragment() {
         }) { reminder: ReminderEntity? ->
             viewModel.deleteReminder(reminder!!)
         }
-        recyclerViewReminders.adapter = reminderAdapter
-        recyclerViewReminders.layoutManager = LinearLayoutManager(this@RemindersFragment.context)
+        recycler_view_reminders.adapter = reminderAdapter
+        recycler_view_reminders.layoutManager = LinearLayoutManager(this@RemindersFragment.context)
         val itemTouchHelper = ItemTouchHelper(
                 SwipeToDeleteCallback(reminderAdapter)
         )
-        itemTouchHelper.attachToRecyclerView(recyclerViewReminders)
+        itemTouchHelper.attachToRecyclerView(recycler_view_reminders)
     }
 
     private fun initViewModel() {

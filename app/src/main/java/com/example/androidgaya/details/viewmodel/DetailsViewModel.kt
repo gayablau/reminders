@@ -3,15 +3,26 @@ package com.example.androidgaya.details.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
-    private var remindersRepo: RemindersRepo = RemindersRepo(application)
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    val userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
+    @Inject
+    lateinit var remindersRepo: RemindersRepo
+
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
+
+    val userId: String
+
+    init {
+        (application as ReminderApplication).getAppComponent()?.injectDetails(this)
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
+    }
 
     fun addReminder(reminderEntity: ReminderEntity) {
         viewModelScope.launch {

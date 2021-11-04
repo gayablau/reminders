@@ -8,7 +8,7 @@ import com.example.androidgaya.repositories.models.UserPayload
 interface LoggedInUserInterface {
     fun getLoggedInUsername(context: Context): String?
     suspend fun setLoggedIn(id: String, username: String)
-    fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?>
+    fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>>
     fun getLoggedInUserId(context: Context): String?
     suspend fun logoutFromDB()
     suspend fun logout(context: Context)

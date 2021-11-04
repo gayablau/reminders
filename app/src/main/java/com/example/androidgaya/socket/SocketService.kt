@@ -31,6 +31,9 @@ class SocketService : Service() {
     @Inject
     lateinit var reminderEntityAdapter: JsonAdapter<ReminderEntity>
 
+    @Inject
+    lateinit var userEntityAdapter: JsonAdapter<LoggedInUserEntity>
+
     private val socketCoroutineJob = SupervisorJob()
     private val socketScope = CoroutineScope(Dispatchers.IO + socketCoroutineJob)
 
@@ -54,9 +57,11 @@ class SocketService : Service() {
         socketDao.listen(getString(R.string.on_create_reminder)) { args ->
             socketScope.launch {
                 args[0]?.let {
-                    reminderEntityAdapter.fromJson(it.toString())?.let { reminder ->
-                        remindersDao.addReminder(reminder)
-                        NotificationUtils.setNotification(application, reminder)
+                    runCatching {
+                        reminderEntityAdapter.fromJson(it.toString())?.let { reminder ->
+                            remindersDao.addReminder(reminder)
+                            NotificationUtils.setNotification(application, reminder)
+                        }
                     }
                 }
             }
@@ -66,15 +71,14 @@ class SocketService : Service() {
     private fun onEditReminder() {
         socketDao.listen(getString(R.string.on_edit_reminder)) { args ->
             socketScope.launch {
-                if (args[0] != null) {
-                    val reminder = reminderEntityAdapter.fromJson(args[0].toString())
-                    if (reminder != null) {
-                        if (remindersDao.getReminderByID(reminder.id) != null) {
-                            remindersDao.updateReminder(reminder)
-                            NotificationUtils.setExistNotification(application, reminder)
+                runCatching {
+                    reminderEntityAdapter.fromJson(args[0].toString())?.let {
+                        if (remindersDao.getReminderByID(it.id) != null) {
+                            remindersDao.updateReminder(it)
+                            NotificationUtils.setExistNotification(application, it)
                         } else {
-                            remindersDao.addReminder(reminder)
-                            NotificationUtils.setNotification(application, reminder)
+                            remindersDao.addReminder(it)
+                            NotificationUtils.setNotification(application, it)
                         }
                     }
                 }
@@ -85,12 +89,11 @@ class SocketService : Service() {
     private fun onDeleteReminder() {
         socketDao.listen(getString(R.string.on_delete_reminder)) { args ->
             socketScope.launch {
-                if (args[0] != null) {
-                    val reminder = reminderEntityAdapter.fromJson(args[0].toString())
-                    if (reminder != null) {
-                        if (remindersDao.getReminderByID(reminder.id) != null) {
-                            remindersDao.deleteReminder(reminder)
-                            NotificationUtils.deleteNotification(application, reminder)
+                runCatching {
+                    reminderEntityAdapter.fromJson(args[0].toString())?.let {
+                        if (remindersDao.getReminderByID(it.id) != null) {
+                            remindersDao.deleteReminder(it)
+                            NotificationUtils.deleteNotification(application, it)
                         }
                     }
                 }
@@ -101,9 +104,10 @@ class SocketService : Service() {
     private fun onChangeUsername() {
         socketDao.listen(getString(R.string.on_change_username)) { args ->
             socketScope.launch {
-                if (args[0] != null) {
-                    val user = LoggedInUserEntity(args[0].toString(), args[1].toString())
-                    loggedInUserDao.updateLoggedInUser(user)
+                runCatching {
+                    userEntityAdapter.fromJson(args[0].toString())?.let {
+                        loggedInUserDao.updateLoggedInUser(it)
+                    }
                 }
             }
         }

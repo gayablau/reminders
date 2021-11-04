@@ -4,18 +4,30 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import com.example.androidgaya.notifications.NotificationUtils
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    private var remindersRepo: RemindersRepo = RemindersRepo(application)
-    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
+
+    @Inject
+    lateinit var remindersRepo: RemindersRepo
+
+    var username: String
+    val userId: String
+
+    init {
+        (application as ReminderApplication).getAppComponent()?.injectMain(this)
+        username = loggedInUserRepo.getLoggedInUsername(getApplication())
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
+    }
 
     fun logout() {
         viewModelScope.launch {
@@ -24,7 +36,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
+    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>> {
         return loggedInUserRepo.getLoggedInUserFromDB()
     }
 }

@@ -43,17 +43,6 @@ class SocketDao(private val uri : String) {
     private fun removeListener(event: String) {
         mSocket.off(event)
     }
-/*
-    suspend fun listenOnce(eventToEmit: String,
-                   eventToListen: String,
-                   callback: KSuspendFunction2<Array<Any>, String, Unit>,
-                   data: String) {
-        emit(eventToEmit, data)
-        listen(eventToListen) {
-            removeListener(eventToListen)
-            callback(it, data)
-        }
-    }*/
 
     fun listenOnce(eventToEmit: String,
                    eventToListen: String,

@@ -5,7 +5,7 @@ import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.types.ReminderJson
 import com.example.androidgaya.repositories.types.UserJson
 
-class Functions {
+object Functions {
     fun jsonToRemEntity(reminderJson: ReminderJson): ReminderEntity {
         return ReminderEntity(reminderJson.id,
                 reminderJson.header,
@@ -29,6 +29,6 @@ class Functions {
     }
 
     fun userEntityToJson(loggedInUserEntity: LoggedInUserEntity): UserJson {
-        return UserJson(loggedInUserEntity.id, loggedInUserEntity.username)
+        return UserJson(loggedInUserEntity.userId, loggedInUserEntity.username)
     }
 }
