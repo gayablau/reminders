@@ -2,26 +2,38 @@ package com.example.androidgaya.details.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
-import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailsViewModel(application: Application,
-                       private val socketRepo: SocketRepo) : AndroidViewModel(application) {
-    private var remindersRepo: RemindersRepo = RemindersRepo(application)
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
+class DetailsViewModel(application: Application) : AndroidViewModel(application) {
+    @Inject
+    lateinit var remindersRepo: RemindersRepo
+
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
+
+    val userId: String
+
+    init {
+        (application as ReminderApplication).getAppComponent()?.injectDetails(this)
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
+    }
 
     fun addReminder(reminderEntity: ReminderEntity) {
-        remindersRepo.addReminder(reminderEntity)
-        socketRepo.createReminder(reminderEntity)
+        viewModelScope.launch {
+            remindersRepo.createReminder(getApplication(), reminderEntity)
+        }
     }
 
     fun editReminder(reminderEntity: ReminderEntity) {
-        remindersRepo.editReminder(reminderEntity)
-        socketRepo.editReminder(reminderEntity)
+        viewModelScope.launch {
+            remindersRepo.editReminder(getApplication(), reminderEntity)
+        }
     }
 
     fun getReminderByID(id: Int): ReminderEntity? {

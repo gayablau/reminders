@@ -1,7 +1,5 @@
 package com.example.androidgaya.reminders.ui
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,39 +10,22 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidgaya.R
-import com.example.androidgaya.factory.ViewModelFactory
 import com.example.androidgaya.main.interfaces.MainActivityInterface
 import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.reminders.recyclerview.ReminderAdapter
 import com.example.androidgaya.reminders.recyclerview.SwipeToDeleteCallback
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
-import com.example.androidgaya.repositories.di.AppDataGetter
 import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.util.MainNavigator
-import com.example.androidgaya.util.NotificationUtils
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
-import javax.inject.Inject
 
 class RemindersFragment : Fragment() {
-    var username: String? = ""
-    lateinit var addFab: FloatingActionButton
-    lateinit var recyclerViewReminders: RecyclerView
-    lateinit var remindersList: LiveData<List<ReminderEntity>?>
-    lateinit var nav: MainNavigator
-    lateinit var viewModel: RemindersViewModel
-    lateinit var reminderAdapter: ReminderAdapter
-    lateinit var factory: ViewModelFactory
-
-    @Inject
-    lateinit var socket: SocketRepo
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().applicationContext as AppDataGetter).getAppComponent()!!.
-        injectReminders(this)
-    }
+    private lateinit var remindersList: LiveData<List<ReminderEntity>>
+    private lateinit var loggedInUserList: LiveData<List<String>>
+    private var nav: MainNavigator? = null
+    private lateinit var viewModel: RemindersViewModel
+    private lateinit var reminderAdapter: ReminderAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +33,6 @@ class RemindersFragment : Fragment() {
         initViewModel()
     }
 
-    @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_reminders, container, false)
@@ -62,86 +42,85 @@ class RemindersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init(view)
         setAdapter()
-        addFab.setOnClickListener { fabView: View? -> add() }
-    }
+        add_fab.setOnClickListener { add() }
 
-    override fun onResume() {
-        super.onResume()
-        requireView().isFocusableInTouchMode = true
-        requireView().requestFocus()
-        requireView().setOnKeyListener { v: View?, keyCode: Int, event: KeyEvent ->
-            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                onBackPressed()
-                return@setOnKeyListener true
+        view.apply {
+            isFocusableInTouchMode = true
+            requestFocus()
+            setOnKeyListener { _, keyCode, event ->
+                if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed()
+                    return@setOnKeyListener true
+                }
+                false
             }
-            false
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_profile) {
-            profile()
-            return true
-        } else if (item.itemId == R.id.action_logout) {
-            logout()
-            return true
+        when (item.itemId) {
+            R.id.action_profile -> profile()
+            R.id.action_logout -> logout()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun logout() {
-        (activity as MainActivity?)!!.logout()
+    private fun logout() {
+        (activity as? MainActivity)?.logout()
     }
 
-    @SuppressLint("RestrictedApi")
-    fun profile() {
-        nav.toProfileFragment()
+    private fun profile() {
+        nav?.toProfileFragment()
     }
 
-    fun onBackPressed() {
+    private fun onBackPressed() {
         requireActivity().finishAffinity()
     }
 
-    fun init(view: View) {
-        recyclerViewReminders = view.findViewById(R.id.recycler_view_reminders)
-        addFab = view.findViewById(R.id.add_fab)
-        recyclerViewReminders.setHasFixedSize(true)
+    private fun init(view: View) {
+        recycler_view_reminders.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@RemindersFragment.context)
-        recyclerViewReminders.setLayoutManager(layoutManager)
-        nav = (activity as MainActivityInterface?)!!.navigator
-        (activity as MainActivityInterface?)!!.changeToolbar(getString(R.string.toolbar_main,
-                viewModel.username),
-                false)
+        recycler_view_reminders.layoutManager = layoutManager
+        nav = (activity as? MainActivityInterface)?.navigator
+
+        val loggedInObserver = Observer { loggedInUsernames: List<String> ->
+            if (loggedInUsernames.isNotEmpty()) {
+                (activity as? MainActivityInterface)?.changeToolbar(getString(R.string.toolbar_main,
+                        loggedInUsernames[0]),
+                        false)
+            }
+        }
+
+        loggedInUserList = viewModel.getLoggedInUser()
+        loggedInUserList.observe(viewLifecycleOwner, loggedInObserver)
     }
 
-    fun add() {
-        nav.toDetailsFragment()
+    private fun add() {
+        nav?.toDetailsFragment()
     }
 
-    fun setAdapter() {
+    private fun setAdapter() {
         reminderAdapter = ReminderAdapter(remindersList, { reminder: ReminderEntity ->
-            nav.toDetailsFragment(reminder.id)
+            nav?.toDetailsFragment(reminder.id)
         }) { reminder: ReminderEntity? ->
             viewModel.deleteReminder(reminder!!)
-            activity?.let { NotificationUtils().deleteNotification(it, reminder.id) }
         }
-        recyclerViewReminders.adapter = reminderAdapter
-        recyclerViewReminders.layoutManager = LinearLayoutManager(this@RemindersFragment.context)
+        recycler_view_reminders.adapter = reminderAdapter
+        recycler_view_reminders.layoutManager = LinearLayoutManager(this@RemindersFragment.context)
         val itemTouchHelper = ItemTouchHelper(
                 SwipeToDeleteCallback(reminderAdapter)
         )
-        itemTouchHelper.attachToRecyclerView(recyclerViewReminders)
+        itemTouchHelper.attachToRecyclerView(recycler_view_reminders)
     }
 
     private fun initViewModel() {
-        factory = activity?.let { ViewModelFactory(it.application, socket) }!!
-        viewModel = ViewModelProvider(this, factory).get(RemindersViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(RemindersViewModel::class.java)
 
         val reminderObserver = Observer<List<ReminderEntity>?> {
             reminderAdapter.notifyDataSetChanged()
         }
 
-        remindersList = viewModel.remindersList
+        remindersList = viewModel.getRemindersByUserId()
         remindersList.observe(this, reminderObserver)
     }
 }

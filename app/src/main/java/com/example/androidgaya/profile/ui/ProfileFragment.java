@@ -1,14 +1,9 @@
 package com.example.androidgaya.profile.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,15 +13,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.androidgaya.factory.ViewModelFactory;
-import com.example.androidgaya.main.interfaces.MainActivityInterface;
-import com.example.androidgaya.repositories.di.AppDataGetter;
-import com.example.androidgaya.repositories.socket.SocketRepo;
-import com.example.androidgaya.util.MainNavigator;
-import com.example.androidgaya.R;
-import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import javax.inject.Inject;
+import com.example.androidgaya.R;
+import com.example.androidgaya.main.interfaces.MainActivityInterface;
+import com.example.androidgaya.profile.viewmodel.ProfileViewModel;
+import com.example.androidgaya.util.MainNavigator;
+
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
@@ -34,10 +33,7 @@ public class ProfileFragment extends Fragment {
     private static String username;
     MainNavigator nav;
     ProfileViewModel viewModel;
-    ViewModelFactory factory;
-
-    @Inject
-    SocketRepo socket;
+    LiveData<List<String>> loggedInUserList;
 
     public ProfileFragment() {
     }
@@ -45,7 +41,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ((AppDataGetter) getActivity().getApplicationContext()).getAppComponent().injectProfile(this);
     }
 
     @Override
@@ -85,25 +80,34 @@ public class ProfileFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("RestrictedApi")
     public void save() {
-        if (viewModel.isUsernameExists(getNewUsername())) {
-            Toast.makeText(getActivity(), getString(R.string.user_exists), Toast.LENGTH_LONG).show();
-        } else {
-            viewModel.editUsername(getNewUsername());
-            username = getNewUsername();
-            viewModel.setUsername(username);
-            nav.toRemindersFragment();
-        }
+        viewModel.editUsername(getNewUsername(), (dataFromSocket, dataFromClient) -> {
+            if ((Boolean) dataFromSocket[0]) {
+                viewModel.updateLoggedIn(dataFromClient);
+                nav.toRemindersFragment();
+            } else {
+                new Handler(Looper.getMainLooper()).post(() ->
+                        Toast.makeText(getActivity(),
+                                getString(R.string.user_exists),
+                                Toast.LENGTH_LONG).show());
+            }
+            return null;
+        });
     }
 
     public void init(View view) {
         usernameET = view.findViewById(R.id.profile_username_et);
         nav = ((MainActivityInterface) getActivity()).getNavigator();
         ((MainActivityInterface) getActivity()).changeToolbar(getString(R.string.profile), true);
-        factory = new ViewModelFactory(getActivity().getApplication(), socket);
-        viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
-        username = viewModel.getUsername();
-        usernameET.setText(username);
+        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
+        Observer<List<String>> loggedInObserver = loggedInUsernames -> {
+            if (!loggedInUsernames.isEmpty()) {
+                username = loggedInUsernames.get(0);
+                usernameET.setText(username);
+            }
+        };
+        loggedInUserList = viewModel.getLoggedInUser();
+        loggedInUserList.observe(getViewLifecycleOwner(), loggedInObserver);
     }
 }

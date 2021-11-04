@@ -3,50 +3,39 @@ package com.example.androidgaya.main.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import com.example.androidgaya.repositories.models.ReminderEntity
+import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
+import com.example.androidgaya.notifications.NotificationUtils
 import com.example.androidgaya.repositories.reminder.RemindersRepo
-import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(application: Application,
-                    private val socketRepo: SocketRepo) : AndroidViewModel(application) {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    private var remindersRepo: RemindersRepo = RemindersRepo(application)
-    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
+
+    @Inject
+    lateinit var remindersRepo: RemindersRepo
+
     var username: String
-    var userId: Int
+    val userId: String
 
     init {
-        updateLoggedInUser()
+        (application as ReminderApplication).getAppComponent()?.injectMain(this)
         username = loggedInUserRepo.getLoggedInUsername(getApplication())
         userId = loggedInUserRepo.getLoggedInUserId(getApplication())
-        getAllReminders(userId)
     }
 
     fun logout() {
-        loggedInUserRepo.logout(getApplication())
-        socketRepo.logout()
+        viewModelScope.launch {
+            loggedInUserRepo.logout(getApplication())
+            NotificationUtils.cancelAll(getApplication(), remindersRepo.getMyRemindersIds(userId))
+        }
     }
 
-    fun getMyRemindersIds(): List<Int> {
-        return remindersRepo.getMyRemindersIds(userId)
-    }
-
-    fun getRemindersByUserIdList(): List<ReminderEntity> {
-        return remindersRepo.getRemindersByUsernameList(userId)
-    }
-
-    private fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
-        return loggedInUserRepo.getLoggedInUserFromDB()
-    }
-
-    private fun updateLoggedInUser() {
-        loggedInUserList = getLoggedInUser()
-    }
-
-    private fun getAllReminders(userId: Int) {
-        socketRepo.getAllReminders(userId)
+    fun getLoggedInUser(): LiveData<List<String>> {
+        return loggedInUserRepo.getLoggedInUserFromDB(userId)
     }
 }

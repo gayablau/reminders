@@ -2,71 +2,33 @@ package com.example.androidgaya.login.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import com.example.androidgaya.repositories.models.UserEntity
-import com.example.androidgaya.repositories.socket.SocketRepo
+import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
+import com.example.androidgaya.repositories.models.UserPayload
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
-import com.example.androidgaya.repositories.user.UserRepo
-import java.util.*
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(application: Application,
-                     private val socketRepo: SocketRepo) : AndroidViewModel(application) {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var userRepo: UserRepo = UserRepo(application)
-    lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
+    var username: String
+    var userId: String
 
     init {
-        updateLoggedInUser()
-        getAllUsers()
+        (application as ReminderApplication).getAppComponent()?.injectLogin(this)
+        username = loggedInUserRepo.getLoggedInUsername(getApplication())
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
-    fun insertUser(userEntity: UserEntity) {
-        userRepo.insertUser(userEntity)
+    fun connectUser(userPayload: UserPayload, callback: (callbackData: Array<Any>, userDetails: String) -> Unit) {
+        viewModelScope.launch {
+            loggedInUserRepo.login(getApplication(), userPayload, callback)
+        }
     }
 
-    fun setUsername(userId: Int, username: String) {
-        loggedInUserRepo.setLoggedIn(getApplication(), userId, username)
-    }
-
-    fun isUserLoggedIn(): Boolean {
-        return loggedInUserRepo.isUserLoggedIn(getApplication())
-    }
-
-    fun areDetailsOK(username: String, password: String): Boolean {
-        return userRepo.areDetailsOK(username, password)
-    }
-
-    fun isUserExists(username: String): Boolean {
-        socketRepo.updateUsers()
-        return userRepo.isUserExists(username)
-    }
-
-    fun createNewUser(username: String, password: String) {
-        userId = Random(System.currentTimeMillis()).nextInt(10000)
-        insertUser(UserEntity(userId, username, password))
-        setUsername(userId, username)
-        socketRepo.createUser(userId, username, password)
-    }
-
-    fun connectUser(username: String) {
-        userId = userRepo.findUserIdByUsername(username)
-        setUsername(userId, username)
-        socketRepo.connectUser(userId, username)
-    }
-
-    fun getAllUsers() {
-        socketRepo.getAllUsers()
-    }
-
-    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>?> {
-        return loggedInUserRepo.getLoggedInUserFromDB()
-    }
-
-    fun updateLoggedInUser() {
-        loggedInUserList = getLoggedInUser()
+    suspend fun setLoggedIn(application: Application, userId: String, username: String) {
+        loggedInUserRepo.setLoggedIn(application, userId, username)
     }
 }

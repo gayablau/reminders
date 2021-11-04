@@ -5,12 +5,16 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.example.androidgaya.R
-import com.example.androidgaya.repositories.di.AppDataGetter
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.interfaces.LoggedInUserInterface
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.example.androidgaya.repositories.models.UserPayload
+import com.example.androidgaya.repositories.socket.SocketDao
+import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
 class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
@@ -22,54 +26,69 @@ class LoggedInUserRepo(context: Context) : LoggedInUserInterface {
     @Inject
     lateinit var loggedInUserDao: LoggedInUserDao
 
-    private var loggedInUserPref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.user_details_sp),
-            MODE_PRIVATE)
+    @Inject
+    lateinit var socketDao: SocketDao
+
+    @Inject
+    lateinit var userPayloadAdapter: JsonAdapter<UserPayload>
+
+    @Inject
+    lateinit var application: Context
+
+    private val userRepoCoroutineJob = SupervisorJob()
+    private val userRepoCoroutineScope = CoroutineScope(Dispatchers.IO + userRepoCoroutineJob)
+
+    private var loggedInUserPref: SharedPreferences =
+            context.getSharedPreferences(context.getString(R.string.user_details_sp), MODE_PRIVATE)
+
 
     init {
-        (context as AppDataGetter).getAppComponent()?.injectLoggedInUserRepo(this)
-    }
-
-    override fun isUserLoggedIn(context: Context): Boolean {
-        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY) != EMPTY
+        (context as ReminderApplication).getAppComponent()?.injectLoggedInUserRepo(this)
     }
 
     override fun getLoggedInUsername(context: Context): String {
-        return loggedInUserPref.getString(context.getString(R.string.username_uppercase), EMPTY)
-                ?: EMPTY
+        return loggedInUserDao.getLoggedInUsername(getLoggedInUserId(context)) ?: EMPTY
     }
 
-    override fun getLoggedInUserId(context: Context): Int {
-        return loggedInUserPref.getInt(context.getString(R.string.UserId), 0)
+    override fun getLoggedInUserId(context: Context): String {
+        return loggedInUserPref.getString(context.getString(R.string.user_id), EMPTY) ?: EMPTY
     }
 
-    override fun setLoggedIn(context: Context, id: Int, username: String) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase),
-                username).apply()
-        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), id).apply()
-        setLoggedInDB(id, username)
-
+    override suspend fun setLoggedIn(context: Context, userId: String, username: String) {
+        loggedInUserPref.edit().putString(context.getString(R.string.user_id), userId)?.apply()
+        loggedInUserDao.addLoggedInUser(LoggedInUserEntity(userId, username))
     }
 
-    fun setLoggedInDB(id: Int, username: String) = runBlocking {
-        launch {
-            loggedInUserDao.deleteOldLogins()
-            loggedInUserDao.addLoggedInUser(LoggedInUserEntity(id, username))
-        }
+    override suspend fun updateLoggedIn(userId: String, username: String) {
+        loggedInUserDao.updateLoggedInUser(LoggedInUserEntity(userId, username))
     }
 
-    override fun logout(context: Context) {
-        loggedInUserPref.edit().putString(context.getString(R.string.username_uppercase), EMPTY).apply()
-        loggedInUserPref.edit().putInt(context.getString(R.string.UserId), 0).apply()
-        deleteOldLogins()
+    override suspend fun logout(context: Context) {
+        loggedInUserPref.edit().putString(context.getString(R.string.user_id), EMPTY)?.apply()
+        socketDao.emit(context.getString(R.string.logout))
     }
 
-    fun deleteOldLogins() = runBlocking {
-        launch {
-            loggedInUserDao.deleteOldLogins()
-        }
+    override fun getLoggedInUserFromDB(userId: String): LiveData<List<String>> {
+        return loggedInUserDao.getLoggedInUserFromDBLive(userId)
     }
 
-    override fun getLoggedInUserFromDB(): LiveData<List<LoggedInUserEntity>?> {
-        return loggedInUserDao.getLoggedInUserFromDBLive()
+    override suspend fun login(context: Context,
+                               userPayload: UserPayload,
+                               callback: (callbackData: Array<Any>,
+                                          dataFromClient: String) -> Unit) {
+        socketDao.listenOnce(context.getString(R.string.connect_user),
+                context.getString(R.string.user_id),
+                callback,
+                userPayloadAdapter.toJson(userPayload))
+    }
+
+    override suspend fun changeUsername(context: Context,
+                                        callback: (callbackData: Array<Any>,
+                                                   dataFromClient: String) -> Unit,
+                                        newUsername: String) {
+        socketDao.listenOnce(context.getString(R.string.change_username_if_able),
+                context.getString(R.string.change_username),
+                callback,
+                newUsername)
     }
 }

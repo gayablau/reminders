@@ -10,29 +10,22 @@ import java.util.Calendar;
 public class ReminderEntity {
 
     @PrimaryKey()
-    @ColumnInfo(name = "id")
     private int id;
 
-    @ColumnInfo(name = "header")
     private String header;
 
-    @ColumnInfo(name = "description")
     private String description;
 
-    @ColumnInfo(name = "user")
-    private int user;
+    private String user;
 
-    @ColumnInfo(name = "time")
     private long time;
 
-    @ColumnInfo(name = "createdAt")
     private long createdAt;
-
 
     public ReminderEntity(int id,
                           String header,
                           String description,
-                          int user,
+                          String user,
                           long time,
                           long createdAt) {
         this.id = id;
@@ -103,17 +96,16 @@ public class ReminderEntity {
     }
 
     public Calendar getCalendar() {
-
         Calendar helperCalendar = Calendar.getInstance();
         helperCalendar.setTimeInMillis(time);
         return helperCalendar;
     }
 
-    public int getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUsername(int user) {
+    public void setUsername(String user) {
         this.user = user;
     }
 

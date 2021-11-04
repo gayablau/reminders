@@ -3,34 +3,45 @@ package com.example.androidgaya.reminders.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
-import com.example.androidgaya.repositories.socket.SocketRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RemindersViewModel(application: Application,
-                         private val socketRepo: SocketRepo) : AndroidViewModel(application) {
+class RemindersViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var remindersRepo: RemindersRepo = RemindersRepo(application)
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
-    lateinit var remindersList: LiveData<List<ReminderEntity>?>
+    @Inject
+    lateinit var remindersRepo: RemindersRepo
+
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
+
+    val userId: String
 
     init {
-        getMyReminders()
+        (application as ReminderApplication).getAppComponent()?.injectReminders(this)
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
+        getAllReminders()
     }
 
     fun deleteReminder(reminderEntity: ReminderEntity) {
-        remindersRepo.deleteReminder(reminderEntity)
-        socketRepo.deleteReminder(reminderEntity)
+        viewModelScope.launch {
+            remindersRepo.deleteReminder(getApplication(), reminderEntity)
+        }
     }
 
-    private fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {
-        return remindersRepo.getReminders(userId)
+    private fun getAllReminders() {
+        remindersRepo.getAllReminders(getApplication(), userId)
     }
 
-    private fun getMyReminders() {
-        remindersList = getRemindersByUserId()
+    fun getRemindersByUserId(): LiveData<List<ReminderEntity>> {
+        return remindersRepo.getRemindersFromDB(userId)
+    }
+
+    fun getLoggedInUser(): LiveData<List<String>> {
+        return loggedInUserRepo.getLoggedInUserFromDB(userId)
     }
 }

@@ -2,29 +2,40 @@ package com.example.androidgaya.profile.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.androidgaya.repositories.socket.SocketRepo
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import com.example.androidgaya.application.ReminderApplication
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
-import com.example.androidgaya.repositories.user.UserRepo
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProfileViewModel(application: Application,
-                       private val socketRepo: SocketRepo) : AndroidViewModel(application) {
+class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var userRepo: UserRepo = UserRepo(application)
-    private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: Int = loggedInUserRepo.getLoggedInUserId(getApplication())
+    @Inject
+    lateinit var loggedInUserRepo: LoggedInUserRepo
 
-    fun editUsername(newUsername: String) {
-        userRepo.editUsername(username, newUsername)
-        setLoggedInUsername(newUsername)
-        socketRepo.changeUsername(username, newUsername)
+    var username: String
+    val userId: String
+
+    init {
+        (application as ReminderApplication).getAppComponent()?.injectProfile(this)
+        username = loggedInUserRepo.getLoggedInUsername(getApplication())
+        userId = loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
-    fun setLoggedInUsername(username: String) {
-        loggedInUserRepo.setLoggedIn(getApplication(), userId, username)
+    fun editUsername(newUsername: String, callback: (callbackData: Array<Any>, userDetails: String) -> Unit) {
+        viewModelScope.launch {
+            loggedInUserRepo.changeUsername(getApplication(), callback, newUsername)
+        }
     }
 
-    fun isUsernameExists(username: String): Boolean {
-        return userRepo.isUserExists(username)
+    fun updateLoggedIn(newUsername: String) {
+        viewModelScope.launch {
+            loggedInUserRepo.updateLoggedIn(userId, newUsername)
+        }
+    }
+
+    fun getLoggedInUser(): LiveData<List<String>> {
+        return loggedInUserRepo.getLoggedInUserFromDB(userId)
     }
 }

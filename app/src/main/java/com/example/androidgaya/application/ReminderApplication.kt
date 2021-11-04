@@ -1,8 +1,11 @@
-package com.example.androidgaya.repositories.di
+package com.example.androidgaya.application
 
 import androidx.multidex.MultiDexApplication
+import com.example.androidgaya.application.di.AppComponent
+import com.example.androidgaya.application.di.AppModule
+import com.example.androidgaya.application.di.DaggerAppComponent
 
-class AppDataGetter : MultiDexApplication() {
+class ReminderApplication : MultiDexApplication() {
     private var appComponent: AppComponent? = null
 
     override fun onCreate() {

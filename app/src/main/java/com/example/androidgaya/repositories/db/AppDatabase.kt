@@ -7,17 +7,13 @@ import androidx.room.RoomDatabase
 import com.example.androidgaya.R
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
-import com.example.androidgaya.repositories.dao.UserDao
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
-import com.example.androidgaya.repositories.models.UserEntity
 
-@Database(entities = [UserEntity::class,
-    ReminderEntity::class,
+@Database(entities = [ReminderEntity::class,
     LoggedInUserEntity::class],
         version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun getUsersDao(): UserDao
     abstract fun getRemindersDao(): RemindersDao
     abstract fun getLoggedInUserDao(): LoggedInUserDao
 
