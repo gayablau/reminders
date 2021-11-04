@@ -19,6 +19,6 @@ class ReminderReceiver : BroadcastReceiver() {
             putExtra(context.getString(R.string.id_uppercase),
                     intent.getIntExtra(context.getString(R.string.id_uppercase), 0))
         }
-        NotificationUtils().notify(context, service)
+        NotificationUtils.notify(context, service)
     }
 }

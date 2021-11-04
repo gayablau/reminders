@@ -53,11 +53,10 @@ class SocketService : Service() {
     private fun onCreateReminder() {
         socketDao.listen(getString(R.string.on_create_reminder)) { args ->
             socketScope.launch {
-                if (args[0] != null) {
-                    val reminder = reminderEntityAdapter.fromJson(args[0].toString())
-                    if (reminder != null) {
+                args[0]?.let {
+                    reminderEntityAdapter.fromJson(it.toString())?.let { reminder ->
                         remindersDao.addReminder(reminder)
-                        NotificationUtils().setNotification(application, reminder)
+                        NotificationUtils.setNotification(application, reminder)
                     }
                 }
             }
@@ -72,10 +71,10 @@ class SocketService : Service() {
                     if (reminder != null) {
                         if (remindersDao.getReminderByID(reminder.id) != null) {
                             remindersDao.updateReminder(reminder)
-                            NotificationUtils().setExistNotification(application, reminder)
+                            NotificationUtils.setExistNotification(application, reminder)
                         } else {
                             remindersDao.addReminder(reminder)
-                            NotificationUtils().setNotification(application, reminder)
+                            NotificationUtils.setNotification(application, reminder)
                         }
                     }
                 }
@@ -91,7 +90,7 @@ class SocketService : Service() {
                     if (reminder != null) {
                         if (remindersDao.getReminderByID(reminder.id) != null) {
                             remindersDao.deleteReminder(reminder)
-                            NotificationUtils().deleteNotification(application, reminder)
+                            NotificationUtils.deleteNotification(application, reminder)
                         }
                     }
                 }

@@ -28,9 +28,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private fun getAllReminders() {
-        viewModelScope.launch {
-            remindersRepo.getAllReminders(getApplication(), userId)
-        }
+        remindersRepo.getAllReminders(getApplication(), userId)
     }
 
     fun getRemindersByUserId(): LiveData<List<ReminderEntity>?> {

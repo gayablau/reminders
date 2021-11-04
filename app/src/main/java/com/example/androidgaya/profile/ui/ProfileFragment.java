@@ -83,11 +83,10 @@ public class ProfileFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("RestrictedApi")
     public void save() {
         viewModel.editUsername(getNewUsername(), (dataFromSocket, dataFromClient) -> {
             if ((Boolean) dataFromSocket[0]) {
-                viewModel.updateLoggedIn(dataFromClient.get(0).toString());
+                viewModel.updateLoggedIn(dataFromClient);
                 nav.toRemindersFragment();
             } else {
                 new Handler(Looper.getMainLooper()).post(() ->

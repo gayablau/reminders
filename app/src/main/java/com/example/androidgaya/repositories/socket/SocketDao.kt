@@ -1,21 +1,19 @@
 package com.example.androidgaya.repositories.socket
 
-import android.app.Application
-import com.example.androidgaya.R
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
-import org.json.JSONArray
 import java.net.URISyntaxException
+import kotlin.reflect.KSuspendFunction2
 
-class SocketDao(val application: Application) {
+class SocketDao(private val uri : String) {
 
     lateinit var mSocket: Socket
 
     @Synchronized
     fun setSocket() {
         try {
-            mSocket = IO.socket(application.getString(R.string.socket_uri))
+            mSocket = IO.socket(uri)
         } catch (e: URISyntaxException) {
         }
     }
@@ -34,14 +32,8 @@ class SocketDao(val application: Application) {
         mSocket.emit(event)
     }
 
-    fun emit(event: String, vararg data: Any) {
-        val jsonData = JSONArray(data.asList())
-        mSocket.emit(event, jsonData.toString())
-    }
-
-    fun emit(event: String, data: List<Any>) {
-        val jsonData = JSONArray(data)
-        mSocket.emit(event, jsonData.toString())
+    fun emit(event: String, data: String) {
+        mSocket.emit(event, data)
     }
 
     fun listen(event: String, listener: Emitter.Listener) {
@@ -51,16 +43,26 @@ class SocketDao(val application: Application) {
     private fun removeListener(event: String) {
         mSocket.off(event)
     }
+/*
+    suspend fun listenOnce(eventToEmit: String,
+                   eventToListen: String,
+                   callback: KSuspendFunction2<Array<Any>, String, Unit>,
+                   data: String) {
+        emit(eventToEmit, data)
+        listen(eventToListen) {
+            removeListener(eventToListen)
+            callback(it, data)
+        }
+    }*/
 
     fun listenOnce(eventToEmit: String,
                    eventToListen: String,
-                   callback: (callbackData: Array<Any>,
-                              userDetails: List<Any>) -> Unit,
-                   vararg data: Any) {
-        emit(eventToEmit, data.asList())
+                   callback: (callbackData: Array<Any>, dataFromClient: String) -> Unit,
+                   data: String) {
+        emit(eventToEmit, data)
         listen(eventToListen) {
             removeListener(eventToListen)
-            callback(it, data.asList())
+            callback(it, data)
         }
     }
 }

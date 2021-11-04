@@ -19,10 +19,10 @@ import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.util.MainNavigator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
 
 class RemindersFragment : Fragment() {
-    private lateinit var addFab: FloatingActionButton
     private lateinit var recyclerViewReminders: RecyclerView
     private lateinit var remindersList: LiveData<List<ReminderEntity>?>
     private lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>?>
@@ -45,19 +45,18 @@ class RemindersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init(view)
         setAdapter()
-        addFab.setOnClickListener { fabView: View? -> add() }
-    }
+        add_fab.setOnClickListener { add() }
 
-    override fun onResume() {
-        super.onResume()
-        requireView().isFocusableInTouchMode = true
-        requireView().requestFocus()
-        requireView().setOnKeyListener { v: View?, keyCode: Int, event: KeyEvent ->
-            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                onBackPressed()
-                return@setOnKeyListener true
+        view.apply {
+            isFocusableInTouchMode = true
+            requestFocus()
+            setOnKeyListener { _, keyCode, event ->
+                if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed()
+                    return@setOnKeyListener true
+                }
+                false
             }
-            false
         }
     }
 
@@ -83,7 +82,6 @@ class RemindersFragment : Fragment() {
 
     private fun init(view: View) {
         recyclerViewReminders = view.findViewById(R.id.recycler_view_reminders)
-        addFab = view.findViewById(R.id.add_fab)
         recyclerViewReminders.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@RemindersFragment.context)
         recyclerViewReminders.layoutManager = layoutManager

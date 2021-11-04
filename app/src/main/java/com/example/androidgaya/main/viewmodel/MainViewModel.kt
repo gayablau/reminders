@@ -20,7 +20,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun logout() {
         viewModelScope.launch {
             loggedInUserRepo.logout(getApplication())
-            NotificationUtils().cancelAll(getApplication(), remindersRepo.getMyRemindersIds(userId))
+            NotificationUtils.cancelAll(getApplication(), remindersRepo.getMyRemindersIds(userId))
         }
     }
 

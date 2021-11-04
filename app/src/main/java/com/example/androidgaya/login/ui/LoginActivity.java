@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.login.viewmodel.LoginViewModel;
 import com.example.androidgaya.R;
+import com.example.androidgaya.repositories.models.UserPayload;
 import com.example.androidgaya.socket.SocketService;
 import com.example.androidgaya.repositories.models.LoggedInUserEntity;
 import com.example.androidgaya.util.LoginNavigator;
@@ -115,6 +116,6 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
         username = usernameEditText.getText().toString();
         password = passwordEditText.getText().toString();
-        viewModel.connectUser(username, password);
+        viewModel.connectUser(new UserPayload(username, password));
     }
 }

@@ -14,7 +14,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
-    fun editUsername(newUsername: String, callback: (callbackData: Array<Any>, userDetails: List<Any>) -> Unit) {
+    fun editUsername(newUsername: String, callback: (callbackData: Array<Any>, userDetails: String) -> Unit) {
         viewModelScope.launch {
             loggedInUserRepo.changeUsername(getApplication(), callback, newUsername)
         }

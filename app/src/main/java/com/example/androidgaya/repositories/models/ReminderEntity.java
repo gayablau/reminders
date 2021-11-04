@@ -10,22 +10,16 @@ import java.util.Calendar;
 public class ReminderEntity {
 
     @PrimaryKey()
-    @ColumnInfo(name = "id")
     private int id;
 
-    @ColumnInfo(name = "header")
     private String header;
 
-    @ColumnInfo(name = "description")
     private String description;
 
-    @ColumnInfo(name = "user")
     private String user;
 
-    @ColumnInfo(name = "time")
     private long time;
 
-    @ColumnInfo(name = "createdAt")
     private long createdAt;
 
     public ReminderEntity(int id,

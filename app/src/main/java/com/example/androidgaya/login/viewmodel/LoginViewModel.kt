@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
+import com.example.androidgaya.repositories.models.UserPayload
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
 
@@ -14,9 +15,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
     var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
-    fun connectUser(username: String, password: String) {
+    fun connectUser(userPayload: UserPayload) {
         viewModelScope.launch {
-            loggedInUserRepo.login(getApplication(), username, password)
+            loggedInUserRepo.login(getApplication(), userPayload)
         }
     }
 

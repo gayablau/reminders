@@ -11,8 +11,7 @@ import kotlinx.coroutines.launch
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
     private var remindersRepo: RemindersRepo = RemindersRepo(application)
     private var loggedInUserRepo: LoggedInUserRepo = LoggedInUserRepo(application)
-    var username: String = loggedInUserRepo.getLoggedInUsername(getApplication())
-    var userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
+    val userId: String = loggedInUserRepo.getLoggedInUserId(getApplication())
 
     fun addReminder(reminderEntity: ReminderEntity) {
         viewModelScope.launch {

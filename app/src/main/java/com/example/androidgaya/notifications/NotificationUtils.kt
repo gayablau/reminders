@@ -13,12 +13,10 @@ import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import java.util.*
 
-class NotificationUtils {
+object NotificationUtils {
 
-    companion object {
-        const val CHANNEL_ID = "samples.notification.devdeeds.com.CHANNEL_ID"
-        const val CHANNEL_NAME = "Sample Notification"
-    }
+    const val CHANNEL_ID = "samples.notification.devdeeds.com.CHANNEL_ID"
+    const val CHANNEL_NAME = "Sample Notification"
 
     private lateinit var mNotification: Notification
     var id: Int = 0

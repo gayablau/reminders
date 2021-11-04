@@ -1,12 +1,14 @@
-package com.example.androidgaya.application
+package com.example.androidgaya.application.di
 
 import android.app.Application
 import android.content.Context
+import com.example.androidgaya.R
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.db.AppDatabase
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
+import com.example.androidgaya.repositories.models.UserPayload
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.types.ReminderJson
@@ -27,7 +29,7 @@ import javax.inject.Singleton
 @Module
 class AppModule(val application: Application) {
 
-    private var socketDao = SocketDao(application)
+    private var socketDao = SocketDao(application.getString(R.string.socket_uri))
     private val moshi: Moshi = Moshi.Builder().build()
     private val listRemindersType: ParameterizedType = Types.newParameterizedType(List::class.java, ReminderJson::class.java)
     private val listUsersType: ParameterizedType = Types.newParameterizedType(List::class.java, UserJson::class.java)
@@ -111,6 +113,12 @@ class AppModule(val application: Application) {
 
     @Singleton
     @Provides
+    fun provideUserPayloadAdapter(): JsonAdapter<UserPayload> {
+        return moshi.adapter(UserPayload::class.java)
+    }
+
+    @Singleton
+    @Provides
     fun getLoggedInUserRepo(): LoggedInUserRepo {
         return LoggedInUserRepo(application)
     }
@@ -119,12 +127,5 @@ class AppModule(val application: Application) {
     @Provides
     fun getRemindersRepo(): RemindersRepo {
         return RemindersRepo(application)
-    }
-
-    @Singleton
-    @Provides
-    fun getDBCoroutineScope(): CoroutineScope {
-        val dbCoroutineJob = SupervisorJob()
-        return CoroutineScope(Dispatchers.IO + dbCoroutineJob)
     }
 }
