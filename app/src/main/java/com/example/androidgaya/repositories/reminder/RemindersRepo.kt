@@ -2,21 +2,19 @@ package com.example.androidgaya.repositories.reminder
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.androidgaya.R
 import com.example.androidgaya.application.ReminderApplication
-import com.example.androidgaya.repositories.interfaces.ReminderInterface
+import com.example.androidgaya.notifications.NotificationUtils
 import com.example.androidgaya.repositories.dao.RemindersDao
+import com.example.androidgaya.repositories.interfaces.ReminderInterface
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.socket.SocketDao
 import com.example.androidgaya.repositories.types.ReminderJson
 import com.example.androidgaya.util.Functions
-import com.example.androidgaya.notifications.NotificationUtils
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.*
 import org.json.JSONArray
-import java.lang.Exception
 import javax.inject.Inject
 
 class RemindersRepo(application: Application) : ReminderInterface {
@@ -80,7 +78,7 @@ class RemindersRepo(application: Application) : ReminderInterface {
         socketDao.emit(context.getString(R.string.delete_reminder), reminderEntityAdapter.toJson(reminderEntity))
     }
 
-    private fun addUserReminders (dataFromSocket: Array<Any>, dataFromClient: String) {
+    private fun addUserReminders(dataFromSocket: Array<Any>, dataFromClient: String) {
         remRepoCoroutineScope.launch {
             if (dataFromSocket[0].toString() != application.getString(R.string.empty_json)) {
                 val reminders = dataFromSocket[0] as JSONArray

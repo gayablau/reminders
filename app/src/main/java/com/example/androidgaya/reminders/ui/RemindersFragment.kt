@@ -15,16 +15,14 @@ import com.example.androidgaya.main.ui.MainActivity
 import com.example.androidgaya.reminders.recyclerview.ReminderAdapter
 import com.example.androidgaya.reminders.recyclerview.SwipeToDeleteCallback
 import com.example.androidgaya.reminders.viewmodel.RemindersViewModel
-import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.util.MainNavigator
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
 
 class RemindersFragment : Fragment() {
     private lateinit var remindersList: LiveData<List<ReminderEntity>>
-    private lateinit var loggedInUserList: LiveData<List<LoggedInUserEntity>>
+    private lateinit var loggedInUserList: LiveData<List<String>>
     private var nav: MainNavigator? = null
     private lateinit var viewModel: RemindersViewModel
     private lateinit var reminderAdapter: ReminderAdapter
@@ -85,10 +83,10 @@ class RemindersFragment : Fragment() {
         recycler_view_reminders.layoutManager = layoutManager
         nav = (activity as? MainActivityInterface)?.navigator
 
-        val loggedInObserver = Observer { loggedInUserEntities: List<LoggedInUserEntity> ->
-            if (loggedInUserEntities.isNotEmpty()) {
+        val loggedInObserver = Observer { loggedInUsernames: List<String> ->
+            if (loggedInUsernames.isNotEmpty()) {
                 (activity as? MainActivityInterface)?.changeToolbar(getString(R.string.toolbar_main,
-                        loggedInUserEntities[0].username),
+                        loggedInUsernames[0]),
                         false)
             }
         }

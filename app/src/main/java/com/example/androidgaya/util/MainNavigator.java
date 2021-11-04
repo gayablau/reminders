@@ -41,7 +41,7 @@ public class MainNavigator {
     }
 
     public void toLoginActivity() {
-        Intent intent = LoginActivity.getIntent(activity);
+        Intent intent = LoginActivity.Companion.getIntent(activity);
         changeActivity(intent);
     }
 

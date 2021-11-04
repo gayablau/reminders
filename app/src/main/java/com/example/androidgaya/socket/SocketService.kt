@@ -2,15 +2,15 @@ package com.example.androidgaya.socket
 
 import android.app.Service
 import android.content.Intent
-import android.os.*
+import android.os.IBinder
 import com.example.androidgaya.R
 import com.example.androidgaya.application.ReminderApplication
+import com.example.androidgaya.notifications.NotificationUtils
 import com.example.androidgaya.repositories.dao.LoggedInUserDao
 import com.example.androidgaya.repositories.dao.RemindersDao
 import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.socket.SocketDao
-import com.example.androidgaya.notifications.NotificationUtils
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

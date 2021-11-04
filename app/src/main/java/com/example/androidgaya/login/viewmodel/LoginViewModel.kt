@@ -2,10 +2,8 @@ package com.example.androidgaya.login.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.application.ReminderApplication
-import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.UserPayload
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
@@ -24,13 +22,13 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         userId = loggedInUserRepo.getLoggedInUserId(getApplication())
     }
 
-    fun connectUser(userPayload: UserPayload) {
+    fun connectUser(userPayload: UserPayload, callback: (callbackData: Array<Any>, userDetails: String) -> Unit) {
         viewModelScope.launch {
-            loggedInUserRepo.login(getApplication(), userPayload)
+            loggedInUserRepo.login(getApplication(), userPayload, callback)
         }
     }
 
-    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>> {
-        return loggedInUserRepo.getLoggedInUserFromDB()
+    suspend fun setLoggedIn(application: Application, userId: String, username: String) {
+        loggedInUserRepo.setLoggedIn(application, userId, username)
     }
 }

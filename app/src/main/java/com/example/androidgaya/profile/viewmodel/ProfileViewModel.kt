@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.application.ReminderApplication
-import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,7 +35,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>> {
-        return loggedInUserRepo.getLoggedInUserFromDB()
+    fun getLoggedInUser(): LiveData<List<String>> {
+        return loggedInUserRepo.getLoggedInUserFromDB(userId)
     }
 }

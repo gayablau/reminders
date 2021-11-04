@@ -7,21 +7,15 @@ import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidgaya.R;
 import com.example.androidgaya.main.interfaces.MainActivityInterface;
-import com.example.androidgaya.socket.SocketService;
 import com.example.androidgaya.main.viewmodel.MainViewModel;
-import com.example.androidgaya.repositories.models.LoggedInUserEntity;
+import com.example.androidgaya.socket.SocketService;
 import com.example.androidgaya.util.MainNavigator;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
-    LiveData<List<LoggedInUserEntity>> loggedInUserList;
     Toolbar toolbar;
     MainViewModel viewModel;
     MainNavigator nav;
@@ -46,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
 
     public void logout() {
         viewModel.logout();
+        nav.toLoginActivity();
         stopService(new Intent(this, SocketService.class));
     }
 
@@ -75,17 +70,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
-        Observer<List<LoggedInUserEntity>> loggedInObserver = loggedInUserEntities -> {
-            if (!loggedInUserEntities.isEmpty()) {
-                viewModel.setUsername(loggedInUserEntities.get(0).getUsername());
-            } else {
-                nav.toLoginActivity();
-            }
-        };
-
-        loggedInUserList = viewModel.getLoggedInUser();
-        loggedInUserList.observe(this, loggedInObserver);
     }
 }
 

@@ -6,10 +6,10 @@ import com.example.androidgaya.repositories.models.LoggedInUserEntity
 
 @Dao
 interface LoggedInUserDao {
-    @Query("SELECT * FROM loggedIn")
-    fun getLoggedInUserFromDBLive(): LiveData<List<LoggedInUserEntity>>
+    @Query("SELECT username FROM loggedIn WHERE userId LIKE :userId")
+    fun getLoggedInUserFromDBLive(userId: String): LiveData<List<String>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addLoggedInUser(loggedInUserEntity: LoggedInUserEntity)
 
     @Update
@@ -18,12 +18,7 @@ interface LoggedInUserDao {
     @Delete
     fun deleteLoggedInUser(loggedInUserEntity: LoggedInUserEntity)
 
-    @Query("SELECT username FROM loggedIn LIMIT 1")
-    fun getLoggedInUsername(): String?
+    @Query("SELECT username FROM loggedIn WHERE userId LIKE :userId")
+    fun getLoggedInUsername(userId: String): String?
 
-    @Query("SELECT userId FROM loggedIn LIMIT 1")
-    fun getLoggedInId(): String?
-
-    @Query("DELETE FROM loggedIn")
-    fun deleteOldLogins()
 }

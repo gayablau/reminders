@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.androidgaya.application.ReminderApplication
-import com.example.androidgaya.repositories.models.LoggedInUserEntity
 import com.example.androidgaya.repositories.models.ReminderEntity
 import com.example.androidgaya.repositories.reminder.RemindersRepo
 import com.example.androidgaya.repositories.user.LoggedInUserRepo
@@ -42,7 +41,7 @@ class RemindersViewModel(application: Application) : AndroidViewModel(applicatio
         return remindersRepo.getRemindersFromDB(userId)
     }
 
-    fun getLoggedInUser(): LiveData<List<LoggedInUserEntity>> {
-        return loggedInUserRepo.getLoggedInUserFromDB()
+    fun getLoggedInUser(): LiveData<List<String>> {
+        return loggedInUserRepo.getLoggedInUserFromDB(userId)
     }
 }

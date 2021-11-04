@@ -4,9 +4,8 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import java.net.URISyntaxException
-import kotlin.reflect.KSuspendFunction2
 
-class SocketDao(private val uri : String) {
+class SocketDao(private val uri: String) {
 
     lateinit var mSocket: Socket
 
